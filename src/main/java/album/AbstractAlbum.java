@@ -195,8 +195,8 @@ public abstract class AbstractAlbum extends AbstractElement implements Album {
 
 	private Disc getDefaultDisc() {
 		final String errMsg = getFullTitle() + " has more than one disc, thus one must be explicitly specified";
-		VALIDATOR.checkSingleEntryMap(discs, errMsg);
 		discs.putIfAbsent(DEFAULT_DISC, new Disc());
+		VALIDATOR.checkSingleEntryMap(discs, errMsg);
 		return discs.get(DEFAULT_DISC);
 	}
 
