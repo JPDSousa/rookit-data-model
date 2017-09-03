@@ -19,21 +19,21 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  ******************************************************************************/
-package track;
+package org.rookit.dm.genre;
 
-import static org.junit.Assert.*;
-
-import org.junit.Test;
-import org.rookit.dm.track.TypeTrack;
+import java.util.Set;
 
 @SuppressWarnings("javadoc")
-public class TypeTrackTest {
+public interface Genreable {
+
+	/**
+	 * Database field name for the genres
+	 */
+	String GENRES = "genres";
 	
-	@Test
-	public void testTrackClass(){
-		for(TypeTrack t : TypeTrack.values()){
-			assertNotNull(TypeTrack.class.getName()+" "+t.name()+"'s track class is not defined!", t.getTrackClass());
-		}
-	}
+	Iterable<Genre> getAllGenres();
+	Iterable<Genre> getGenres();
+	void addGenre(final Genre genre);
+	void setGenres(final Set<Genre> genres);
 
 }

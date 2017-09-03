@@ -19,21 +19,11 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  ******************************************************************************/
-package track;
-
-import static org.junit.Assert.*;
-
-import org.junit.Test;
-import org.rookit.dm.track.TypeTrack;
+package org.rookit.dm.album;
 
 @SuppressWarnings("javadoc")
-public class TypeTrackTest {
-	
-	@Test
-	public void testTrackClass(){
-		for(TypeTrack t : TypeTrack.values()){
-			assertNotNull(TypeTrack.class.getName()+" "+t.name()+"'s track class is not defined!", t.getTrackClass());
-		}
-	}
+public enum TypeSpecial {
 
+	DELUXE,
+	VINYL;
 }

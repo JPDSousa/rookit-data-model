@@ -19,21 +19,52 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  ******************************************************************************/
-package track;
+package org.rookit.dm.album;
 
-import static org.junit.Assert.*;
+/**
+ * Interface that stores the database fields metadata for Albums.
+ * @author Joao
+ *
+ */
+public interface DatabaseFields {
+		
+	/**
+	 * Database field name for the album type
+	 */
+	String TYPE = "type";
 
-import org.junit.Test;
-import org.rookit.dm.track.TypeTrack;
+	/**
+	 * Database field name for the album title
+	 */
+	String TITLE = "title";
 
-@SuppressWarnings("javadoc")
-public class TypeTrackTest {
-	
-	@Test
-	public void testTrackClass(){
-		for(TypeTrack t : TypeTrack.values()){
-			assertNotNull(TypeTrack.class.getName()+" "+t.name()+"'s track class is not defined!", t.getTrackClass());
-		}
-	}
+	/**
+	 * Database name for the release type
+	 */
+	String RELEASE_TYPE = "release_type";
 
+	/**
+	 * Database name for the album artists
+	 */
+	String ARTISTS = "artists";
+
+	/**
+	 * Database name for the release date
+	 */
+	String RELEASE_DATE = "release_date";
+
+	/**
+	 * Database name for the album cover
+	 */
+	String COVER = "cover";
+
+	/**
+	 * Database name for the album tracks
+	 */
+	String TRACKS = "tracks";
+
+	/**
+	 * Database name for the album discs
+	 */
+	String DISCS = "discs";
 }

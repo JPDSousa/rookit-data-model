@@ -19,21 +19,54 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  ******************************************************************************/
-package track;
+package org.rookit.dm.album;
 
-import static org.junit.Assert.*;
-
-import org.junit.Test;
-import org.rookit.dm.track.TypeTrack;
-
-@SuppressWarnings("javadoc")
-public class TypeTrackTest {
+/**
+ * Enumeration that represents the various types of album (in terms 
+ * of configurations). Each album type must have a class associated.
+ * 
+ * <p>note: do not confuse this enumeration with {@link TypeRelease}.
+ *
+ */
+public enum TypeAlbum {
 	
-	@Test
-	public void testTrackClass(){
-		for(TypeTrack t : TypeTrack.values()){
-			assertNotNull(TypeTrack.class.getName()+" "+t.name()+"'s track class is not defined!", t.getTrackClass());
-		}
+	/**
+	 * Album released by a defined set of artists. The album may
+	 * have other artists associated, but will requires a non empty
+	 * set of authors.
+	 */
+	ARTIST("Album", SingleArtistAlbum.class),
+	/**
+	 * Various Artists album. This type of album is not associated
+	 * with any particular artist.
+	 */
+	VA("VA", VariousArtistAlbum.class);
+	
+	private final String name;
+	private final Class<? extends Album> albumClass;
+	
+	TypeAlbum(final String name, final Class<? extends Album> albumClass){
+		this.name = name;
+		this.albumClass = albumClass;
+	}
+	
+	/**
+	 * Returns the name of the type
+	 * 
+	 * @return name of the album type
+	 */
+	public String getName(){
+		return name;
+	}
+	
+	/**
+	 * Returns the class associated with the album type.
+	 * 
+	 * @return {@link Class} that implements the {@link Album} interface
+	 * associated with the album type.
+	 */
+	public Class<? extends Album> getAlbumClass(){
+		return albumClass;
 	}
 
 }

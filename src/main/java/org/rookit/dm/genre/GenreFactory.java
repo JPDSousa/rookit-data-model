@@ -19,21 +19,34 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  ******************************************************************************/
-package track;
+package org.rookit.dm.genre;
 
-import static org.junit.Assert.*;
+import static org.rookit.dm.genre.DatabaseFields.*;
 
-import org.junit.Test;
-import org.rookit.dm.track.TypeTrack;
+import org.rookit.dm.utils.CoreValidator;
+import org.smof.annnotations.SmofBuilder;
+import org.smof.annnotations.SmofParam;
 
 @SuppressWarnings("javadoc")
-public class TypeTrackTest {
-	
-	@Test
-	public void testTrackClass(){
-		for(TypeTrack t : TypeTrack.values()){
-			assertNotNull(TypeTrack.class.getName()+" "+t.name()+"'s track class is not defined!", t.getTrackClass());
-		}
-	}
+public class GenreFactory {
 
+	private static final CoreValidator VALIDATOR = CoreValidator.getDefault();
+	
+	private static GenreFactory singleton;
+	
+	public static GenreFactory getDefault() {
+		if(singleton == null) {
+			singleton = new GenreFactory();
+		}
+		
+		return singleton;
+	}
+		
+	private GenreFactory() {}
+	
+	@SmofBuilder
+	public Genre createGenre(@SmofParam(name = NAME) String name) {
+		VALIDATOR.checkArgumentStringNotEmpty(name, "A genre must have a non-null non-empty name");
+		return new DefaultGenre(name);
+	}
 }

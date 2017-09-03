@@ -19,21 +19,44 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  ******************************************************************************/
-package track;
+package org.rookit.dm.track;
 
-import static org.junit.Assert.*;
+import static org.rookit.dm.track.DatabaseFields.*;
 
-import org.junit.Test;
-import org.rookit.dm.track.TypeTrack;
+import org.smof.annnotations.SmofBuilder;
+import org.smof.annnotations.SmofParam;
 
 @SuppressWarnings("javadoc")
-public class TypeTrackTest {
-	
-	@Test
-	public void testTrackClass(){
-		for(TypeTrack t : TypeTrack.values()){
-			assertNotNull(TypeTrack.class.getName()+" "+t.name()+"'s track class is not defined!", t.getTrackClass());
+public class TrackFactory {
+
+	private static TrackFactory singleton;
+
+
+	public static TrackFactory getDefault(){
+		if(singleton == null) {
+			singleton = new TrackFactory();
 		}
+		return singleton;
 	}
 
+	private TrackFactory(){}
+
+	public final OriginalTrack createOriginalTrack(String title) {
+		return new OriginalTrack(title);
+	}
+
+	public final VersionTrack createVersionTrack(TypeVersion versionType, Track original) {
+		return new VersionTrack(original, versionType);
+	}
+
+	@SmofBuilder
+	public final Track createTrack(@SmofParam(name = TYPE) TypeTrack type, 
+			@SmofParam(name = TITLE) String title,
+			@SmofParam(name = ORIGINAL) Track original,
+			@SmofParam(name = VERSION_TOKEN) TypeVersion versionType) {
+		if(type == TypeTrack.VERSION) {
+			return new VersionTrack(original, versionType);
+		}
+		return new OriginalTrack(title);
+	}
 }

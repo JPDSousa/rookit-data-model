@@ -27,17 +27,17 @@ import java.util.Set;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.rookit.dm.album.Album;
+import org.rookit.dm.album.AlbumFactory;
+import org.rookit.dm.album.TypeAlbum;
+import org.rookit.dm.album.TypeRelease;
+import org.rookit.dm.artist.Artist;
+import org.rookit.dm.utils.PrintUtils;
 import org.rookit.utils.print.TypeFormat;
 
 import com.google.common.collect.Sets;
 
-import album.Album;
-import album.AlbumFactory;
-import album.TypeAlbum;
-import album.TypeRelease;
-import artist.Artist;
 import utils.CoreFactory;
-import utils.PrintUtils;
 
 @SuppressWarnings("javadoc")
 public class AlbumFactoryTest {

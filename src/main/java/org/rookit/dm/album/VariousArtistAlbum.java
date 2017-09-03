@@ -19,21 +19,38 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  ******************************************************************************/
-package track;
+package org.rookit.dm.album;
 
-import static org.junit.Assert.*;
+import java.util.HashSet;
+import java.util.Set;
 
-import org.junit.Test;
-import org.rookit.dm.track.TypeTrack;
+import org.rookit.dm.artist.Artist;
+import org.rookit.dm.track.Track;
 
-@SuppressWarnings("javadoc")
-public class TypeTrackTest {
-	
-	@Test
-	public void testTrackClass(){
-		for(TypeTrack t : TypeTrack.values()){
-			assertNotNull(TypeTrack.class.getName()+" "+t.name()+"'s track class is not defined!", t.getTrackClass());
-		}
+class VariousArtistAlbum extends AbstractAlbum {
+
+	private static final long serialVersionUID = 1L;
+
+	public VariousArtistAlbum(String title, TypeRelease type) {
+		super(TypeAlbum.VA, title, type, null);
 	}
+
+	@Override
+	public Set<Artist> getArtists() {
+		final Set<Artist> artists = new HashSet<>();
+		
+		for(Track track : getTracks()){
+			track.getMainArtists().forEach(a -> artists.add(a));
+		}
+		
+		return artists;
+	}
+
+	@Override
+	public String toString() {
+		return getFullTitle();
+	}
+
+	
 
 }

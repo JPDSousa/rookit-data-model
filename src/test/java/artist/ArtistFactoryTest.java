@@ -30,12 +30,12 @@ import java.util.Set;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.rookit.dm.artist.Artist;
+import org.rookit.dm.artist.ArtistFactory;
+import org.rookit.dm.utils.PrintUtils;
 import org.rookit.utils.print.TypeFormat;
 
-import artist.Artist;
-import artist.ArtistFactory;
 import utils.CoreFactory;
-import utils.PrintUtils;
 
 @SuppressWarnings("javadoc")
 public class ArtistFactoryTest {

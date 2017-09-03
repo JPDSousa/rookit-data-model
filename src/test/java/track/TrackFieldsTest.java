@@ -30,16 +30,16 @@ import org.bson.types.ObjectId;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.rookit.dm.artist.Artist;
+import org.rookit.dm.exceptions.InvalidOperationException;
+import org.rookit.dm.genre.Genre;
+import org.rookit.dm.track.Track;
+import org.rookit.dm.track.TrackFactory;
+import org.rookit.dm.track.TrackTitle;
+import org.rookit.dm.track.TypeVersion;
 
 import com.google.common.collect.Sets;
 
-import artist.Artist;
-import exceptions.InvalidOperationException;
-import genre.Genre;
-import track.Track;
-import track.TrackFactory;
-import track.TrackTitle;
-import track.TypeVersion;
 import utils.CoreFactory;
 
 @SuppressWarnings("javadoc")

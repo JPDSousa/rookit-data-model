@@ -34,21 +34,20 @@ import java.util.Random;
 import java.util.Set;
 
 import org.apache.commons.lang3.RandomStringUtils;
+import org.rookit.dm.album.Album;
+import org.rookit.dm.album.AlbumFactory;
+import org.rookit.dm.album.TypeRelease;
+import org.rookit.dm.artist.Artist;
+import org.rookit.dm.artist.ArtistFactory;
+import org.rookit.dm.genre.Genre;
+import org.rookit.dm.genre.GenreFactory;
+import org.rookit.dm.genre.Genreable;
+import org.rookit.dm.track.Track;
+import org.rookit.dm.track.TrackFactory;
+import org.rookit.dm.track.TypeTrack;
+import org.rookit.dm.track.TypeVersion;
 
 import com.google.common.collect.Sets;
-
-import album.Album;
-import album.AlbumFactory;
-import album.TypeRelease;
-import artist.Artist;
-import artist.ArtistFactory;
-import genre.Genre;
-import genre.GenreFactory;
-import genre.Genreable;
-import track.Track;
-import track.TrackFactory;
-import track.TypeTrack;
-import track.TypeVersion;
 
 @SuppressWarnings("javadoc")
 public final class CoreFactory {

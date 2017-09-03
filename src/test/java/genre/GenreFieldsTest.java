@@ -26,9 +26,9 @@ import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.rookit.dm.genre.Genre;
+import org.rookit.dm.genre.GenreFactory;
 
-import genre.Genre;
-import genre.GenreFactory;
 import utils.CoreFactory;
 
 @SuppressWarnings("javadoc")

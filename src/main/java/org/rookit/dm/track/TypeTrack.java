@@ -19,21 +19,50 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  ******************************************************************************/
-package track;
+package org.rookit.dm.track;
 
-import static org.junit.Assert.*;
-
-import org.junit.Test;
-import org.rookit.dm.track.TypeTrack;
+import org.apache.commons.lang3.StringUtils;
 
 @SuppressWarnings("javadoc")
-public class TypeTrackTest {
-	
-	@Test
-	public void testTrackClass(){
-		for(TypeTrack t : TypeTrack.values()){
-			assertNotNull(TypeTrack.class.getName()+" "+t.name()+"'s track class is not defined!", t.getTrackClass());
-		}
+public enum TypeTrack {
+
+	ORIGINAL(OriginalTrack.class),
+	VERSION(VersionTrack.class);
+
+	private final Class<? extends Track> trackClass;
+
+	private TypeTrack(Class<? extends Track> trackClass){
+		this.trackClass = trackClass;
 	}
 
+	public Class<? extends Track> getTrackClass(){
+		return trackClass;
+	}
+
+	public static TypeTrack getByClass(Class<? extends Track> trackClass) {
+		TypeTrack type = null;
+
+		for(TypeTrack t : values()){
+			if(t.getTrackClass().equals(trackClass)){
+				type = t;
+			}
+		}
+		return type;
+	}
+	
+	@Deprecated
+	public static TypeTrack getByName(String name) {
+		switch(name) {
+		case "ORIGINAL":
+			return ORIGINAL;
+		case "REMIX":
+		case "COVER":
+			return VERSION;
+		}
+		throw new IllegalArgumentException();
+	}
+
+	public String getName() {
+		return StringUtils.capitalize(name().toLowerCase());
+	}
 }

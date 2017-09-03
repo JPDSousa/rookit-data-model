@@ -19,21 +19,32 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  ******************************************************************************/
-package track;
+package org.rookit.dm.artist;
 
-import static org.junit.Assert.*;
+import org.rookit.dm.album.Album;
+import org.rookit.dm.track.Track;
 
-import org.junit.Test;
-import org.rookit.dm.track.TypeTrack;
-
-@SuppressWarnings("javadoc")
-public class TypeTrackTest {
+/**
+ * This interface offers an extended set of methods related to the artist definition. 
+ * This methods were separated from the original interface as they allow for data loop holes. 
+ * 
+ * @author Joao
+ *
+ */
+public interface ExtendedArtist extends Artist {
 	
-	@Test
-	public void testTrackClass(){
-		for(TypeTrack t : TypeTrack.values()){
-			assertNotNull(TypeTrack.class.getName()+" "+t.name()+"'s track class is not defined!", t.getTrackClass());
-		}
-	}
+	/**
+	 * Returns the list of albums which this artist was author
+	 * 
+	 * @return the set of albums which this artist co-wrote
+	 */
+	public Iterable<Album> getAlbuns();
+	
+	/**
+	 * Returns all the tracks this artist participated in.
+	 * 
+	 * @return the set of tracks this artist participated in.
+	 */
+	public Iterable<Track> getTracks();
 
 }

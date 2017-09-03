@@ -19,21 +19,24 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  ******************************************************************************/
-package track;
+package org.rookit.dm.artist;
 
-import static org.junit.Assert.*;
+class DefaultArtist extends AbstractArtist {
 
-import org.junit.Test;
-import org.rookit.dm.track.TypeTrack;
+	private String realName;
 
-@SuppressWarnings("javadoc")
-public class TypeTrackTest {
-	
-	@Test
-	public void testTrackClass(){
-		for(TypeTrack t : TypeTrack.values()){
-			assertNotNull(TypeTrack.class.getName()+" "+t.name()+"'s track class is not defined!", t.getTrackClass());
-		}
+	DefaultArtist(final String artistName) {
+		super(artistName);
 	}
+
+	String getRealName() {
+		return realName;
+	}
+
+	void setRealName(final String realName) {
+		VALIDATOR.checkArgumentStringNotEmpty(realName, "The artist real name cannot be empty.");
+		this.realName = realName;
+	}
+
 
 }

@@ -19,21 +19,41 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  ******************************************************************************/
-package track;
+package org.rookit.dm.album;
 
-import static org.junit.Assert.*;
+import java.util.Set;
 
-import org.junit.Test;
-import org.rookit.dm.track.TypeTrack;
+import org.rookit.dm.artist.Artist;
 
-@SuppressWarnings("javadoc")
-public class TypeTrackTest {
-	
-	@Test
-	public void testTrackClass(){
-		for(TypeTrack t : TypeTrack.values()){
-			assertNotNull(TypeTrack.class.getName()+" "+t.name()+"'s track class is not defined!", t.getTrackClass());
-		}
+/**
+ * This class represents a single artist album, which represents an album
+ * that has a fixed and declared number of authors (e.g. non VA-albums).
+ * 
+ * @author Joao
+ *
+ */
+class SingleArtistAlbum extends AbstractAlbum {
+
+	private static final transient long serialVersionUID = 1L;
+
+	/**
+	 * The constructor has a package-view in order to forbid object creation through
+	 * objects on other packages. In order to create a new object of this type, use the
+	 * dedicated methods on the {@link AlbumFactory} class.
+	 * 
+	 * <p><b>Attention:</b> all the arguments must be previously validated through the {@link AlbumValidator}
+	 * class. Non validated parameters are allowed, but it is highly inadvisable.
+	 * 
+	 * @param name name of the album
+	 * @param type type of release
+	 * @param artists album authors
+	 */
+	SingleArtistAlbum(final String name, final TypeRelease type, final Set<Artist> artists) {
+		super(TypeAlbum.ARTIST, name, type, artists);
 	}
 
+	@Override
+	public String toString() {
+		return getFullTitle();
+	}
 }

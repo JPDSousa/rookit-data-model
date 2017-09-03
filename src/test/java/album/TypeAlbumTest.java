@@ -24,8 +24,7 @@ package album;
 import static org.junit.Assert.*;
 
 import org.junit.Test;
-
-import album.TypeAlbum;
+import org.rookit.dm.album.TypeAlbum;
 
 @SuppressWarnings("javadoc")
 public class TypeAlbumTest {

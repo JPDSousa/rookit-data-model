@@ -35,15 +35,15 @@ import org.apache.commons.lang3.StringUtils;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.rookit.dm.album.Album;
+import org.rookit.dm.album.AlbumFactory;
+import org.rookit.dm.album.TypeRelease;
+import org.rookit.dm.artist.Artist;
+import org.rookit.dm.genre.Genre;
+import org.rookit.dm.track.Track;
 
 import com.google.common.collect.Sets;
 
-import album.Album;
-import album.AlbumFactory;
-import album.TypeRelease;
-import artist.Artist;
-import genre.Genre;
-import track.Track;
 import utils.CoreFactory;
 
 @SuppressWarnings("javadoc")

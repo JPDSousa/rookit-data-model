@@ -19,21 +19,29 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  ******************************************************************************/
-package track;
+package org.rookit.dm.artist;
 
-import static org.junit.Assert.*;
-
-import org.junit.Test;
-import org.rookit.dm.track.TypeTrack;
-
-@SuppressWarnings("javadoc")
-public class TypeTrackTest {
+/**
+ * Interface that stores database fields metadata.
+ * 
+ * @author Joao
+ *
+ */
+public interface DatabaseFields {
+	/**
+	 * Database field name for the artist name
+	 */
+	String NAME = "name";
 	
-	@Test
-	public void testTrackClass(){
-		for(TypeTrack t : TypeTrack.values()){
-			assertNotNull(TypeTrack.class.getName()+" "+t.name()+"'s track class is not defined!", t.getTrackClass());
-		}
-	}
-
+	/**
+	 * Database field name for the related artists
+	 */
+	String RELATED = "related";
+	
+	/**
+	 * database field name for the artist's origin
+	 */
+	String ORIGIN = "origin";
+	
+	String ALIASES = "aliases";
 }

@@ -19,21 +19,27 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  ******************************************************************************/
-package track;
+package org.rookit.dm.genre;
 
-import static org.junit.Assert.*;
+import static org.rookit.dm.genre.DatabaseFields.*;
 
-import org.junit.Test;
-import org.rookit.dm.track.TypeTrack;
+import org.smof.annnotations.ForceInspection;
+import org.smof.annnotations.SmofIndex;
+import org.smof.annnotations.SmofIndexField;
+import org.smof.annnotations.SmofIndexes;
+import org.smof.element.Element;
+import org.smof.index.IndexType;
 
 @SuppressWarnings("javadoc")
-public class TypeTrackTest {
+@SmofIndexes({
+	@SmofIndex(fields = {@SmofIndexField(name = NAME, type = IndexType.ASCENDING)}, unique=true),
+	@SmofIndex(fields = {@SmofIndexField(name = NAME, type = IndexType.DESCENDING)})
+})
+@ForceInspection({DefaultGenre.class})
+public interface Genre extends Element {
 	
-	@Test
-	public void testTrackClass(){
-		for(TypeTrack t : TypeTrack.values()){
-			assertNotNull(TypeTrack.class.getName()+" "+t.name()+"'s track class is not defined!", t.getTrackClass());
-		}
-	}
-
+	public String getName();
+	
+	public String getDescription();
+	public void setDescription(final String description);
 }

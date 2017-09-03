@@ -29,9 +29,9 @@ import java.util.Set;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.rookit.dm.artist.Artist;
+import org.rookit.dm.artist.ArtistFactory;
 
-import artist.Artist;
-import artist.ArtistFactory;
 import utils.CoreFactory;
 
 @SuppressWarnings("javadoc")
