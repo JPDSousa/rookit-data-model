@@ -29,10 +29,10 @@ import java.util.List;
 import java.util.Set;
 
 import org.apache.commons.lang3.StringUtils;
+import org.rookit.utils.print.TypeFormat;
 import org.smof.annnotations.SmofBuilder;
 import org.smof.annnotations.SmofParam;
 
-import print.TypeFormat;
 import utils.PrintUtils;
 
 import static artist.DatabaseFields.*;

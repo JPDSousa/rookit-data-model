@@ -23,8 +23,9 @@ package track;
 
 import java.util.Set;
 
+import org.rookit.utils.print.TypeFormat;
+
 import artist.Artist;
-import print.TypeFormat;
 import utils.PrintUtils;
 
 @SuppressWarnings("javadoc")

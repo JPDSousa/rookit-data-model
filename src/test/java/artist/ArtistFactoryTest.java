@@ -30,10 +30,10 @@ import java.util.Set;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.rookit.utils.print.TypeFormat;
 
 import artist.Artist;
 import artist.ArtistFactory;
-import print.TypeFormat;
 import utils.CoreFactory;
 import utils.PrintUtils;
 

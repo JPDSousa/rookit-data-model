@@ -4,12 +4,12 @@ import java.util.Collection;
 
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.logging.log4j.Logger;
+import org.rookit.utils.log.Errors;
+import org.rookit.utils.log.Logs;
+import org.rookit.utils.log.Validator;
 
 import album.AbstractAlbum.Disc;
 import artist.Artist;
-import log.Errors;
-import log.Logs;
-import log.Validator;
 
 @SuppressWarnings("javadoc")
 public class CoreValidator extends Validator {

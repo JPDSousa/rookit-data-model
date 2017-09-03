@@ -24,13 +24,13 @@ package track;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
+import org.rookit.utils.print.TypeFormat;
 import org.smof.annnotations.SmofArray;
 import org.smof.annnotations.SmofObject;
 import org.smof.annnotations.SmofString;
 import org.smof.parsers.SmofType;
 
 import artist.Artist;
-import print.TypeFormat;
 import utils.PrintUtils;
 
 import static track.DatabaseFields.*;

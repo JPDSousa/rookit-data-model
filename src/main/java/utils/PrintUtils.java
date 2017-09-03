@@ -26,10 +26,10 @@ import java.util.stream.StreamSupport;
 
 import org.apache.commons.collections4.IterableUtils;
 import org.extendedStringBuilder.ExtStringBuilder;
+import org.rookit.utils.print.TypeFormat;
 
 import album.Album;
 import artist.Artist;
-import print.TypeFormat;
 import track.Track;
 import track.VersionTrack;
 

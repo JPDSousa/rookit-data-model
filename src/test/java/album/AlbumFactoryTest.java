@@ -27,6 +27,7 @@ import java.util.Set;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.rookit.utils.print.TypeFormat;
 
 import com.google.common.collect.Sets;
 
@@ -35,7 +36,6 @@ import album.AlbumFactory;
 import album.TypeAlbum;
 import album.TypeRelease;
 import artist.Artist;
-import print.TypeFormat;
 import utils.CoreFactory;
 import utils.PrintUtils;
 
