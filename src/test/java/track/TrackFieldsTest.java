@@ -41,6 +41,8 @@ import org.rookit.dm.utils.DMTestFactory;
 
 import com.google.common.collect.Sets;
 
+import utils.TestUtils;
+
 @SuppressWarnings("javadoc")
 public class TrackFieldsTest {
 
@@ -265,7 +267,7 @@ public class TrackFieldsTest {
 	
 	@Test
 	public void testGenres() {
-		factory.testGenres(guineaPig);
+		TestUtils.testGenres(guineaPig);
 	}
 
 	@Test

@@ -45,6 +45,8 @@ import org.rookit.dm.utils.DMTestFactory;
 
 import com.google.common.collect.Sets;
 
+import utils.TestUtils;
+
 @SuppressWarnings("javadoc")
 public class AlbumFieldTest {
 
@@ -320,7 +322,7 @@ public class AlbumFieldTest {
 
 	@Test
 	public void testGenres() {
-		factory.testGenres(guineaPig);
+		TestUtils.testGenres(guineaPig);
 	}
 	
 	@Test

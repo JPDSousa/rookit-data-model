@@ -33,6 +33,8 @@ import org.rookit.dm.artist.Artist;
 import org.rookit.dm.artist.ArtistFactory;
 import org.rookit.dm.utils.DMTestFactory;
 
+import utils.TestUtils;
+
 @SuppressWarnings("javadoc")
 public class ArtistFieldTest {
 
@@ -94,7 +96,7 @@ public class ArtistFieldTest {
 
 	@Test
 	public void testGenres() {
-		factory.testGenres(guineaPig);
+		TestUtils.testGenres(guineaPig);
 	}
 
 }

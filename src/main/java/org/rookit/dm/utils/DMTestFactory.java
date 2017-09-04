@@ -21,8 +21,6 @@
  ******************************************************************************/
 package org.rookit.dm.utils;
 
-import static org.junit.Assert.*;
-
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -41,7 +39,6 @@ import org.rookit.dm.artist.Artist;
 import org.rookit.dm.artist.ArtistFactory;
 import org.rookit.dm.genre.Genre;
 import org.rookit.dm.genre.GenreFactory;
-import org.rookit.dm.genre.Genreable;
 import org.rookit.dm.track.Track;
 import org.rookit.dm.track.TrackFactory;
 import org.rookit.dm.track.TypeTrack;
@@ -157,15 +154,6 @@ public final class DMTestFactory {
 		final Random random = new Random();
 		final int index = random.nextInt(values.length);
 		return values[index];
-	}
-
-	public void testGenres(final Genreable g) {
-		Set<Genre> genres = getRandomSetOfGenres();
-		g.setGenres(Sets.newLinkedHashSet());
-		for(Genre genre : genres){
-			g.addGenre(genre);
-		}
-		assertEquals(genres, g.getGenres());
 	}
 	
 	public Map<String, String> getRandomDataMap(int size){
