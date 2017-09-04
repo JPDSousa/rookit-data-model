@@ -32,22 +32,21 @@ import org.rookit.dm.album.AlbumFactory;
 import org.rookit.dm.album.TypeAlbum;
 import org.rookit.dm.album.TypeRelease;
 import org.rookit.dm.artist.Artist;
+import org.rookit.dm.utils.DMTestFactory;
 import org.rookit.dm.utils.PrintUtils;
 import org.rookit.utils.print.TypeFormat;
 
 import com.google.common.collect.Sets;
 
-import utils.CoreFactory;
-
 @SuppressWarnings("javadoc")
 public class AlbumFactoryTest {
 
-	private static CoreFactory factory;
+	private static DMTestFactory factory;
 	private static AlbumFactory albumFactory;
 
 	@BeforeClass
 	public static void setUpBeforeClass() {
-		factory = CoreFactory.getDefault();
+		factory = DMTestFactory.getDefault();
 		albumFactory = AlbumFactory.getDefault();
 	}
 	

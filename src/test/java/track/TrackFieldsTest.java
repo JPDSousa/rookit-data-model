@@ -37,20 +37,19 @@ import org.rookit.dm.track.Track;
 import org.rookit.dm.track.TrackFactory;
 import org.rookit.dm.track.TrackTitle;
 import org.rookit.dm.track.TypeVersion;
+import org.rookit.dm.utils.DMTestFactory;
 
 import com.google.common.collect.Sets;
-
-import utils.CoreFactory;
 
 @SuppressWarnings("javadoc")
 public class TrackFieldsTest {
 
 	private Track guineaPig;
-	private static CoreFactory factory;
+	private static DMTestFactory factory;
 
 	@BeforeClass
 	public static void initialize() {
-		factory = CoreFactory.getDefault();
+		factory = DMTestFactory.getDefault();
 	}
 
 	@Before

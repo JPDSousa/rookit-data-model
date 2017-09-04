@@ -41,20 +41,19 @@ import org.rookit.dm.album.TypeRelease;
 import org.rookit.dm.artist.Artist;
 import org.rookit.dm.genre.Genre;
 import org.rookit.dm.track.Track;
+import org.rookit.dm.utils.DMTestFactory;
 
 import com.google.common.collect.Sets;
-
-import utils.CoreFactory;
 
 @SuppressWarnings("javadoc")
 public class AlbumFieldTest {
 
 	private Album guineaPig;
-	private static CoreFactory factory;
+	private static DMTestFactory factory;
 
 	@BeforeClass
 	public static void initialize(){
-		factory = CoreFactory.getDefault();
+		factory = DMTestFactory.getDefault();
 	}
 
 	@Before

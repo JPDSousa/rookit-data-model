@@ -19,7 +19,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  ******************************************************************************/
-package utils;
+package org.rookit.dm.utils;
 
 import static org.junit.Assert.*;
 
@@ -50,22 +50,22 @@ import org.rookit.dm.track.TypeVersion;
 import com.google.common.collect.Sets;
 
 @SuppressWarnings("javadoc")
-public final class CoreFactory {
+public final class DMTestFactory {
 
 	public static final Path TEST_RESOURCE = Paths.get("testStore");
 	public static final Path TRACK_RESOURCE = TEST_RESOURCE.resolve("tracks").resolve("unparsed");
 	public static final Path FORMATS = TRACK_RESOURCE.getParent().resolve("testFormats");
 
-	private static CoreFactory factory;
+	private static DMTestFactory factory;
 
-	public static CoreFactory getDefault(){
+	public static DMTestFactory getDefault(){
 		if(factory == null){
-			factory = new CoreFactory();
+			factory = new DMTestFactory();
 		}
 		return factory;
 	}
 	
-	private CoreFactory(){}
+	private DMTestFactory(){}
 
 	public Track getRandomTrack() {
 		final String title = RandomStringUtils.randomAlphabetic(20);

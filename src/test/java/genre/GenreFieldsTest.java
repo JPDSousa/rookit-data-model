@@ -28,18 +28,17 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.rookit.dm.genre.Genre;
 import org.rookit.dm.genre.GenreFactory;
-
-import utils.CoreFactory;
+import org.rookit.dm.utils.DMTestFactory;
 
 @SuppressWarnings("javadoc")
 public class GenreFieldsTest {
 	
-	private static CoreFactory factory;
+	private static DMTestFactory factory;
 	private Genre guineaPig;
 	
 	@BeforeClass
 	public static void initialize(){
-		factory = CoreFactory.getDefault();
+		factory = DMTestFactory.getDefault();
 	}
 	
 	@Before

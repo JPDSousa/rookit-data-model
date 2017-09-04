@@ -31,8 +31,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.rookit.dm.artist.Artist;
 import org.rookit.dm.artist.ArtistFactory;
-
-import utils.CoreFactory;
+import org.rookit.dm.utils.DMTestFactory;
 
 @SuppressWarnings("javadoc")
 public class ArtistFieldTest {
@@ -40,11 +39,11 @@ public class ArtistFieldTest {
 	private Artist guineaPig;
 	
 	private static ArtistFactory artistFactory;
-	private static CoreFactory factory;
+	private static DMTestFactory factory;
 
 	@BeforeClass
 	public static void initialize(){
-		factory = CoreFactory.getDefault();
+		factory = DMTestFactory.getDefault();
 		artistFactory = ArtistFactory.getDefault();
 	}
 

@@ -32,21 +32,20 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.rookit.dm.artist.Artist;
 import org.rookit.dm.artist.ArtistFactory;
+import org.rookit.dm.utils.DMTestFactory;
 import org.rookit.dm.utils.PrintUtils;
 import org.rookit.utils.print.TypeFormat;
-
-import utils.CoreFactory;
 
 @SuppressWarnings("javadoc")
 public class ArtistFactoryTest {
 
 	private static ArtistFactory factory;
-	private static CoreFactory coreFactory;
+	private static DMTestFactory coreFactory;
 	
 	@BeforeClass
 	public static void setUpBeforeClass() {
 		factory = ArtistFactory.getDefault();
-		coreFactory = CoreFactory.getDefault();
+		coreFactory = DMTestFactory.getDefault();
 	}
 
 	@Test
