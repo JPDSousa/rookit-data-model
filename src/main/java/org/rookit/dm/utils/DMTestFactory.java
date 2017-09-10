@@ -52,6 +52,7 @@ public final class DMTestFactory {
 	public static final Path TEST_RESOURCE = Paths.get("testStore");
 	public static final Path TRACK_RESOURCE = TEST_RESOURCE.resolve("tracks").resolve("unparsed");
 	public static final Path FORMATS = TRACK_RESOURCE.getParent().resolve("testFormats");
+	private static final int RANDOM_LENGTH = 999999999;
 
 	private static DMTestFactory factory;
 
@@ -104,7 +105,7 @@ public final class DMTestFactory {
 	public Album getRandomAlbum(){
 		Random random = new Random();
 		final TypeRelease type = TypeRelease.values()[random.nextInt(TypeRelease.values().length)];	
-		final String title = "AlbumTest"+random.nextInt(500);
+		final String title = "AlbumTest"+random.nextInt(RANDOM_LENGTH);
 		final Set<Artist> artists = getRandomSetOfArtists();
 		
 		return AlbumFactory.getDefault().createSingleArtistAlbum(title, type, artists);
@@ -130,7 +131,7 @@ public final class DMTestFactory {
 
 	public Artist getRandomArtist(){
 		Random random = new Random();
-		Artist artist = ArtistFactory.getDefault().createArtist("art"+random.nextInt(500));
+		Artist artist = ArtistFactory.getDefault().createArtist("art"+random.nextInt(RANDOM_LENGTH));
 		return artist;
 	}
 
@@ -145,7 +146,7 @@ public final class DMTestFactory {
 
 	public Genre getRandomGenre(){
 		Random random = new Random();
-		return GenreFactory.getDefault().createGenre("Genre"+random.nextInt(500));
+		return GenreFactory.getDefault().createGenre("Genre"+random.nextInt(RANDOM_LENGTH));
 	}
 	
 	public TypeTrack getRandomTrackType() {
