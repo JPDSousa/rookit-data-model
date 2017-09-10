@@ -77,6 +77,10 @@
 			<groupId>com.github.JPDSousa</groupId>
 			<artifactId>rookit-utils</artifactId>
 		</dependency>
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-text</artifactId>
+		</dependency>
 	</dependencies>
 	<dependencyManagement>
 		<dependencies>
@@ -115,6 +119,11 @@
 				<artifactId>junit</artifactId>
 				<version>4.12</version>
 				<scope>test</scope>
+			</dependency>
+			<dependency>
+				<groupId>org.apache.commons</groupId>
+				<artifactId>commons-text</artifactId>
+				<version>1.1</version>
 			</dependency>
 		</dependencies>
 	</dependencyManagement>

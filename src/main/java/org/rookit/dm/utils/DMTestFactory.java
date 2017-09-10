@@ -31,7 +31,7 @@ import java.util.Map;
 import java.util.Random;
 import java.util.Set;
 
-import org.apache.commons.lang3.RandomStringUtils;
+import org.apache.commons.text.RandomStringGenerator;
 import org.rookit.dm.album.Album;
 import org.rookit.dm.album.AlbumFactory;
 import org.rookit.dm.album.TypeRelease;
@@ -62,10 +62,16 @@ public final class DMTestFactory {
 		return factory;
 	}
 	
-	private DMTestFactory(){}
+	private final RandomStringGenerator randomStringGenerator;
+	
+	private DMTestFactory(){
+		randomStringGenerator = new RandomStringGenerator.Builder()
+				.withinRange('a', 'z')
+				.build();
+	}
 
 	public Track getRandomTrack() {
-		final String title = RandomStringUtils.randomAlphabetic(20);
+		final String title = randomString();
 		return getRandomTrack(title);
 	}
 	
@@ -160,7 +166,7 @@ public final class DMTestFactory {
 		Map<String, String> randomData = new HashMap<>();
 
 		for(int i=0; i<size; i++){
-			randomData.put(RandomStringUtils.randomAlphabetic(20), RandomStringUtils.randomAlphanumeric(20));
+			randomData.put(randomString(), randomString());
 		}
 		return randomData;
 	}
@@ -169,13 +175,13 @@ public final class DMTestFactory {
 		List<String> randomData = new ArrayList<>();
 
 		for(int i=0; i<size; i++){
-			randomData.add(RandomStringUtils.randomAlphabetic(20));
+			randomData.add(randomString());
 		}
 
 		return randomData;
 	}
 
 	public String randomString() {
-		return RandomStringUtils.randomAlphabetic(20);
+		return randomStringGenerator.generate(20);
 	}
 }
