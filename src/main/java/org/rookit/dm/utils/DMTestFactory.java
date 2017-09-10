@@ -31,7 +31,7 @@ import java.util.Map;
 import java.util.Random;
 import java.util.Set;
 
-import org.apache.commons.lang3.RandomStringUtils;
+import org.apache.commons.text.RandomStringGenerator;
 import org.rookit.dm.album.Album;
 import org.rookit.dm.album.AlbumFactory;
 import org.rookit.dm.album.TypeRelease;
@@ -52,6 +52,7 @@ public final class DMTestFactory {
 	public static final Path TEST_RESOURCE = Paths.get("testStore");
 	public static final Path TRACK_RESOURCE = TEST_RESOURCE.resolve("tracks").resolve("unparsed");
 	public static final Path FORMATS = TRACK_RESOURCE.getParent().resolve("testFormats");
+	private static final int RANDOM_LENGTH = 999999999;
 
 	private static DMTestFactory factory;
 
@@ -62,10 +63,16 @@ public final class DMTestFactory {
 		return factory;
 	}
 	
-	private DMTestFactory(){}
+	private final RandomStringGenerator randomStringGenerator;
+	
+	private DMTestFactory(){
+		randomStringGenerator = new RandomStringGenerator.Builder()
+				.withinRange('a', 'z')
+				.build();
+	}
 
 	public Track getRandomTrack() {
-		final String title = RandomStringUtils.randomAlphabetic(20);
+		final String title = randomString();
 		return getRandomTrack(title);
 	}
 	
@@ -98,7 +105,7 @@ public final class DMTestFactory {
 	public Album getRandomAlbum(){
 		Random random = new Random();
 		final TypeRelease type = TypeRelease.values()[random.nextInt(TypeRelease.values().length)];	
-		final String title = "AlbumTest"+random.nextInt(500);
+		final String title = "AlbumTest"+random.nextInt(RANDOM_LENGTH);
 		final Set<Artist> artists = getRandomSetOfArtists();
 		
 		return AlbumFactory.getDefault().createSingleArtistAlbum(title, type, artists);
@@ -124,7 +131,7 @@ public final class DMTestFactory {
 
 	public Artist getRandomArtist(){
 		Random random = new Random();
-		Artist artist = ArtistFactory.getDefault().createArtist("art"+random.nextInt(500));
+		Artist artist = ArtistFactory.getDefault().createArtist("art"+random.nextInt(RANDOM_LENGTH));
 		return artist;
 	}
 
@@ -139,7 +146,7 @@ public final class DMTestFactory {
 
 	public Genre getRandomGenre(){
 		Random random = new Random();
-		return GenreFactory.getDefault().createGenre("Genre"+random.nextInt(500));
+		return GenreFactory.getDefault().createGenre("Genre"+random.nextInt(RANDOM_LENGTH));
 	}
 	
 	public TypeTrack getRandomTrackType() {
@@ -160,7 +167,7 @@ public final class DMTestFactory {
 		Map<String, String> randomData = new HashMap<>();
 
 		for(int i=0; i<size; i++){
-			randomData.put(RandomStringUtils.randomAlphabetic(20), RandomStringUtils.randomAlphanumeric(20));
+			randomData.put(randomString(), randomString());
 		}
 		return randomData;
 	}
@@ -169,13 +176,13 @@ public final class DMTestFactory {
 		List<String> randomData = new ArrayList<>();
 
 		for(int i=0; i<size; i++){
-			randomData.add(RandomStringUtils.randomAlphabetic(20));
+			randomData.add(randomString());
 		}
 
 		return randomData;
 	}
 
 	public String randomString() {
-		return RandomStringUtils.randomAlphabetic(20);
+		return randomStringGenerator.generate(20);
 	}
 }
