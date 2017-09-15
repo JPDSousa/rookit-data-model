@@ -40,6 +40,8 @@ import org.smof.annnotations.SmofString;
 import org.smof.element.AbstractElement;
 import org.smof.parsers.SmofType;
 
+import com.google.common.collect.Sets;
+
 /**
  * Abstract implementation of the {@link Artist} interface. Extend this class
  * in order to create a custom artist type.
@@ -96,6 +98,9 @@ public abstract class AbstractArtist extends AbstractElement implements Extended
 	
 	@SmofString(name = ISNI)
 	private String isni;
+	
+	@SmofString(name = TYPE)
+	private final TypeArtist type;
 		
 	/**
 	 * Abstract constructor. Use this constructor to
@@ -103,16 +108,24 @@ public abstract class AbstractArtist extends AbstractElement implements Extended
 	 * 
 	 * @param artistName artist name
 	 */
-	protected AbstractArtist(String artistName) {
+	protected AbstractArtist(TypeArtist type, String artistName) {
 		VALIDATOR.checkArgumentStringNotEmpty(artistName, "Must specify an artist name");
 		this.artistName = artistName;
-		this.related = new LinkedHashSet<>();
-		this.albuns = new LinkedHashSet<>();
-		this.genres = new LinkedHashSet<>();
+		this.related = Sets.newLinkedHashSet();
+		this.albuns = Sets.newLinkedHashSet();
+		this.genres = Sets.newLinkedHashSet();
 		this.origin = "";
-		this.aliases = new LinkedHashSet<>();
+		this.aliases = Sets.newLinkedHashSet();
+		this.type = type;
+		this.isni = "";
+		this.ipi = "";
 	}
 
+	@Override
+	public final TypeArtist getType() {
+		return type;
+	}
+	
 	@Override
 	public final String getName() {
 		return artistName;
@@ -153,27 +166,34 @@ public abstract class AbstractArtist extends AbstractElement implements Extended
 	@Override
 	public int hashCode() {
 		final int prime = 31;
-		int result = 1;
-		result = prime * result + ((artistName == null) ? 0 : artistName.hashCode());
+		int result = super.hashCode();
+		result = prime * result + artistName.hashCode();
+		result = prime * result + isni.hashCode();
+		result = prime * result + type.hashCode();
 		return result;
 	}
 
 	@Override
-	public boolean equals(final Object obj) {
-		if (this == obj)
+	public boolean equals(Object obj) {
+		if (this == obj) {
 			return true;
-		if (obj == null)
+		}
+		if (!super.equals(obj)) {
 			return false;
-		if (getClass() != obj.getClass())
+		}
+		if (getClass() != obj.getClass()) {
 			return false;
-
-		final Artist other = (Artist) obj;
-		if (artistName == null) {
-			if (other.getName() != null)
-				return false;
-		} else if (!artistName.equalsIgnoreCase(other.getName()))
+		}
+		AbstractArtist other = (AbstractArtist) obj;
+		if (!artistName.equals(other.artistName)) {
 			return false;
-
+		}
+		if (!isni.equals(other.isni)) {
+			return false;
+		}
+		if (type != other.type) {
+			return false;
+		}
 		return true;
 	}
 
@@ -238,6 +258,7 @@ public abstract class AbstractArtist extends AbstractElement implements Extended
 
 	@Override
 	public void setPlays(long plays) {
+		VALIDATOR.checkArgumentPositive(plays, "Plays cannot be negative");
 		this.plays = plays;
 	}
 
@@ -278,6 +299,7 @@ public abstract class AbstractArtist extends AbstractElement implements Extended
 
 	@Override
 	public void setIPI(String ipi) {
+		VALIDATOR.checkArgumentNotNull(ipi, "IPI cannot be null");
 		this.ipi = ipi;
 	}
 
@@ -288,6 +310,7 @@ public abstract class AbstractArtist extends AbstractElement implements Extended
 
 	@Override
 	public void setISNI(String isni) {
+		VALIDATOR.checkArgumentNotNull(isni, "ISNI cannot be null");
 		this.isni = isni;
 	}
 

@@ -31,6 +31,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.rookit.dm.artist.Artist;
 import org.rookit.dm.artist.ArtistFactory;
+import org.rookit.dm.artist.TypeArtist;
 import org.rookit.dm.utils.DMTestFactory;
 
 import utils.TestUtils;
@@ -56,13 +57,18 @@ public class ArtistFieldTest {
 
 	@Test(expected = IllegalArgumentException.class)
 	public void testInvalidArtistException() {
-		guineaPig = artistFactory.createArtist("");
+		guineaPig = artistFactory.createArtist(TypeArtist.GROUP, "");
+	}
+	
+	@Test(expected = IllegalArgumentException.class)
+	public void testInvalidArtistExceptionTypeNull() {
+		guineaPig = artistFactory.createArtist(null, "justaregularname");
 	}
 
 	@Test
 	public void testName() {
 		String testName = "abc";
-		guineaPig = artistFactory.createArtist(testName);
+		guineaPig = artistFactory.createArtist(TypeArtist.GROUP, testName);
 		assertEquals("Name is not being properly assigned!", testName, guineaPig.getName());
 	}
 
@@ -90,8 +96,21 @@ public class ArtistFieldTest {
 	@Test
 	public void testEqualsObject() {
 		String testName = "amithesameastheother";
-		assertTrue("Equals not properly implemented!", artistFactory.createArtist(testName)
-				.equals(artistFactory.createArtist(testName)));
+		final TypeArtist type = TypeArtist.GROUP;
+		final Artist artist1 = artistFactory.createArtist(type, testName);
+		final Artist artist2 = artistFactory.createArtist(type, testName);
+		artist2.setId(artist1.getId());
+		assertEquals(artist1, artist2);
+	}
+	
+	@Test
+	public final void testHashCode() {
+		String testName = "amithesameastheother";
+		final TypeArtist type = TypeArtist.GROUP;
+		final Artist artist1 = artistFactory.createArtist(type, testName);
+		final Artist artist2 = artistFactory.createArtist(type, testName);
+		artist2.setId(artist1.getId());
+		assertEquals(artist1.hashCode(), artist2.hashCode());
 	}
 
 	@Test

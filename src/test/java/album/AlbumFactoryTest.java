@@ -95,10 +95,10 @@ public class AlbumFactoryTest {
 		final String albumArtistsTag = PrintUtils.getIterableAsString(artists, TypeFormat.TAG);
 		final Album album = albumFactory.createSingleArtistAlbum(release.getFormattedName(albumTag), albumArtistsTag);
 		
-		assertEquals("Album type should be: " + TypeAlbum.ARTIST, TypeAlbum.ARTIST, album.getAlbumType());
-		assertEquals("Album title should be: Album Title", albumTag, album.getTitle());
-		assertEquals("Type release should be: " + release.name(), album.getReleaseType(), release);
-		assertEquals("Album artists should be: " + artists.toString(), artists, album.getArtists());
+		assertEquals(TypeAlbum.ARTIST, album.getAlbumType());
+		assertEquals(albumTag, album.getTitle());
+		assertEquals(album.getReleaseType(), release);
+		assertEquals(artists, album.getArtists());
 	}
 	
 	@Test

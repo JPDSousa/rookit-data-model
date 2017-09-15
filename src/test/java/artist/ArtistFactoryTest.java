@@ -23,7 +23,6 @@ package artist;
 
 import static org.junit.Assert.*;
 
-import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
@@ -35,6 +34,8 @@ import org.rookit.dm.artist.ArtistFactory;
 import org.rookit.dm.utils.DMTestFactory;
 import org.rookit.dm.utils.PrintUtils;
 import org.rookit.utils.print.TypeFormat;
+
+import com.google.common.collect.Lists;
 
 @SuppressWarnings("javadoc")
 public class ArtistFactoryTest {
@@ -56,10 +57,10 @@ public class ArtistFactoryTest {
 		
 		for(int i=0; i< artists.size(); i++){
 			if(i < artists.size()/2){
-				feats.add(new ArrayList<>(artists).get(i));
+				feats.add(Lists.newArrayList(artists).get(i));
 			}
 			else{
-				album.add(new ArrayList<>(artists).get(i));
+				album.add(Lists.newArrayList(artists).get(i));
 			}
 		}
 		
@@ -85,22 +86,25 @@ public class ArtistFactoryTest {
 	
 	@Test
 	public void testCreateArtists(){
-		List<Artist> artists = new ArrayList<>(coreFactory.getRandomSetOfArtists());
+		List<Artist> artists = Lists.newArrayList(coreFactory.getRandomSetOfArtists());
 		String[] artistNames = new String[artists.size()];
+		final List<Artist> actual;
 		
 		for(int i=0; i < artists.size(); i++){
 			artistNames[i] = artists.get(i).getName();
 		}
+		actual = Lists.newArrayList(factory.createArtists(artistNames));
 		
 		assertTrue("Empty array as parameter should return an empty set", factory.createArtists(new String[]{}).isEmpty());
-		assertEquals("Method should be able to reverse engineer the to array method.", artists, new ArrayList<>(factory.createArtists(artistNames)));
+		assertEquals("Method should be able to reverse engineer the to array method.", artists, actual);
 	}
 	
 	@Test
 	public void testGetArtistsFromFormat(){
-		Set<Artist> artists = coreFactory.getRandomSetOfArtists();
+		final Set<Artist> expected = coreFactory.getRandomSetOfArtists();
+		final Set<Artist> actual = factory.getArtistsFromFormat(PrintUtils.getIterableAsString(expected, TypeFormat.TITLE));
 		
-		assertEquals("this method should be able to extract artists from formatted string.", artists, factory.getArtistsFromFormat(PrintUtils.getIterableAsString(artists, TypeFormat.TITLE)));
+		assertEquals(expected, actual);
 	}
 	
 	

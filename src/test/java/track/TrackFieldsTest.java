@@ -333,8 +333,6 @@ public class TrackFieldsTest {
 		track1.setId(id);
 		track2.setId(id);
 		assertEquals(track1, track2);
-		track2.setId(new ObjectId());
-		assertNotEquals(track1, track2);
 	}
 	
 	@Test
