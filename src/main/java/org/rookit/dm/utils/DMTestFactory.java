@@ -64,11 +64,13 @@ public final class DMTestFactory {
 	}
 	
 	private final RandomStringGenerator randomStringGenerator;
+	private final TrackFactory trackFactory;
 	
 	private DMTestFactory(){
 		randomStringGenerator = new RandomStringGenerator.Builder()
 				.withinRange('a', 'z')
 				.build();
+		trackFactory = TrackFactory.getDefault();
 	}
 
 	public Track getRandomTrack() {
@@ -84,8 +86,15 @@ public final class DMTestFactory {
 		return createOriginalTrack(title, mainArtists, features, genres);
 	}
 	
+	public final Track getRandomTrack(TypeTrack type) {
+		final String title = randomString();
+		final Track original = getRandomTrack();
+		final TypeVersion versionType = TypeVersion.EXTENDED;
+		return trackFactory.createTrack(type, title, original, versionType);	
+	}
+	
 	public Track createOriginalTrack(String title, Set<Artist> mainArtists, Set<Artist> features, Set<Genre> genres) {
-		final Track track = TrackFactory.getDefault().createOriginalTrack(title);
+		final Track track = trackFactory.createOriginalTrack(title);
 		track.setMainArtists(mainArtists);
 		track.setFeatures(features);
 		track.setGenres(genres);
