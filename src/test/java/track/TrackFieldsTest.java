@@ -36,6 +36,7 @@ import org.rookit.dm.genre.Genre;
 import org.rookit.dm.track.Track;
 import org.rookit.dm.track.TrackFactory;
 import org.rookit.dm.track.TrackTitle;
+import org.rookit.dm.track.TypeTrack;
 import org.rookit.dm.track.TypeVersion;
 import org.rookit.dm.utils.DMTestFactory;
 
@@ -57,6 +58,11 @@ public class TrackFieldsTest {
 	@Before
 	public void createTrack() {
 		guineaPig = factory.getRandomTrack();
+	}
+	
+	@Test
+	public final void testSuspiciousTitleCharSeqs() {
+		assertNotNull(Track.SUSPICIOUS_TITLE_CHARSEQS);
 	}
 
 	@Test
@@ -158,7 +164,35 @@ public class TrackFieldsTest {
 		guineaPig.addFeature(artist);
 	}
 	
-	//TODO test getPath
+	@Test
+	public final void testPlays() {
+		TestUtils.testPlayable(guineaPig);
+	}
+	
+	@Test
+	public final void testExplicit() {
+		guineaPig.setExplicit(true);
+		assertTrue(guineaPig.isExplicit());
+		guineaPig.setExplicit(false);
+		assertFalse(guineaPig.isExplicit());
+	}
+	
+	@Test
+	public final void testTrackType() {
+		for(TypeTrack type : TypeTrack.values()) {
+			assertEquals(type, factory.getRandomTrack(type).getType());
+		}
+	}
+	
+	@Test
+	public final void testToString() {
+		assertEquals(guineaPig.getLongFullTitle().toString(), guineaPig.toString());
+	}
+	
+	@Test
+	public final void testGetPath() {
+		assertNotNull(guineaPig.getPath());
+	}
 
 	@Test
 	public void testSetHiddenTrack() {
@@ -268,6 +302,22 @@ public class TrackFieldsTest {
 	@Test
 	public void testGenres() {
 		TestUtils.testGenres(guineaPig);
+	}
+	
+	@Test
+	public final void testAllGenres() {
+		final Set<Genre> genres = factory.getRandomSetOfGenres();
+		guineaPig.setGenres(genres);
+		assertEquals(genres, guineaPig.getAllGenres());
+	}
+	
+	@Test
+	public final void testEquals() {
+		final Track track1 = factory.getRandomTrack(TypeTrack.ORIGINAL);
+		final Track track2 = factory.getRandomTrack(TypeTrack.VERSION);
+		assertEquals(track1, track1);
+		assertNotEquals(track1, factory.getRandomArtist());
+		assertNotEquals(track1, track2);
 	}
 
 	@Test
