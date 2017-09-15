@@ -26,6 +26,7 @@ import static org.rookit.dm.artist.DatabaseFields.*;
 import java.util.Set;
 
 import org.rookit.dm.genre.Genreable;
+import org.rookit.dm.playable.Playable;
 import org.smof.annnotations.ForceInspection;
 import org.smof.annnotations.SmofIndex;
 import org.smof.annnotations.SmofIndexField;
@@ -46,7 +47,7 @@ import org.smof.index.IndexType;
 	@SmofIndex(fields = {@SmofIndexField(name = NAME, type = IndexType.TEXT)}),
 })
 @ForceInspection({DefaultArtist.class})
-public interface Artist extends Genreable, Element {
+public interface Artist extends Genreable, Element, Playable {
 	
 	/**
 	 * String representation of an unknown artist. This constant may be used only
