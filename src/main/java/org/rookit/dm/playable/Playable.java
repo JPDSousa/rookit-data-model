@@ -25,6 +25,7 @@ package org.rookit.dm.playable;
 public interface Playable {
 	
 	String PLAYS = "plays";
+	String DURATION = "duration";
 
 	public long getPlays();
 	public void play();
