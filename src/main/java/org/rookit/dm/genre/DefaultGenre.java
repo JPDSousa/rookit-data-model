@@ -24,6 +24,7 @@ package org.rookit.dm.genre;
 import static org.rookit.dm.genre.DatabaseFields.*;
 
 import org.rookit.dm.utils.CoreValidator;
+import org.smof.annnotations.SmofNumber;
 import org.smof.annnotations.SmofString;
 import org.smof.element.AbstractElement;
 
@@ -35,6 +36,11 @@ class DefaultGenre extends AbstractElement implements Genre {
 	private final String name;
 	@SmofString(name = DESCRIPTION)
 	private String description;
+	
+	@SmofNumber(name = PLAYS)
+	private long plays;
+	@SmofNumber(name = DURATION)
+	private long duration;
 
 	DefaultGenre(String name) {
 		this.name = name;
@@ -85,6 +91,31 @@ class DefaultGenre extends AbstractElement implements Genre {
 		} else if (!name.equals(other.name))
 			return false;
 		return true;
+	}
+
+	@Override
+	public long getPlays() {
+		return plays;
+	}
+
+	@Override
+	public void play() {
+		this.plays++;
+	}
+
+	@Override
+	public void setPlays(long plays) {
+		this.plays = plays;
+	}
+
+	@Override
+	public void setDuration(long duration) {
+		this.duration = duration;
+	}
+
+	@Override
+	public long getDuration() {
+		return duration;
 	}
 	
 }

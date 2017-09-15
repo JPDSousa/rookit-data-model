@@ -28,6 +28,7 @@ import java.util.Set;
 
 import org.rookit.dm.artist.Artist;
 import org.rookit.dm.genre.Genreable;
+import org.rookit.dm.playable.Playable;
 import org.smof.annnotations.ForceInspection;
 import org.smof.annnotations.SmofIndex;
 import org.smof.annnotations.SmofIndexField;
@@ -84,9 +85,6 @@ public interface Track extends Playable, Genreable, Element {
 	
 	void setStorageDateTime(LocalDateTime dateTime);
 	LocalDateTime getStorageDateTime();
-	
-	void setDuration(long duration);
-	long getDuration();
 	
 	void setExplicit(boolean explicit);
 	boolean isExplicit();

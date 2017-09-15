@@ -33,6 +33,7 @@ import org.rookit.dm.genre.Genre;
 import org.rookit.dm.track.Track;
 import org.rookit.dm.utils.CoreValidator;
 import org.smof.annnotations.SmofArray;
+import org.smof.annnotations.SmofNumber;
 import org.smof.annnotations.SmofString;
 import org.smof.element.AbstractElement;
 import org.smof.parsers.SmofType;
@@ -75,6 +76,12 @@ public abstract class AbstractArtist extends AbstractElement implements Extended
 	
 	@SmofArray(name = ALIASES, type = SmofType.STRING)
 	private Set<String> aliases;
+	
+	@SmofNumber(name = DURATION)
+	private long duration;
+	
+	@SmofNumber(name = PLAYS)
+	private long plays;
 		
 	/**
 	 * Abstract constructor. Use this constructor to
@@ -203,6 +210,31 @@ public abstract class AbstractArtist extends AbstractElement implements Extended
 	public void setAliases(Set<String> aliases) {
 		VALIDATOR.checkArgumentNotNull(aliases, "Cannot set a null set of aliases.");
 		this.aliases = aliases;
+	}
+	
+	@Override
+	public long getPlays() {
+		return plays;
+	}
+
+	@Override
+	public void play() {
+		this.plays++;
+	}
+
+	@Override
+	public void setPlays(long plays) {
+		this.plays = plays;
+	}
+
+	@Override
+	public void setDuration(long duration) {
+		this.duration = duration;
+	}
+
+	@Override
+	public long getDuration() {
+		return duration;
 	}
 
 }

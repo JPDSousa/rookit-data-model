@@ -23,6 +23,7 @@ package org.rookit.dm.genre;
 
 import static org.rookit.dm.genre.DatabaseFields.*;
 
+import org.rookit.dm.playable.Playable;
 import org.smof.annnotations.ForceInspection;
 import org.smof.annnotations.SmofIndex;
 import org.smof.annnotations.SmofIndexField;
@@ -36,7 +37,7 @@ import org.smof.index.IndexType;
 	@SmofIndex(fields = {@SmofIndexField(name = NAME, type = IndexType.DESCENDING)})
 })
 @ForceInspection({DefaultGenre.class})
-public interface Genre extends Element {
+public interface Genre extends Element, Playable {
 	
 	public String getName();
 	
