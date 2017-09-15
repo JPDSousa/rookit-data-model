@@ -154,10 +154,10 @@ public final class VersionTrack extends AbstractTrack {
 	public int hashCode() {
 		final int prime = 31;
 		int result = super.hashCode();
-		result = prime * result + ((extraArtists == null) ? 0 : extraArtists.hashCode());
-		result = prime * result + ((original == null) ? 0 : original.hashCode());
-		result = prime * result + ((versionToken == null) ? 0 : versionToken.hashCode());
-		result = prime * result + ((versionType == null) ? 0 : versionType.hashCode());
+		result = prime * result + extraArtists.hashCode();
+		result = prime * result + original.hashCode();
+		result = prime * result + versionToken.hashCode();
+		result = prime * result + versionType.hashCode();
 		return result;
 	}
 
