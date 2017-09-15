@@ -37,6 +37,7 @@ import org.rookit.dm.album.AlbumFactory;
 import org.rookit.dm.album.TypeRelease;
 import org.rookit.dm.artist.Artist;
 import org.rookit.dm.artist.ArtistFactory;
+import org.rookit.dm.artist.TypeArtist;
 import org.rookit.dm.genre.Genre;
 import org.rookit.dm.genre.GenreFactory;
 import org.rookit.dm.track.Track;
@@ -103,7 +104,7 @@ public final class DMTestFactory {
 	}
 
 	public Set<Track> getRandomSetOfTracks(){
-		Set<Track> tracks = new HashSet<>();
+		Set<Track> tracks = Sets.newLinkedHashSet();
 		Random random = new Random();
 		for(int i=0; i<random.nextInt(19)+1; i++){
 			tracks.add(getRandomTrack());
@@ -121,7 +122,7 @@ public final class DMTestFactory {
 	}
 
 	public Set<Album> getRandomSetOfAlbuns(){
-		Set<Album> albuns = new HashSet<>();
+		Set<Album> albuns = Sets.newLinkedHashSet();
 		Random random = new Random();
 		for(int i=0; i<random.nextInt(19)+1; i++){
 			albuns.add(getRandomAlbum());
@@ -130,7 +131,7 @@ public final class DMTestFactory {
 	}
 
 	public Set<Artist> getRandomSetOfArtists(){
-		Set<Artist> artists = new HashSet<>();
+		Set<Artist> artists = Sets.newLinkedHashSet();
 		Random random = new Random();
 		for(int i=0; i<random.nextInt(19)+1; i++){
 			artists.add(getRandomArtist());
@@ -140,12 +141,13 @@ public final class DMTestFactory {
 
 	public Artist getRandomArtist(){
 		Random random = new Random();
-		Artist artist = ArtistFactory.getDefault().createArtist("art"+random.nextInt(RANDOM_LENGTH));
+		final TypeArtist type = TypeArtist.GROUP;
+		Artist artist = ArtistFactory.getDefault().createArtist(type, "art"+random.nextInt(RANDOM_LENGTH));
 		return artist;
 	}
 
 	public Set<Genre> getRandomSetOfGenres(){
-		Set<Genre> genres = new HashSet<>();
+		Set<Genre> genres = Sets.newLinkedHashSet();
 		Random random = new Random();
 		for(int i=0; i<random.nextInt(19)+1; i++){
 			genres.add(getRandomGenre());

@@ -512,6 +512,7 @@ public abstract class AbstractAlbum extends AbstractElement implements Album {
 
 	@Override
 	public void setPlays(long plays) {
+		VALIDATOR.checkArgumentPositive(plays, "Plays cannot be negative");
 		this.plays = plays;
 	}
 

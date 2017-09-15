@@ -251,6 +251,7 @@ public abstract class AbstractArtist extends AbstractElement implements Extended
 
 	@Override
 	public void setPlays(long plays) {
+		VALIDATOR.checkArgumentPositive(plays, "Plays cannot be negative");
 		this.plays = plays;
 	}
 
@@ -291,6 +292,7 @@ public abstract class AbstractArtist extends AbstractElement implements Extended
 
 	@Override
 	public void setIPI(String ipi) {
+		VALIDATOR.checkArgumentNotNull(ipi, "IPI cannot be null");
 		this.ipi = ipi;
 	}
 
@@ -301,6 +303,7 @@ public abstract class AbstractArtist extends AbstractElement implements Extended
 
 	@Override
 	public void setISNI(String isni) {
+		VALIDATOR.checkArgumentNotNull(isni, "ISNI cannot be null");
 		this.isni = isni;
 	}
 

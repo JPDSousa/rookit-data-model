@@ -105,6 +105,7 @@ class DefaultGenre extends AbstractElement implements Genre {
 
 	@Override
 	public void setPlays(long plays) {
+		VALIDATOR.checkArgumentPositive(plays, "Plays cannot be negative");
 		this.plays = plays;
 	}
 
