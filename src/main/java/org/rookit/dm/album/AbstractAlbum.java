@@ -41,6 +41,7 @@ import org.smof.annnotations.SmofArray;
 import org.smof.annnotations.SmofBuilder;
 import org.smof.annnotations.SmofByte;
 import org.smof.annnotations.SmofDate;
+import org.smof.annnotations.SmofNumber;
 import org.smof.annnotations.SmofObject;
 import org.smof.annnotations.SmofString;
 import org.smof.element.AbstractElement;
@@ -94,6 +95,12 @@ public abstract class AbstractAlbum extends AbstractElement implements Album {
 	 */
 	@SmofByte(name = COVER)
 	private byte[] cover;
+	
+	@SmofNumber(name = DURATION)
+	private long duration;
+	
+	@SmofNumber(name = PLAYS)
+	private long plays;
 
 	/**
 	 * Default constructor for the object. All subclasses should use this constructor in order to create a
@@ -491,6 +498,31 @@ public abstract class AbstractAlbum extends AbstractElement implements Album {
 			}
 		}
 		return null;
+	}
+
+	@Override
+	public long getPlays() {
+		return plays;
+	}
+
+	@Override
+	public void play() {
+		this.plays++;
+	}
+
+	@Override
+	public void setPlays(long plays) {
+		this.plays = plays;
+	}
+
+	@Override
+	public void setDuration(long duration) {
+		this.duration = duration;
+	}
+
+	@Override
+	public long getDuration() {
+		return duration;
 	}
 
 }

@@ -8,6 +8,7 @@ import java.util.Set;
 
 import org.rookit.dm.artist.Artist;
 import org.rookit.dm.genre.Genreable;
+import org.rookit.dm.playable.Playable;
 import org.rookit.dm.track.Track;
 import org.smof.annnotations.ForceInspection;
 import org.smof.annnotations.SmofIndex;
@@ -46,7 +47,7 @@ import org.smof.index.IndexType;
 	@SmofIndex(fields={@SmofIndexField(name = TITLE, type = IndexType.TEXT)})
 })
 @ForceInspection({SingleArtistAlbum.class, VariousArtistAlbum.class})
-public interface Album extends Genreable, Element{
+public interface Album extends Genreable, Element, Playable{
 
 	/**
 	 * Standard nomenclature for a disc.
