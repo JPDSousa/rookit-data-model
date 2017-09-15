@@ -34,8 +34,6 @@ import org.rookit.dm.artist.Artist;
  */
 class SingleArtistAlbum extends AbstractAlbum {
 
-	private static final transient long serialVersionUID = 1L;
-
 	/**
 	 * The constructor has a package-view in order to forbid object creation through
 	 * objects on other packages. In order to create a new object of this type, use the
