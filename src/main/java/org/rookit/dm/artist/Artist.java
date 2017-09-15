@@ -23,6 +23,7 @@ package org.rookit.dm.artist;
 
 import static org.rookit.dm.artist.DatabaseFields.*;
 
+import java.time.LocalDate;
 import java.util.Set;
 
 import org.rookit.dm.genre.Genreable;
@@ -106,4 +107,15 @@ public interface Artist extends Genreable, Element, Playable {
 	
 	public void setAliases(Set<String> aliases);
 
+	public void setBeginDate(LocalDate beginDate);
+	public LocalDate getBeginDate();
+	
+	public void setEndDate(LocalDate endDate);
+	public LocalDate getEndDate();
+	
+	public void setIPI(String ipi);
+	public String getIPI();
+	
+	public void setISNI(String isni);
+	public String getISNI();
 }
