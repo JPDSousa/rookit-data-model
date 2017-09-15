@@ -23,6 +23,7 @@ package org.rookit.dm.artist;
 
 import static org.rookit.dm.artist.DatabaseFields.*;
 
+import java.time.LocalDate;
 import java.util.LinkedHashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -33,6 +34,7 @@ import org.rookit.dm.genre.Genre;
 import org.rookit.dm.track.Track;
 import org.rookit.dm.utils.CoreValidator;
 import org.smof.annnotations.SmofArray;
+import org.smof.annnotations.SmofDate;
 import org.smof.annnotations.SmofNumber;
 import org.smof.annnotations.SmofString;
 import org.smof.element.AbstractElement;
@@ -82,6 +84,12 @@ public abstract class AbstractArtist extends AbstractElement implements Extended
 	
 	@SmofNumber(name = PLAYS)
 	private long plays;
+	
+	@SmofDate(name = BEGIN_DATE)
+	private LocalDate beginDate;
+	
+	@SmofDate(name = END_DATE)
+	private LocalDate endDate;
 		
 	/**
 	 * Abstract constructor. Use this constructor to
@@ -235,6 +243,26 @@ public abstract class AbstractArtist extends AbstractElement implements Extended
 	@Override
 	public long getDuration() {
 		return duration;
+	}
+
+	@Override
+	public LocalDate getBeginDate() {
+		return beginDate;
+	}
+
+	@Override
+	public void setBeginDate(LocalDate beginDate) {
+		this.beginDate = beginDate;
+	}
+
+	@Override
+	public LocalDate getEndDate() {
+		return endDate;
+	}
+
+	@Override
+	public void setEndDate(LocalDate endDate) {
+		this.endDate = endDate;
 	}
 
 }

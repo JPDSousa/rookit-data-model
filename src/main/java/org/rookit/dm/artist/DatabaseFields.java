@@ -44,4 +44,8 @@ public interface DatabaseFields {
 	String ORIGIN = "origin";
 	
 	String ALIASES = "aliases";
+
+	String BEGIN_DATE = "begin_date";
+	
+	String END_DATE = "end_date";
 }
