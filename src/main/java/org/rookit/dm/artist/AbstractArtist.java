@@ -90,6 +90,12 @@ public abstract class AbstractArtist extends AbstractElement implements Extended
 	
 	@SmofDate(name = END_DATE)
 	private LocalDate endDate;
+	
+	@SmofString(name = IPI)
+	private String ipi;
+	
+	@SmofString(name = ISNI)
+	private String isni;
 		
 	/**
 	 * Abstract constructor. Use this constructor to
@@ -263,6 +269,26 @@ public abstract class AbstractArtist extends AbstractElement implements Extended
 	@Override
 	public void setEndDate(LocalDate endDate) {
 		this.endDate = endDate;
+	}
+
+	@Override
+	public String getIPI() {
+		return ipi;
+	}
+
+	@Override
+	public void setIPI(String ipi) {
+		this.ipi = ipi;
+	}
+
+	@Override
+	public String getISNI() {
+		return isni;
+	}
+
+	@Override
+	public void setISNI(String isni) {
+		this.isni = isni;
 	}
 
 }

@@ -112,4 +112,10 @@ public interface Artist extends Genreable, Element, Playable {
 	
 	public void setEndDate(LocalDate endDate);
 	public LocalDate getEndDate();
+	
+	public void setIPI(String ipi);
+	public String getIPI();
+	
+	public void setISNI(String isni);
+	public String getISNI();
 }

@@ -48,4 +48,8 @@ public interface DatabaseFields {
 	String BEGIN_DATE = "begin_date";
 	
 	String END_DATE = "end_date";
+	
+	String IPI = "ipi";
+	
+	String ISNI = "isni";
 }
