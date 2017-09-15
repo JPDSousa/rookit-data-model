@@ -28,6 +28,7 @@ import java.util.Set;
 
 import org.rookit.dm.artist.Artist;
 import org.rookit.dm.genre.Genreable;
+import org.rookit.dm.playable.Playable;
 import org.smof.annnotations.ForceInspection;
 import org.smof.annnotations.SmofIndex;
 import org.smof.annnotations.SmofIndexField;
@@ -35,8 +36,6 @@ import org.smof.annnotations.SmofIndexes;
 import org.smof.element.Element;
 import org.smof.gridfs.SmofGridRef;
 import org.smof.index.IndexType;
-
-import playable.Playable;
 
 @SuppressWarnings("javadoc")
 @SmofIndexes({
