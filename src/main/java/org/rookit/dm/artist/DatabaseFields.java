@@ -28,6 +28,9 @@ package org.rookit.dm.artist;
  *
  */
 public interface DatabaseFields {
+	
+	String TYPE = "type";
+	
 	/**
 	 * Database field name for the artist name
 	 */
@@ -52,4 +55,12 @@ public interface DatabaseFields {
 	String IPI = "ipi";
 	
 	String ISNI = "isni";
+	
+	String GENDER = "gender";
+	
+	String FULL_NAME = "full_name";
+	
+	String MEMBERS = "members";
+	
+	String GROUP_TYPE = "group_type";
 }

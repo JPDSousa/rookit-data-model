@@ -47,7 +47,7 @@ import org.smof.index.IndexType;
 	@SmofIndex(fields = {@SmofIndexField(name = NAME, type = IndexType.ASCENDING)}, unique=true),
 	@SmofIndex(fields = {@SmofIndexField(name = NAME, type = IndexType.TEXT)}),
 })
-@ForceInspection({DefaultArtist.class})
+@ForceInspection({MusicianImpl.class, GroupArtistImpl.class})
 public interface Artist extends Genreable, Element, Playable {
 	
 	/**
@@ -60,6 +60,8 @@ public interface Artist extends Genreable, Element, Playable {
 	 * TODO: Move this constant to a suitable place
 	 */
 	public static final String[] SUSPICIOUS_NAME_CHARSEQS = new String[]{"- ", " -",  "[", "]", "{", "}", "~", "|", "�", ")", "("};
+	
+	public TypeArtist getType();
 	
 	/**
 	 * Returns the artist name

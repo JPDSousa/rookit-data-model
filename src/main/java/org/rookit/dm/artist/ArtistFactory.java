@@ -31,10 +31,13 @@ import java.util.List;
 import java.util.Set;
 
 import org.apache.commons.lang3.StringUtils;
+import org.rookit.dm.utils.CoreValidator;
 import org.rookit.dm.utils.PrintUtils;
 import org.rookit.utils.print.TypeFormat;
 import org.smof.annnotations.SmofBuilder;
 import org.smof.annnotations.SmofParam;
+
+import com.google.common.collect.Sets;
 
 /**
  * Class that provides methods for creating {@link Artist} objects. This class implements
@@ -46,6 +49,8 @@ import org.smof.annnotations.SmofParam;
 public class ArtistFactory {
 
 	private static final String SPLIT_REGEX = "\\s&\\s|,|\\sx\\s|\\sX\\s|\\svs\\s|\\sVs.\\s|\\sVs\\s|\\svs.\\s";
+
+	private static final CoreValidator VALIDATOR = CoreValidator.getDefault();
 	
 	/**
 	 * List of special artist names that are to be interpreted as a single artist
@@ -85,7 +90,8 @@ public class ArtistFactory {
 		}
 		return factory;
 	}
-		
+	
+	
 	private ArtistFactory(){}
 	
 	/**
@@ -94,8 +100,19 @@ public class ArtistFactory {
 	 * @return a new artist with the name passed as parameter
 	 */
 	@SmofBuilder
-	public Artist createArtist(@SmofParam(name = NAME) String artistName) {
-		return new DefaultArtist(artistName);
+	public Artist createArtist(
+			@SmofParam(name = TYPE) TypeArtist type,
+			@SmofParam(name = NAME) String artistName) {
+		final String errMsg = String.valueOf(type) + " is not a valid artist type";
+		VALIDATOR.checkArgumentNotNull(type, errMsg);
+		switch(type) {
+		case GROUP:
+			return new GroupArtistImpl(artistName);
+		case MUSICIAN:
+			return new MusicianImpl(artistName);
+		default:
+			throw new IllegalArgumentException(errMsg);		
+		}
 	}
 	
 	/**
@@ -116,10 +133,10 @@ public class ArtistFactory {
 	}
 
 	public Set<Artist> createArtists(final String[] artistsName){
-		final Set<Artist> artists = new LinkedHashSet<>();
+		final Set<Artist> artists = Sets.newLinkedHashSetWithExpectedSize(artistsName.length);
 	
 		for(String name : artistsName){
-			artists.add(createArtist(name));
+			artists.add(createArtist(TypeArtist.GROUP, name));
 		}
 	
 		return artists;

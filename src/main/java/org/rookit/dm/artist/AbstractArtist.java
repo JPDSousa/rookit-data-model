@@ -40,6 +40,8 @@ import org.smof.annnotations.SmofString;
 import org.smof.element.AbstractElement;
 import org.smof.parsers.SmofType;
 
+import com.google.common.collect.Sets;
+
 /**
  * Abstract implementation of the {@link Artist} interface. Extend this class
  * in order to create a custom artist type.
@@ -96,6 +98,9 @@ public abstract class AbstractArtist extends AbstractElement implements Extended
 	
 	@SmofString(name = ISNI)
 	private String isni;
+	
+	@SmofString(name = TYPE)
+	private final TypeArtist type;
 		
 	/**
 	 * Abstract constructor. Use this constructor to
@@ -103,16 +108,24 @@ public abstract class AbstractArtist extends AbstractElement implements Extended
 	 * 
 	 * @param artistName artist name
 	 */
-	protected AbstractArtist(String artistName) {
+	protected AbstractArtist(TypeArtist type, String artistName) {
 		VALIDATOR.checkArgumentStringNotEmpty(artistName, "Must specify an artist name");
 		this.artistName = artistName;
-		this.related = new LinkedHashSet<>();
-		this.albuns = new LinkedHashSet<>();
-		this.genres = new LinkedHashSet<>();
+		this.related = Sets.newLinkedHashSet();
+		this.albuns = Sets.newLinkedHashSet();
+		this.genres = Sets.newLinkedHashSet();
 		this.origin = "";
-		this.aliases = new LinkedHashSet<>();
+		this.aliases = Sets.newLinkedHashSet();
+		this.type = type;
+		this.isni = "";
+		this.ipi = "";
 	}
 
+	@Override
+	public final TypeArtist getType() {
+		return type;
+	}
+	
 	@Override
 	public final String getName() {
 		return artistName;
