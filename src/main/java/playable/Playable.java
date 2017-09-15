@@ -19,7 +19,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  ******************************************************************************/
-package org.rookit.dm.track;
+package playable;
 
 @SuppressWarnings("javadoc")
 public interface Playable {
@@ -27,8 +27,9 @@ public interface Playable {
 	String PLAYS = "plays";
 
 	public long getPlays();
-	
 	public void play();
-	
 	public void setPlays(long plays);
+	
+	void setDuration(long duration);
+	long getDuration();
 }

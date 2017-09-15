@@ -36,6 +36,8 @@ import org.smof.element.Element;
 import org.smof.gridfs.SmofGridRef;
 import org.smof.index.IndexType;
 
+import playable.Playable;
+
 @SuppressWarnings("javadoc")
 @SmofIndexes({
 	@SmofIndex(fields={@SmofIndexField(name=PATH, type = IndexType.ASCENDING)}, unique = true),
@@ -84,9 +86,6 @@ public interface Track extends Playable, Genreable, Element {
 	
 	void setStorageDateTime(LocalDateTime dateTime);
 	LocalDateTime getStorageDateTime();
-	
-	void setDuration(long duration);
-	long getDuration();
 	
 	void setExplicit(boolean explicit);
 	boolean isExplicit();

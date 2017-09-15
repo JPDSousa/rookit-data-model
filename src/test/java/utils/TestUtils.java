@@ -6,10 +6,11 @@ import static org.junit.Assert.*;
 
 import org.rookit.dm.genre.Genre;
 import org.rookit.dm.genre.Genreable;
-import org.rookit.dm.track.Playable;
 import org.rookit.dm.utils.DMTestFactory;
 
 import com.google.common.collect.Sets;
+
+import playable.Playable;
 
 @SuppressWarnings("javadoc")
 public final class TestUtils {
