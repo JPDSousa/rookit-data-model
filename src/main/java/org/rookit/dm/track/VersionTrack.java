@@ -173,25 +173,13 @@ public final class VersionTrack extends AbstractTrack {
 			return false;
 		}
 		VersionTrack other = (VersionTrack) obj;
-		if (extraArtists == null) {
-			if (other.extraArtists != null) {
-				return false;
-			}
-		} else if (!extraArtists.equals(other.extraArtists)) {
+		if (!extraArtists.equals(other.extraArtists)) {
 			return false;
 		}
-		if (original == null) {
-			if (other.original != null) {
-				return false;
-			}
-		} else if (!original.equals(other.original)) {
+		if (!original.equals(other.original)) {
 			return false;
 		}
-		if (versionToken == null) {
-			if (other.versionToken != null) {
-				return false;
-			}
-		} else if (!versionToken.equals(other.versionToken)) {
+		if (!versionToken.equals(other.versionToken)) {
 			return false;
 		}
 		if (versionType != other.versionType) {
