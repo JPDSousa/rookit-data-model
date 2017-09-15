@@ -166,27 +166,34 @@ public abstract class AbstractArtist extends AbstractElement implements Extended
 	@Override
 	public int hashCode() {
 		final int prime = 31;
-		int result = 1;
-		result = prime * result + ((artistName == null) ? 0 : artistName.hashCode());
+		int result = super.hashCode();
+		result = prime * result + artistName.hashCode();
+		result = prime * result + isni.hashCode();
+		result = prime * result + type.hashCode();
 		return result;
 	}
 
 	@Override
-	public boolean equals(final Object obj) {
-		if (this == obj)
+	public boolean equals(Object obj) {
+		if (this == obj) {
 			return true;
-		if (obj == null)
+		}
+		if (!super.equals(obj)) {
 			return false;
-		if (getClass() != obj.getClass())
+		}
+		if (getClass() != obj.getClass()) {
 			return false;
-
-		final Artist other = (Artist) obj;
-		if (artistName == null) {
-			if (other.getName() != null)
-				return false;
-		} else if (!artistName.equalsIgnoreCase(other.getName()))
+		}
+		AbstractArtist other = (AbstractArtist) obj;
+		if (!artistName.equals(other.artistName)) {
 			return false;
-
+		}
+		if (!isni.equals(other.isni)) {
+			return false;
+		}
+		if (type != other.type) {
+			return false;
+		}
 		return true;
 	}
 
