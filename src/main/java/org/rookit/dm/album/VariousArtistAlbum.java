@@ -29,8 +29,6 @@ import org.rookit.dm.track.Track;
 
 class VariousArtistAlbum extends AbstractAlbum {
 
-	private static final long serialVersionUID = 1L;
-
 	public VariousArtistAlbum(String title, TypeRelease type) {
 		super(TypeAlbum.VA, title, type, null);
 	}
