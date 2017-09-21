@@ -23,14 +23,14 @@ package org.rookit.dm.genre;
 
 import static org.rookit.dm.genre.DatabaseFields.*;
 
-import org.rookit.dm.utils.CoreValidator;
+import org.rookit.dm.utils.DataModelValidator;
 import org.smof.annnotations.SmofBuilder;
 import org.smof.annnotations.SmofParam;
 
 @SuppressWarnings("javadoc")
 public class GenreFactory {
 
-	private static final CoreValidator VALIDATOR = CoreValidator.getDefault();
+	private static final DataModelValidator VALIDATOR = DataModelValidator.getDefault();
 	
 	private static GenreFactory singleton;
 	

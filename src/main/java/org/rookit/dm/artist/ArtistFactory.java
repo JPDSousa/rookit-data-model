@@ -31,7 +31,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.apache.commons.lang3.StringUtils;
-import org.rookit.dm.utils.CoreValidator;
+import org.rookit.dm.utils.DataModelValidator;
 import org.rookit.dm.utils.PrintUtils;
 import org.rookit.utils.print.TypeFormat;
 import org.smof.annnotations.SmofBuilder;
@@ -50,7 +50,7 @@ public class ArtistFactory {
 
 	private static final String SPLIT_REGEX = "\\s&\\s|,|\\sx\\s|\\sX\\s|\\svs\\s|\\sVs.\\s|\\sVs\\s|\\svs.\\s";
 
-	private static final CoreValidator VALIDATOR = CoreValidator.getDefault();
+	private static final DataModelValidator VALIDATOR = DataModelValidator.getDefault();
 	
 	/**
 	 * List of special artist names that are to be interpreted as a single artist

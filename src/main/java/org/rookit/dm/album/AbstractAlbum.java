@@ -36,7 +36,7 @@ import org.apache.commons.lang3.tuple.Pair;
 import org.rookit.dm.artist.Artist;
 import org.rookit.dm.genre.Genre;
 import org.rookit.dm.track.Track;
-import org.rookit.dm.utils.CoreValidator;
+import org.rookit.dm.utils.DataModelValidator;
 import org.smof.annnotations.SmofArray;
 import org.smof.annnotations.SmofBuilder;
 import org.smof.annnotations.SmofByte;
@@ -53,7 +53,7 @@ import org.smof.parsers.SmofType;
  */
 public abstract class AbstractAlbum extends AbstractElement implements Album {
 
-	private static final CoreValidator VALIDATOR = CoreValidator.getDefault();
+	private static final DataModelValidator VALIDATOR = DataModelValidator.getDefault();
 	
 	/** Title of the album */
 	@SmofString(name = TITLE, required = true)

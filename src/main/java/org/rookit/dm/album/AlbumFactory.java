@@ -28,7 +28,7 @@ import java.util.Set;
 import org.apache.commons.lang3.tuple.Pair;
 import org.rookit.dm.artist.Artist;
 import org.rookit.dm.artist.ArtistFactory;
-import org.rookit.dm.utils.CoreValidator;
+import org.rookit.dm.utils.DataModelValidator;
 import org.smof.annnotations.SmofBuilder;
 import org.smof.annnotations.SmofParam;
 
@@ -44,7 +44,7 @@ import com.mpatric.mp3agic.ID3v2;
  */
 public class AlbumFactory {
 
-	private static final CoreValidator VALIDATOR = CoreValidator.getDefault();
+	private static final DataModelValidator VALIDATOR = DataModelValidator.getDefault();
 	
 	private static AlbumFactory factory;
 

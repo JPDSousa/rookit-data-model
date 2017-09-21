@@ -11,15 +11,15 @@ import org.rookit.utils.log.Logs;
 import org.rookit.utils.log.Validator;
 
 @SuppressWarnings("javadoc")
-public class CoreValidator extends Validator {
+public class DataModelValidator extends Validator {
 	
-	private static final CoreValidator SINGLETON = new CoreValidator(Logs.CORE.getLogger());
+	private static final DataModelValidator SINGLETON = new DataModelValidator(Logs.DM.getLogger());
 	
-	public static CoreValidator getDefault() {
+	public static DataModelValidator getDefault() {
 		return SINGLETON;
 	}
 
-	private CoreValidator(Logger logger) {
+	private DataModelValidator(Logger logger) {
 		super(logger);
 	}
 	
