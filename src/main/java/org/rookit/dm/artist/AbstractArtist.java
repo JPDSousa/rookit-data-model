@@ -32,7 +32,7 @@ import java.util.stream.StreamSupport;
 import org.rookit.dm.album.Album;
 import org.rookit.dm.genre.Genre;
 import org.rookit.dm.track.Track;
-import org.rookit.dm.utils.CoreValidator;
+import org.rookit.dm.utils.DataModelValidator;
 import org.smof.annnotations.SmofArray;
 import org.smof.annnotations.SmofDate;
 import org.smof.annnotations.SmofNumber;
@@ -48,7 +48,7 @@ import com.google.common.collect.Sets;
  */
 public abstract class AbstractArtist extends AbstractElement implements ExtendedArtist {
 
-	protected static final CoreValidator VALIDATOR = CoreValidator.getDefault();
+	protected static final DataModelValidator VALIDATOR = DataModelValidator.getDefault();
 	
 	/**
 	 * Artist Name

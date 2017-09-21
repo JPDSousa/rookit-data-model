@@ -23,7 +23,7 @@ package org.rookit.dm.album;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
-import org.rookit.dm.utils.CoreValidator;
+import org.rookit.dm.utils.DataModelValidator;
 
 /**
  * @author Joao
@@ -119,7 +119,7 @@ public enum TypeRelease {
 	 */
 	RARITIES("%s (Rarities)", new String[]{" (Rarities)", "Rarities"});
 	
-	private static final CoreValidator VALIDATOR = CoreValidator.getDefault();
+	private static final DataModelValidator VALIDATOR = DataModelValidator.getDefault();
 	
 	private final String nameFormat;
 	private final String[] tokens;

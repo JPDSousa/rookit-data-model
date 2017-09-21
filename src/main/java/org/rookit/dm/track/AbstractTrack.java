@@ -29,7 +29,7 @@ import java.util.Set;
 
 import org.rookit.dm.artist.Artist;
 import org.rookit.dm.genre.Genre;
-import org.rookit.dm.utils.CoreValidator;
+import org.rookit.dm.utils.DataModelValidator;
 import org.smof.annnotations.SmofArray;
 import org.smof.annnotations.SmofBoolean;
 import org.smof.annnotations.SmofDate;
@@ -43,7 +43,7 @@ import org.smof.parsers.SmofType;
 
 abstract class AbstractTrack extends AbstractElement implements Track {
 
-	protected static final CoreValidator VALIDATOR = CoreValidator.getDefault();
+	protected static final DataModelValidator VALIDATOR = DataModelValidator.getDefault();
 	
 	@SmofString(name = TYPE)
 	private final TypeTrack type;
