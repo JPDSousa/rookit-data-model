@@ -1,4 +1,4 @@
-package utils;
+package org.rookit.dm.utils;
 
 import java.time.LocalDate;
 import java.util.Set;

@@ -19,7 +19,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  ******************************************************************************/
-package track;
+package org.rookit.dm.track;
 
 import static org.junit.Assert.*;
 
@@ -39,10 +39,9 @@ import org.rookit.dm.track.TrackTitle;
 import org.rookit.dm.track.TypeTrack;
 import org.rookit.dm.track.TypeVersion;
 import org.rookit.dm.utils.DMTestFactory;
+import org.rookit.dm.utils.TestUtils;
 
 import com.google.common.collect.Sets;
-
-import utils.TestUtils;
 
 @SuppressWarnings("javadoc")
 public class TrackFieldsTest {

@@ -19,7 +19,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  ******************************************************************************/
-package album;
+package org.rookit.dm.album;
 
 import static org.junit.Assert.*;
 
@@ -42,10 +42,9 @@ import org.rookit.dm.artist.Artist;
 import org.rookit.dm.genre.Genre;
 import org.rookit.dm.track.Track;
 import org.rookit.dm.utils.DMTestFactory;
+import org.rookit.dm.utils.TestUtils;
 
 import com.google.common.collect.Sets;
-
-import utils.TestUtils;
 
 @SuppressWarnings("javadoc")
 public class AlbumFieldTest {
