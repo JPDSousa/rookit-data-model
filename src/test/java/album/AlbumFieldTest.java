@@ -85,6 +85,11 @@ public class AlbumFieldTest {
 	public void testNullAlbumTitle() {
 		guineaPig.setTitle(null);
 	}
+	
+	@Test
+	public final void testPlayable() {
+		TestUtils.testPlayable(guineaPig);
+	}
 
 	@Test
 	public void testArtists() {

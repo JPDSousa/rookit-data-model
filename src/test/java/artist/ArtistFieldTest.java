@@ -92,6 +92,11 @@ public class ArtistFieldTest {
 		guineaPig.setOrigin(testOrigin);
 		assertEquals("Origin is not being properly assigned", testOrigin, guineaPig.getOrigin());
 	}
+	
+	@Test
+	public final void testPlayable() {
+		TestUtils.testPlayable(guineaPig);
+	}
 
 	@Test
 	public void testEqualsObject() {
