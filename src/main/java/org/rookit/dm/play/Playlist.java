@@ -1,8 +1,7 @@
-package org.rookit.dm.playlist;
+package org.rookit.dm.play;
 
 import java.util.stream.Stream;
 
-import org.rookit.dm.playable.Playable;
 import org.rookit.dm.track.Track;
 import org.smof.element.Element;
 
