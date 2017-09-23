@@ -19,45 +19,22 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  ******************************************************************************/
-package track;
+package org.rookit.dm.album;
 
 import static org.junit.Assert.*;
 
 import org.junit.Test;
-import org.rookit.dm.track.TypeTrack;
-
-import static org.rookit.dm.track.TypeTrack.*;
+import org.rookit.dm.album.TypeAlbum;
 
 @SuppressWarnings("javadoc")
-public class TypeTrackTest {
-	
+public class TypeAlbumTest {
+
 	@Test
-	public void testTrackClass(){
-		for(TypeTrack t : values()){
-			assertNotNull(TypeTrack.class.getName()+" "+t.name()+"'s track class is not defined!", t.getTrackClass());
+	public void testAlbumClass(){
+		for(TypeAlbum t : TypeAlbum.values()){
+			final String msg = TypeAlbum.class.getName()+" "+t.name()+"'s track class is not defined!";
+			assertNotNull(msg, t.getAlbumClass());
 		}
-	}
-	
-	@Test
-	public final void testGetByClass() {
-		for(TypeTrack t : values()) {
-			assertEquals(t, getByClass(t.getTrackClass()));
-		}
-	}
-	
-	@Test
-	public final void testGetName() {
-		for(TypeTrack t : values()) {
-			assertNotNull(t.getName());
-		}
-	}
-	
-	@SuppressWarnings("deprecation")
-	@Test
-	public final void testGetByName() {
-		assertEquals(ORIGINAL, getByName("ORIGINAL"));
-		assertEquals(VERSION, getByName("REMIX"));
-		assertEquals(VERSION, getByName("COVER"));
 	}
 
 }

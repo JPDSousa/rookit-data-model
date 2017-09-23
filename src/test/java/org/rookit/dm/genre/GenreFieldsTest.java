@@ -19,7 +19,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  ******************************************************************************/
-package genre;
+package org.rookit.dm.genre;
 
 import static org.junit.Assert.*;
 
@@ -29,8 +29,7 @@ import org.junit.Test;
 import org.rookit.dm.genre.Genre;
 import org.rookit.dm.genre.GenreFactory;
 import org.rookit.dm.utils.DMTestFactory;
-
-import utils.TestUtils;
+import org.rookit.dm.utils.TestUtils;
 
 @SuppressWarnings("javadoc")
 public class GenreFieldsTest {

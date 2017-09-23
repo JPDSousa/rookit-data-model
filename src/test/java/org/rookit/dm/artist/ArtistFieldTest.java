@@ -19,7 +19,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  ******************************************************************************/
-package artist;
+package org.rookit.dm.artist;
 
 import static org.junit.Assert.*;
 
@@ -33,8 +33,7 @@ import org.rookit.dm.artist.Artist;
 import org.rookit.dm.artist.ArtistFactory;
 import org.rookit.dm.artist.TypeArtist;
 import org.rookit.dm.utils.DMTestFactory;
-
-import utils.TestUtils;
+import org.rookit.dm.utils.TestUtils;
 
 @SuppressWarnings("javadoc")
 public class ArtistFieldTest {

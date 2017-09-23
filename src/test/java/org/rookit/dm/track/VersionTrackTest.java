@@ -1,4 +1,4 @@
-package track;
+package org.rookit.dm.track;
 
 import static org.junit.Assert.*;
 
