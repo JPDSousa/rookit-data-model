@@ -101,6 +101,12 @@ public abstract class AbstractAlbum extends AbstractElement implements Album {
 	
 	@SmofNumber(name = PLAYS)
 	private long plays;
+	
+	@SmofNumber(name = SKIPPED)
+	private long skipped;
+	
+	@SmofDate(name = LAST_PLAYED)
+	private LocalDate lastPlayed;
 
 	/**
 	 * Default constructor for the object. All subclasses should use this constructor in order to create a
@@ -524,6 +530,31 @@ public abstract class AbstractAlbum extends AbstractElement implements Album {
 	@Override
 	public long getDuration() {
 		return duration;
+	}
+
+	@Override
+	public LocalDate getLastPlayed() {
+		return lastPlayed;
+	}
+
+	@Override
+	public void setLastPlayed(LocalDate lastPlayed) {
+		this.lastPlayed = lastPlayed;
+	}
+
+	@Override
+	public long getSkipped() {
+		return skipped;
+	}
+
+	@Override
+	public void skip() {
+		skipped++;
+	}
+
+	@Override
+	public void setSkipped(long skipped) {
+		this.skipped = skipped;
 	}
 
 }

@@ -87,6 +87,12 @@ public abstract class AbstractArtist extends AbstractElement implements Extended
 	@SmofNumber(name = PLAYS)
 	private long plays;
 	
+	@SmofNumber(name = SKIPPED)
+	private long skipped;
+	
+	@SmofDate(name = LAST_PLAYED)
+	private LocalDate lastPlayed;
+	
 	@SmofDate(name = BEGIN_DATE)
 	private LocalDate beginDate;
 	
@@ -312,6 +318,31 @@ public abstract class AbstractArtist extends AbstractElement implements Extended
 	public void setISNI(String isni) {
 		VALIDATOR.checkArgumentNotNull(isni, "ISNI cannot be null");
 		this.isni = isni;
+	}
+
+	@Override
+	public LocalDate getLastPlayed() {
+		return lastPlayed;
+	}
+
+	@Override
+	public void setLastPlayed(LocalDate lastPlayed) {
+		this.lastPlayed = lastPlayed;
+	}
+
+	@Override
+	public long getSkipped() {
+		return skipped;
+	}
+
+	@Override
+	public void skip() {
+		skipped++;
+	}
+
+	@Override
+	public void setSkipped(long skipped) {
+		this.skipped = skipped;
 	}
 
 }
