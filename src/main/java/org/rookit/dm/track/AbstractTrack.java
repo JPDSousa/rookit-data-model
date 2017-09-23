@@ -45,7 +45,7 @@ abstract class AbstractTrack extends AbstractPlayable implements Track {
 	@SmofString(name = TYPE)
 	private final TypeTrack type;
 	
-	@SmofObject(name = PATH, required = true)
+	@SmofObject(name = PATH, required = true, preInsert = false)
 	private final SmofGridRef path;
 	
 	@SmofNumber(name = BPM)
