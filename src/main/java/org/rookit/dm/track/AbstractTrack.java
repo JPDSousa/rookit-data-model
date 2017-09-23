@@ -61,6 +61,9 @@ abstract class AbstractTrack extends AbstractElement implements Track {
 	@SmofNumber(name = SKIPPED)
 	private long skipped;
 	
+	@SmofDate(name = LAST_SKIPPED)
+	private LocalDate lastSkipped;
+	
 	@SmofDate(name = LAST_PLAYED)
 	private LocalDate lastPlayed;
 	
@@ -275,6 +278,7 @@ abstract class AbstractTrack extends AbstractElement implements Track {
 	@Override
 	public void skip() {
 		skipped++;
+		setLastSkipped(LocalDate.now());
 	}
 
 	@Override
@@ -282,4 +286,14 @@ abstract class AbstractTrack extends AbstractElement implements Track {
 		this.skipped = skipped;
 	}
 
+	@Override
+	public LocalDate getLastSkipped() {
+		return lastSkipped;
+	}
+
+	@Override
+	public void setLastSkipped(LocalDate lastSkipped) {
+		this.lastSkipped = lastSkipped;
+	}
+	
 }

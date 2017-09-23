@@ -90,6 +90,9 @@ public abstract class AbstractArtist extends AbstractElement implements Extended
 	@SmofNumber(name = SKIPPED)
 	private long skipped;
 	
+	@SmofDate(name = LAST_SKIPPED)
+	private LocalDate lastSkipped;
+	
 	@SmofDate(name = LAST_PLAYED)
 	private LocalDate lastPlayed;
 	
@@ -339,11 +342,22 @@ public abstract class AbstractArtist extends AbstractElement implements Extended
 	@Override
 	public void skip() {
 		skipped++;
+		setLastSkipped(LocalDate.now());
 	}
 
 	@Override
 	public void setSkipped(long skipped) {
 		this.skipped = skipped;
+	}
+
+	@Override
+	public LocalDate getLastSkipped() {
+		return lastSkipped;
+	}
+
+	@Override
+	public void setLastSkipped(LocalDate lastSkipped) {
+		this.lastSkipped = lastSkipped;
 	}
 
 }
