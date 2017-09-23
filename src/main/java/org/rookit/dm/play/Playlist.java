@@ -8,6 +8,16 @@ import org.smof.element.Element;
 @SuppressWarnings("javadoc")
 public interface Playlist extends Element, Playable {
 	
+	/**
+	 * Playlist name
+	 */
+	String NAME = "name";
+	
+	/**
+	 * List of tracks
+	 */
+	String TRACKS = "trakcs";
+	
 	String getName();
 	
 	Stream<Track> streamTracks();
