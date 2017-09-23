@@ -27,7 +27,7 @@ import java.time.LocalDate;
 import java.util.Set;
 
 import org.rookit.dm.genre.Genreable;
-import org.rookit.dm.playable.Playable;
+import org.rookit.dm.play.Playable;
 import org.smof.annnotations.ForceInspection;
 import org.smof.annnotations.SmofIndex;
 import org.smof.annnotations.SmofIndexField;

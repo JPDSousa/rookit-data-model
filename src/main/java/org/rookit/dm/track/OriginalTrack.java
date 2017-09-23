@@ -27,7 +27,6 @@ import java.util.LinkedHashSet;
 import java.util.Set;
 
 import org.rookit.dm.artist.Artist;
-import org.rookit.dm.exceptions.InvalidOperationException;
 import org.smof.annnotations.SmofArray;
 import org.smof.annnotations.SmofString;
 import org.smof.parsers.SmofType;
@@ -100,7 +99,9 @@ final class OriginalTrack extends AbstractTrack {
 
 	@Override
 	public VersionTrack getAsVersionTrack() {
-		throw new InvalidOperationException(getFullTitle() + " is not a version track");
+		VALIDATOR.invalidOperation(getFullTitle() + " is not a version track");
+		//dead code, validator always throws
+		return null;
 	}
 
 	@Override

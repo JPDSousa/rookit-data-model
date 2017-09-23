@@ -28,7 +28,7 @@ import java.util.Set;
 
 import org.rookit.dm.artist.Artist;
 import org.rookit.dm.genre.Genreable;
-import org.rookit.dm.playable.Playable;
+import org.rookit.dm.play.Playable;
 import org.smof.annnotations.ForceInspection;
 import org.smof.annnotations.SmofIndex;
 import org.smof.annnotations.SmofIndexField;
@@ -47,7 +47,6 @@ public interface Track extends Playable, Genreable, Element {
 
 	short MAX_BPM = 400;
 	String[] SUSPICIOUS_TITLE_CHARSEQS = new String[]{"- ", " -",  "[", "]", "_", "{", "}", "~", "|", "�", " vs ", " vs. "};
-	long UNDEF_DURATION = -1;
 	
 	TypeTrack getType();
 	

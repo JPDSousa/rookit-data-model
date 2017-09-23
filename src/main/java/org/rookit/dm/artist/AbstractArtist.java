@@ -31,13 +31,12 @@ import java.util.stream.StreamSupport;
 
 import org.rookit.dm.album.Album;
 import org.rookit.dm.genre.Genre;
+import org.rookit.dm.play.AbstractPlayable;
 import org.rookit.dm.track.Track;
 import org.rookit.dm.utils.DataModelValidator;
 import org.smof.annnotations.SmofArray;
 import org.smof.annnotations.SmofDate;
-import org.smof.annnotations.SmofNumber;
 import org.smof.annnotations.SmofString;
-import org.smof.element.AbstractElement;
 import org.smof.parsers.SmofType;
 
 import com.google.common.collect.Sets;
@@ -46,7 +45,7 @@ import com.google.common.collect.Sets;
  * Abstract implementation of the {@link Artist} interface. Extend this class
  * in order to create a custom artist type.
  */
-public abstract class AbstractArtist extends AbstractElement implements ExtendedArtist {
+public abstract class AbstractArtist extends AbstractPlayable implements ExtendedArtist {
 
 	protected static final DataModelValidator VALIDATOR = DataModelValidator.getDefault();
 	
@@ -80,21 +79,6 @@ public abstract class AbstractArtist extends AbstractElement implements Extended
 	
 	@SmofArray(name = ALIASES, type = SmofType.STRING)
 	private Set<String> aliases;
-	
-	@SmofNumber(name = DURATION)
-	private long duration;
-	
-	@SmofNumber(name = PLAYS)
-	private long plays;
-	
-	@SmofNumber(name = SKIPPED)
-	private long skipped;
-	
-	@SmofDate(name = LAST_SKIPPED)
-	private LocalDate lastSkipped;
-	
-	@SmofDate(name = LAST_PLAYED)
-	private LocalDate lastPlayed;
 	
 	@SmofDate(name = BEGIN_DATE)
 	private LocalDate beginDate;
@@ -254,33 +238,6 @@ public abstract class AbstractArtist extends AbstractElement implements Extended
 		VALIDATOR.checkArgumentNotNull(aliases, "Cannot set a null set of aliases.");
 		this.aliases = aliases;
 	}
-	
-	@Override
-	public long getPlays() {
-		return plays;
-	}
-
-	@Override
-	public void play() {
-		this.plays++;
-		setLastPlayed(LocalDate.now());
-	}
-
-	@Override
-	public void setPlays(long plays) {
-		VALIDATOR.checkArgumentPositive(plays, "Plays cannot be negative");
-		this.plays = plays;
-	}
-
-	@Override
-	public void setDuration(long duration) {
-		this.duration = duration;
-	}
-
-	@Override
-	public long getDuration() {
-		return duration;
-	}
 
 	@Override
 	public LocalDate getBeginDate() {
@@ -322,42 +279,6 @@ public abstract class AbstractArtist extends AbstractElement implements Extended
 	public void setISNI(String isni) {
 		VALIDATOR.checkArgumentNotNull(isni, "ISNI cannot be null");
 		this.isni = isni;
-	}
-
-	@Override
-	public LocalDate getLastPlayed() {
-		return lastPlayed;
-	}
-
-	@Override
-	public void setLastPlayed(LocalDate lastPlayed) {
-		this.lastPlayed = lastPlayed;
-	}
-
-	@Override
-	public long getSkipped() {
-		return skipped;
-	}
-
-	@Override
-	public void skip() {
-		skipped++;
-		setLastSkipped(LocalDate.now());
-	}
-
-	@Override
-	public void setSkipped(long skipped) {
-		this.skipped = skipped;
-	}
-
-	@Override
-	public LocalDate getLastSkipped() {
-		return lastSkipped;
-	}
-
-	@Override
-	public void setLastSkipped(LocalDate lastSkipped) {
-		this.lastSkipped = lastSkipped;
 	}
 
 }

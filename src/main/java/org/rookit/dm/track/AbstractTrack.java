@@ -23,28 +23,24 @@ package org.rookit.dm.track;
 
 import static org.rookit.dm.track.DatabaseFields.*;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
 import org.rookit.dm.artist.Artist;
 import org.rookit.dm.genre.Genre;
-import org.rookit.dm.utils.DataModelValidator;
+import org.rookit.dm.play.AbstractPlayable;
 import org.smof.annnotations.SmofArray;
 import org.smof.annnotations.SmofBoolean;
 import org.smof.annnotations.SmofDate;
 import org.smof.annnotations.SmofNumber;
 import org.smof.annnotations.SmofObject;
 import org.smof.annnotations.SmofString;
-import org.smof.element.AbstractElement;
 import org.smof.gridfs.SmofGridRef;
 import org.smof.gridfs.SmofGridRefFactory;
 import org.smof.parsers.SmofType;
 
-abstract class AbstractTrack extends AbstractElement implements Track {
-
-	protected static final DataModelValidator VALIDATOR = DataModelValidator.getDefault();
+abstract class AbstractTrack extends AbstractPlayable implements Track {
 	
 	@SmofString(name = TYPE)
 	private final TypeTrack type;
@@ -54,18 +50,6 @@ abstract class AbstractTrack extends AbstractElement implements Track {
 	
 	@SmofNumber(name = BPM)
 	private short bpm;
-	
-	@SmofNumber(name = PLAYS)
-	private long plays;
-	
-	@SmofNumber(name = SKIPPED)
-	private long skipped;
-	
-	@SmofDate(name = LAST_SKIPPED)
-	private LocalDate lastSkipped;
-	
-	@SmofDate(name = LAST_PLAYED)
-	private LocalDate lastPlayed;
 	
 	@SmofString(name = LYRICS)
 	private String lyrics;
@@ -79,9 +63,6 @@ abstract class AbstractTrack extends AbstractElement implements Track {
 	@SmofArray(name = PRODUCERS, type = SmofType.OBJECT)
 	private Set<Artist> producers;
 	
-	@SmofNumber(name = DURATION)
-	private long duration;
-	
 	@SmofBoolean(name = EXPLICIT)
 	private boolean explicit;
 
@@ -89,12 +70,12 @@ abstract class AbstractTrack extends AbstractElement implements Track {
 	private LocalDateTime storageDateTime;
 		
 	protected AbstractTrack(TypeTrack type){
+		super();
 		producers = new LinkedHashSet<>();
 		genres = new LinkedHashSet<>();
 		path = SmofGridRefFactory.newEmptyRef();
 		hiddenTrack = "";
 		this.type = type;
-		duration = UNDEF_DURATION;
 	}
 
 	@Override
@@ -117,23 +98,6 @@ abstract class AbstractTrack extends AbstractElement implements Track {
 	public void setGenres(Set<Genre> genres) {
 		VALIDATOR.checkArgumentNotNull(genres, "The genre set cannot be null");
 		this.genres = genres;
-	}
-
-	@Override
-	public long getPlays() {
-		return plays;
-	}
-
-	@Override
-	public void play() {
-		plays++;
-		setLastPlayed(LocalDate.now());
-	}
-
-	@Override
-	public void setPlays(long plays) {
-		VALIDATOR.checkArgumentPositive(plays, "Plays cannot be negative");
-		this.plays = plays;
 	}
 
 	@Override
@@ -210,16 +174,6 @@ abstract class AbstractTrack extends AbstractElement implements Track {
 	}
 
 	@Override
-	public void setDuration(long duration) {
-		this.duration = duration;
-	}
-
-	@Override
-	public long getDuration() {
-		return duration;
-	}
-
-	@Override
 	public void setExplicit(boolean explicit) {
 		this.explicit = explicit;
 	}
@@ -258,42 +212,6 @@ abstract class AbstractTrack extends AbstractElement implements Track {
 	@Override
 	public SmofGridRef getPath() {
 		return path;
-	}
-
-	@Override
-	public LocalDate getLastPlayed() {
-		return lastPlayed;
-	}
-
-	@Override
-	public void setLastPlayed(LocalDate lastPlayed) {
-		this.lastPlayed = lastPlayed;
-	}
-
-	@Override
-	public long getSkipped() {
-		return skipped;
-	}
-
-	@Override
-	public void skip() {
-		skipped++;
-		setLastSkipped(LocalDate.now());
-	}
-
-	@Override
-	public void setSkipped(long skipped) {
-		this.skipped = skipped;
-	}
-
-	@Override
-	public LocalDate getLastSkipped() {
-		return lastSkipped;
-	}
-
-	@Override
-	public void setLastSkipped(LocalDate lastSkipped) {
-		this.lastSkipped = lastSkipped;
 	}
 	
 }
