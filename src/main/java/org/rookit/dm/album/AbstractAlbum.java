@@ -514,6 +514,7 @@ public abstract class AbstractAlbum extends AbstractElement implements Album {
 	@Override
 	public void play() {
 		this.plays++;
+		setLastPlayed(LocalDate.now());
 	}
 
 	@Override

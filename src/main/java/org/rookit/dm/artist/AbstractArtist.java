@@ -260,6 +260,7 @@ public abstract class AbstractArtist extends AbstractElement implements Extended
 	@Override
 	public void play() {
 		this.plays++;
+		setLastPlayed(LocalDate.now());
 	}
 
 	@Override

@@ -124,6 +124,7 @@ abstract class AbstractTrack extends AbstractElement implements Track {
 	@Override
 	public void play() {
 		plays++;
+		setLastPlayed(LocalDate.now());
 	}
 
 	@Override

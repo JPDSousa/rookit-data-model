@@ -111,6 +111,7 @@ class DefaultGenre extends AbstractElement implements Genre {
 	@Override
 	public void play() {
 		this.plays++;
+		setLastPlayed(LocalDate.now());
 	}
 
 	@Override
