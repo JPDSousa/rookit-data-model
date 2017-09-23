@@ -35,23 +35,22 @@ import java.util.stream.Collectors;
 import org.apache.commons.lang3.tuple.Pair;
 import org.rookit.dm.artist.Artist;
 import org.rookit.dm.genre.Genre;
+import org.rookit.dm.play.AbstractPlayable;
 import org.rookit.dm.track.Track;
 import org.rookit.dm.utils.DataModelValidator;
 import org.smof.annnotations.SmofArray;
 import org.smof.annnotations.SmofBuilder;
 import org.smof.annnotations.SmofByte;
 import org.smof.annnotations.SmofDate;
-import org.smof.annnotations.SmofNumber;
 import org.smof.annnotations.SmofObject;
 import org.smof.annnotations.SmofString;
-import org.smof.element.AbstractElement;
 import org.smof.parsers.SmofType;
 
 /**
  * Abstract implementation of the {@link Album} interface. Extend this class in
  * order to create a custom album type. 
  */
-public abstract class AbstractAlbum extends AbstractElement implements Album {
+public abstract class AbstractAlbum extends AbstractPlayable implements Album {
 
 	private static final DataModelValidator VALIDATOR = DataModelValidator.getDefault();
 	
@@ -95,21 +94,6 @@ public abstract class AbstractAlbum extends AbstractElement implements Album {
 	 */
 	@SmofByte(name = COVER)
 	private byte[] cover;
-	
-	@SmofNumber(name = DURATION)
-	private long duration;
-	
-	@SmofNumber(name = PLAYS)
-	private long plays;
-	
-	@SmofNumber(name = SKIPPED)
-	private long skipped;
-	
-	@SmofDate(name = LAST_SKIPPED)
-	private LocalDate lastSkipped;
-	
-	@SmofDate(name = LAST_PLAYED)
-	private LocalDate lastPlayed;
 
 	/**
 	 * Default constructor for the object. All subclasses should use this constructor in order to create a
@@ -507,69 +491,6 @@ public abstract class AbstractAlbum extends AbstractElement implements Album {
 			}
 		}
 		return null;
-	}
-
-	@Override
-	public long getPlays() {
-		return plays;
-	}
-
-	@Override
-	public void play() {
-		this.plays++;
-		setLastPlayed(LocalDate.now());
-	}
-
-	@Override
-	public void setPlays(long plays) {
-		VALIDATOR.checkArgumentPositive(plays, "Plays cannot be negative");
-		this.plays = plays;
-	}
-
-	@Override
-	public void setDuration(long duration) {
-		this.duration = duration;
-	}
-
-	@Override
-	public long getDuration() {
-		return duration;
-	}
-
-	@Override
-	public LocalDate getLastPlayed() {
-		return lastPlayed;
-	}
-
-	@Override
-	public void setLastPlayed(LocalDate lastPlayed) {
-		this.lastPlayed = lastPlayed;
-	}
-
-	@Override
-	public long getSkipped() {
-		return skipped;
-	}
-
-	@Override
-	public void skip() {
-		skipped++;
-		setLastSkipped(LocalDate.now());
-	}
-
-	@Override
-	public void setSkipped(long skipped) {
-		this.skipped = skipped;
-	}
-
-	@Override
-	public LocalDate getLastSkipped() {
-		return lastSkipped;
-	}
-
-	@Override
-	public void setLastSkipped(LocalDate lastSkipped) {
-		this.lastSkipped = lastSkipped;
 	}
 
 }

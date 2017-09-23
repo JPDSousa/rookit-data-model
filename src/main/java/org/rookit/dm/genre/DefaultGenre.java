@@ -23,15 +23,11 @@ package org.rookit.dm.genre;
 
 import static org.rookit.dm.genre.DatabaseFields.*;
 
-import java.time.LocalDate;
-
+import org.rookit.dm.play.AbstractPlayable;
 import org.rookit.dm.utils.DataModelValidator;
-import org.smof.annnotations.SmofDate;
-import org.smof.annnotations.SmofNumber;
 import org.smof.annnotations.SmofString;
-import org.smof.element.AbstractElement;
 
-class DefaultGenre extends AbstractElement implements Genre {
+class DefaultGenre extends AbstractPlayable implements Genre {
 
 	private static final DataModelValidator VALIDATOR = DataModelValidator.getDefault();
 	
@@ -39,21 +35,6 @@ class DefaultGenre extends AbstractElement implements Genre {
 	private final String name;
 	@SmofString(name = DESCRIPTION)
 	private String description;
-	
-	@SmofNumber(name = PLAYS)
-	private long plays;
-	
-	@SmofNumber(name = SKIPPED)
-	private long skipped;
-	
-	@SmofDate(name = LAST_SKIPPED)
-	private LocalDate lastSkipped;
-	
-	@SmofDate(name = LAST_PLAYED)
-	private LocalDate lastPlayed;
-	
-	@SmofNumber(name = DURATION)
-	private long duration;
 
 	DefaultGenre(String name) {
 		this.name = name;
@@ -105,70 +86,5 @@ class DefaultGenre extends AbstractElement implements Genre {
 			return false;
 		return true;
 	}
-
-	@Override
-	public long getPlays() {
-		return plays;
-	}
-
-	@Override
-	public void play() {
-		this.plays++;
-		setLastPlayed(LocalDate.now());
-	}
-
-	@Override
-	public void setPlays(long plays) {
-		VALIDATOR.checkArgumentPositive(plays, "Plays cannot be negative");
-		this.plays = plays;
-	}
-
-	@Override
-	public void setDuration(long duration) {
-		this.duration = duration;
-	}
-
-	@Override
-	public long getDuration() {
-		return duration;
-	}
-
-	@Override
-	public LocalDate getLastPlayed() {
-		return lastPlayed;
-	}
-
-	@Override
-	public void setLastPlayed(LocalDate lastPlayed) {
-		this.lastPlayed = lastPlayed;
-	}
-
-	@Override
-	public long getSkipped() {
-		return skipped;
-	}
-
-	@Override
-	public void skip() {
-		skipped++;
-		setLastSkipped(LocalDate.now());
-	}
-
-	@Override
-	public void setSkipped(long skipped) {
-		this.skipped = skipped;
-	}
-
-	@Override
-	public LocalDate getLastSkipped() {
-		return lastSkipped;
-	}
-
-	@Override
-	public void setLastSkipped(LocalDate lastSkipped) {
-		this.lastSkipped = lastSkipped;
-	}
-	
-	
 	
 }

@@ -47,7 +47,6 @@ public interface Track extends Playable, Genreable, Element {
 
 	short MAX_BPM = 400;
 	String[] SUSPICIOUS_TITLE_CHARSEQS = new String[]{"- ", " -",  "[", "]", "_", "{", "}", "~", "|", "�", " vs ", " vs. "};
-	long UNDEF_DURATION = -1;
 	
 	TypeTrack getType();
 	
