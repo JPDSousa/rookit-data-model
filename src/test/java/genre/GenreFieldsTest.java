@@ -30,6 +30,8 @@ import org.rookit.dm.genre.Genre;
 import org.rookit.dm.genre.GenreFactory;
 import org.rookit.dm.utils.DMTestFactory;
 
+import utils.TestUtils;
+
 @SuppressWarnings("javadoc")
 public class GenreFieldsTest {
 	
@@ -44,6 +46,11 @@ public class GenreFieldsTest {
 	@Before
 	public void initializeTest(){
 		guineaPig = factory.getRandomGenre();
+	}
+	
+	@Test
+	public final void testPlayable() {
+		TestUtils.testPlayable(guineaPig);
 	}
 
 	@Test

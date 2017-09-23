@@ -165,7 +165,7 @@ public class TrackFieldsTest {
 	}
 	
 	@Test
-	public final void testPlays() {
+	public final void testPlayable() {
 		TestUtils.testPlayable(guineaPig);
 	}
 	

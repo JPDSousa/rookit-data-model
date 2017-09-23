@@ -23,6 +23,7 @@ package org.rookit.dm.track;
 
 import static org.rookit.dm.track.DatabaseFields.*;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.LinkedHashSet;
 import java.util.Set;
@@ -56,6 +57,15 @@ abstract class AbstractTrack extends AbstractElement implements Track {
 	
 	@SmofNumber(name = PLAYS)
 	private long plays;
+	
+	@SmofNumber(name = SKIPPED)
+	private long skipped;
+	
+	@SmofDate(name = LAST_SKIPPED)
+	private LocalDate lastSkipped;
+	
+	@SmofDate(name = LAST_PLAYED)
+	private LocalDate lastPlayed;
 	
 	@SmofString(name = LYRICS)
 	private String lyrics;
@@ -117,6 +127,7 @@ abstract class AbstractTrack extends AbstractElement implements Track {
 	@Override
 	public void play() {
 		plays++;
+		setLastPlayed(LocalDate.now());
 	}
 
 	@Override
@@ -249,4 +260,40 @@ abstract class AbstractTrack extends AbstractElement implements Track {
 		return path;
 	}
 
+	@Override
+	public LocalDate getLastPlayed() {
+		return lastPlayed;
+	}
+
+	@Override
+	public void setLastPlayed(LocalDate lastPlayed) {
+		this.lastPlayed = lastPlayed;
+	}
+
+	@Override
+	public long getSkipped() {
+		return skipped;
+	}
+
+	@Override
+	public void skip() {
+		skipped++;
+		setLastSkipped(LocalDate.now());
+	}
+
+	@Override
+	public void setSkipped(long skipped) {
+		this.skipped = skipped;
+	}
+
+	@Override
+	public LocalDate getLastSkipped() {
+		return lastSkipped;
+	}
+
+	@Override
+	public void setLastSkipped(LocalDate lastSkipped) {
+		this.lastSkipped = lastSkipped;
+	}
+	
 }

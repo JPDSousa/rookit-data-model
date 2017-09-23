@@ -23,7 +23,10 @@ package org.rookit.dm.genre;
 
 import static org.rookit.dm.genre.DatabaseFields.*;
 
+import java.time.LocalDate;
+
 import org.rookit.dm.utils.DataModelValidator;
+import org.smof.annnotations.SmofDate;
 import org.smof.annnotations.SmofNumber;
 import org.smof.annnotations.SmofString;
 import org.smof.element.AbstractElement;
@@ -39,6 +42,16 @@ class DefaultGenre extends AbstractElement implements Genre {
 	
 	@SmofNumber(name = PLAYS)
 	private long plays;
+	
+	@SmofNumber(name = SKIPPED)
+	private long skipped;
+	
+	@SmofDate(name = LAST_SKIPPED)
+	private LocalDate lastSkipped;
+	
+	@SmofDate(name = LAST_PLAYED)
+	private LocalDate lastPlayed;
+	
 	@SmofNumber(name = DURATION)
 	private long duration;
 
@@ -101,6 +114,7 @@ class DefaultGenre extends AbstractElement implements Genre {
 	@Override
 	public void play() {
 		this.plays++;
+		setLastPlayed(LocalDate.now());
 	}
 
 	@Override
@@ -118,5 +132,43 @@ class DefaultGenre extends AbstractElement implements Genre {
 	public long getDuration() {
 		return duration;
 	}
+
+	@Override
+	public LocalDate getLastPlayed() {
+		return lastPlayed;
+	}
+
+	@Override
+	public void setLastPlayed(LocalDate lastPlayed) {
+		this.lastPlayed = lastPlayed;
+	}
+
+	@Override
+	public long getSkipped() {
+		return skipped;
+	}
+
+	@Override
+	public void skip() {
+		skipped++;
+		setLastSkipped(LocalDate.now());
+	}
+
+	@Override
+	public void setSkipped(long skipped) {
+		this.skipped = skipped;
+	}
+
+	@Override
+	public LocalDate getLastSkipped() {
+		return lastSkipped;
+	}
+
+	@Override
+	public void setLastSkipped(LocalDate lastSkipped) {
+		this.lastSkipped = lastSkipped;
+	}
+	
+	
 	
 }
