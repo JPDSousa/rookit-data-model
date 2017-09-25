@@ -15,6 +15,7 @@ import org.smof.annnotations.SmofIndex;
 import org.smof.annnotations.SmofIndexField;
 import org.smof.annnotations.SmofIndexes;
 import org.smof.element.Element;
+import org.smof.gridfs.SmofGridRef;
 import org.smof.index.IndexType;
 
 /**
@@ -48,6 +49,8 @@ import org.smof.index.IndexType;
 })
 @ForceInspection({SingleArtistAlbum.class, VariousArtistAlbum.class})
 public interface Album extends Genreable, Element, Playable{
+	
+	String COVER_BUCKET = "album_covers";
 
 	/**
 	 * Standard nomenclature for a disc.
@@ -269,7 +272,7 @@ public interface Album extends Genreable, Element, Playable{
 	 * 
 	 * @return a byte array representative of the cover image.
 	 */
-	byte[] getCover();
+	SmofGridRef getCover();
 
 	/**
 	 * Searches for the track passed as parameter in the album's tracks.
