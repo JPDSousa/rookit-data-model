@@ -23,7 +23,6 @@ package org.rookit.dm.track;
 
 import static org.rookit.dm.track.DatabaseFields.*;
 
-import java.time.LocalDateTime;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
@@ -32,7 +31,6 @@ import org.rookit.dm.genre.Genre;
 import org.rookit.dm.play.AbstractPlayable;
 import org.smof.annnotations.SmofArray;
 import org.smof.annnotations.SmofBoolean;
-import org.smof.annnotations.SmofDate;
 import org.smof.annnotations.SmofNumber;
 import org.smof.annnotations.SmofObject;
 import org.smof.annnotations.SmofString;
@@ -65,9 +63,6 @@ abstract class AbstractTrack extends AbstractPlayable implements Track {
 	
 	@SmofBoolean(name = EXPLICIT)
 	private boolean explicit;
-
-	@SmofDate(name = STORAGE_DATE_TIME)
-	private LocalDateTime storageDateTime;
 		
 	protected AbstractTrack(TypeTrack type){
 		super();
@@ -155,17 +150,6 @@ abstract class AbstractTrack extends AbstractPlayable implements Track {
 	public void setLyrics(String lyrics) {
 		VALIDATOR.checkArgumentNotNull(lyrics, "The lyrics string cannot be null");
 		this.lyrics = lyrics;
-	}
-
-	@Override
-	public void setStorageDateTime(LocalDateTime dateTime) {
-		VALIDATOR.checkArgumentNotNull(dateTime, "The storage time cannot be null");
-		this.storageDateTime = dateTime;
-	}
-
-	@Override
-	public LocalDateTime getStorageDateTime() {
-		return storageDateTime;
 	}
 	
 	@Override

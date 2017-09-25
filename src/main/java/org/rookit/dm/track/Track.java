@@ -23,7 +23,6 @@ package org.rookit.dm.track;
 
 import static org.rookit.dm.track.DatabaseFields.*;
 
-import java.time.LocalDateTime;
 import java.util.Set;
 
 import org.rookit.dm.artist.Artist;
@@ -83,9 +82,6 @@ public interface Track extends Playable, Genreable, Element {
 	
 	String getLyrics();
 	void setLyrics(String lyrics);
-	
-	void setStorageDateTime(LocalDateTime dateTime);
-	LocalDateTime getStorageDateTime();
 	
 	void setExplicit(boolean explicit);
 	boolean isExplicit();
