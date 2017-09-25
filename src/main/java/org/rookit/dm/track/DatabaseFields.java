@@ -40,7 +40,6 @@ public interface DatabaseFields {
 	String TOKENS = "tokens";
 	String BPM = "bpm";
 	String LYRICS = "lyrics";
-	String STORAGE_DATE_TIME = "store_dt";
 	String DURATION = "duration";
 	String ORIGINAL = "original";
 	String VERSION_TYPE = "version_type";
