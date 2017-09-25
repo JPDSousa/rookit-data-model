@@ -23,6 +23,7 @@ package org.rookit.dm.album;
 
 import static org.rookit.dm.album.DatabaseFields.*;
 
+import java.io.ByteArrayInputStream;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -40,10 +41,11 @@ import org.rookit.dm.track.Track;
 import org.rookit.dm.utils.DataModelValidator;
 import org.smof.annnotations.SmofArray;
 import org.smof.annnotations.SmofBuilder;
-import org.smof.annnotations.SmofByte;
 import org.smof.annnotations.SmofDate;
 import org.smof.annnotations.SmofObject;
 import org.smof.annnotations.SmofString;
+import org.smof.gridfs.SmofGridRef;
+import org.smof.gridfs.SmofGridRefFactory;
 import org.smof.parsers.SmofType;
 
 /**
@@ -90,10 +92,10 @@ public abstract class AbstractAlbum extends AbstractPlayable implements Album {
 	private final TypeRelease releaseType;
 
 	/**
-	 * Byte array containing the image of the album
+	 * Smof GridFS Reference containing the image of the album
 	 */
-	@SmofByte(name = COVER)
-	private byte[] cover;
+	@SmofObject(name = COVER, bucketName = COVER_BUCKET, preInsert = false)
+	private final SmofGridRef cover;
 
 	/**
 	 * Default constructor for the object. All subclasses should use this constructor in order to create a
@@ -110,6 +112,7 @@ public abstract class AbstractAlbum extends AbstractPlayable implements Album {
 		this.artists = artists;
 		discs = new LinkedHashMap<>();
 		genres = new LinkedHashSet<>();
+		cover = SmofGridRefFactory.newEmptyRef();
 	}
 
 	@Override
@@ -337,11 +340,11 @@ public abstract class AbstractAlbum extends AbstractPlayable implements Album {
 	@Override
 	public final void setCover(byte[] image) {
 		VALIDATOR.checkArgumentNotNull(image, "The image must contain data");
-		cover = image;
+		cover.attachByteArray(new ByteArrayInputStream(image));
 	}
 
 	@Override
-	public byte[] getCover() {
+	public SmofGridRef getCover() {
 		return cover;
 	}
 

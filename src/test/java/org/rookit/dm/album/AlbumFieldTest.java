@@ -23,6 +23,7 @@ package org.rookit.dm.album;
 
 import static org.junit.Assert.*;
 
+import java.io.IOException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -367,12 +368,14 @@ public class AlbumFieldTest {
 	}
 
 	@Test
-	public void testCover() {
+	public void testCover() throws IOException {
 		Random random = new Random();
 		byte[] cover = new byte[2048];
+		byte[] actual = new byte[2048];
 		random.nextBytes(cover);
 		guineaPig.setCover(cover);
-		assertEquals("Cover not being properly set!", cover, guineaPig.getCover());
+		guineaPig.getCover().getAttachedByteArray().read(actual);
+		assertArrayEquals("Cover not being properly set!", cover, actual);
 	}
 
 }
