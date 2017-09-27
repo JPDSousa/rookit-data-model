@@ -58,11 +58,6 @@ public class TrackFieldsTest {
 	public void createTrack() {
 		guineaPig = factory.getRandomTrack();
 	}
-	
-	@Test
-	public final void testSuspiciousTitleCharSeqs() {
-		assertNotNull(Track.SUSPICIOUS_TITLE_CHARSEQS);
-	}
 
 	@Test
 	public void testTitle() {
