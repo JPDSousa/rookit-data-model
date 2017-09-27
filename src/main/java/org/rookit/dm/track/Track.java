@@ -52,7 +52,6 @@ public interface Track extends Playable, Genreable, Element {
 	String AUDIO = "audio";
 	
 	short MAX_BPM = 400;
-	String[] SUSPICIOUS_TITLE_CHARSEQS = new String[]{"- ", " -",  "[", "]", "_", "{", "}", "~", "|", "�", " vs ", " vs. "};
 	
 	TypeTrack getType();
 	
