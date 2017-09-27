@@ -44,7 +44,10 @@ import org.smof.index.IndexType;
  * cover artist.
  */
 @SmofIndexes({
-	@SmofIndex(fields = {@SmofIndexField(name = NAME, type = IndexType.ASCENDING)}, unique=true),
+	@SmofIndex(fields = {
+			@SmofIndexField(name = NAME, type = IndexType.ASCENDING),
+			@SmofIndexField(name = TYPE, type = IndexType.ASCENDING)}, 
+			unique=true),
 	@SmofIndex(fields = {@SmofIndexField(name = NAME, type = IndexType.TEXT)}),
 })
 @ForceInspection({MusicianImpl.class, GroupArtistImpl.class})

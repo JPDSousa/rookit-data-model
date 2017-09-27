@@ -38,7 +38,12 @@ import org.smof.index.IndexType;
 
 @SuppressWarnings("javadoc")
 @SmofIndexes({
-	@SmofIndex(fields={@SmofIndexField(name=PATH, type = IndexType.ASCENDING)}, unique = true),
+	@SmofIndex(fields={
+			@SmofIndexField(name=TITLE, type = IndexType.ASCENDING),
+			@SmofIndexField(name=MAIN_ARTISTS, type=IndexType.ASCENDING),
+			@SmofIndexField(name=TYPE, type=IndexType.ASCENDING),
+			@SmofIndexField(name=VERSION_TYPE, type=IndexType.ASCENDING)}, 
+			unique = true),
 	@SmofIndex(fields={@SmofIndexField(name=TITLE, type = IndexType.TEXT)})
 })
 @ForceInspection({OriginalTrack.class, VersionTrack.class})
