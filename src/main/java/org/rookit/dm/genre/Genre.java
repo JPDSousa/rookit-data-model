@@ -33,8 +33,7 @@ import org.smof.index.IndexType;
 
 @SuppressWarnings("javadoc")
 @SmofIndexes({
-	@SmofIndex(fields = {@SmofIndexField(name = NAME, type = IndexType.ASCENDING)}, unique=true),
-	@SmofIndex(fields = {@SmofIndexField(name = NAME, type = IndexType.DESCENDING)})
+	@SmofIndex(fields = {@SmofIndexField(name = NAME, type = IndexType.TEXT)}, unique=true)
 })
 @ForceInspection({DefaultGenre.class})
 public interface Genre extends Element, Playable {
