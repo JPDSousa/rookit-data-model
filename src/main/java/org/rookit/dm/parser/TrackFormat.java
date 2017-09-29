@@ -11,26 +11,26 @@ import org.smof.element.AbstractElement;
 import org.smof.element.Element;
 import org.smof.index.IndexType;
 
-@SuppressWarnings("javadoc")
 @SmofIndexes({
 	@SmofIndex(fields = {@SmofIndexField(name = "value", type = IndexType.TEXT)}, unique = true)
 })
-public class IgnoreField extends AbstractElement implements Element {
-
+@SuppressWarnings("javadoc")
+public class TrackFormat extends AbstractElement implements Element {
+	
 	public static final String VALUE = "value";
 	public static final String OCCURRENCES = "occurrences";
 
-	public static IgnoreField create(String value) {
-		return new IgnoreField(value.toLowerCase(), 1);
+	public static TrackFormat create(String value) {
+		return new TrackFormat(value.toLowerCase(), 1);
 	}
 
-	@SmofString(name=VALUE)
+	@SmofString(name=VALUE, indexKey = "main", indexType = IndexType.TEXT)
 	private final String value;
 	@SmofNumber(name=OCCURRENCES)
 	private final int occurrences;
 
 	@SmofBuilder
-	private IgnoreField(@SmofParam(name=VALUE) String value, 
+	private TrackFormat(@SmofParam(name=VALUE) String value, 
 			@SmofParam(name=OCCURRENCES) Integer occurrences) {
 		this.value = value;
 		this.occurrences = occurrences;
