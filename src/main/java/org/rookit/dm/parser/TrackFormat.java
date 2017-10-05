@@ -12,7 +12,7 @@ import org.smof.element.Element;
 import org.smof.index.IndexType;
 
 @SmofIndexes({
-	@SmofIndex(fields = {@SmofIndexField(name = "value", type = IndexType.TEXT)}, unique = true)
+	@SmofIndex(fields = {@SmofIndexField(name = "value", type = IndexType.ASCENDING)}, unique = true),
 })
 @SuppressWarnings("javadoc")
 public class TrackFormat extends AbstractElement implements Element {

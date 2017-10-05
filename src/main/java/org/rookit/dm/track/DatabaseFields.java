@@ -37,7 +37,6 @@ public interface DatabaseFields {
 	String PRODUCERS = "producers";
 	String VERSION_ARTISTS = "version_artists";
 	String VERSION_TOKEN = "version_token";
-	String TOKENS = "tokens";
 	String BPM = "bpm";
 	String LYRICS = "lyrics";
 	String DURATION = "duration";

@@ -13,7 +13,7 @@ import org.smof.index.IndexType;
 
 @SuppressWarnings("javadoc")
 @SmofIndexes({
-	@SmofIndex(fields = {@SmofIndexField(name = "value", type = IndexType.TEXT)}, unique = true)
+	@SmofIndex(fields = {@SmofIndexField(name = "value", type = IndexType.ASCENDING)}, unique = true)
 })
 public class IgnoreField extends AbstractElement implements Element {
 
