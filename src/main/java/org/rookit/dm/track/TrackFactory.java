@@ -53,7 +53,7 @@ public class TrackFactory {
 	public final Track createTrack(@SmofParam(name = TYPE) TypeTrack type, 
 			@SmofParam(name = TITLE) String title,
 			@SmofParam(name = ORIGINAL) Track original,
-			@SmofParam(name = VERSION_TOKEN) TypeVersion versionType) {
+			@SmofParam(name = VERSION_TYPE) TypeVersion versionType) {
 		if(type == TypeTrack.VERSION) {
 			return new VersionTrack(original, versionType);
 		}
