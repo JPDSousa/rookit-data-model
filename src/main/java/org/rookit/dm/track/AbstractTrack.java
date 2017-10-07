@@ -197,5 +197,23 @@ abstract class AbstractTrack extends AbstractPlayable implements Track {
 	public SmofGridRef getPath() {
 		return path;
 	}
+
+	@Override
+	public void setDuration(long duration) {
+		if(path != null) {
+			path.putMetadataEntry(DURATION, duration);
+		}
+		else {
+			super.setDuration(duration);
+		}
+	}
+
+	@Override
+	public long getDuration() {
+		if(path != null) {
+			return path.getMetadata().getLong(DURATION);
+		}
+		return super.getDuration();
+	}
 	
 }
