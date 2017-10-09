@@ -121,5 +121,15 @@ public class ArtistFieldTest {
 	public void testGenres() {
 		TestUtils.testGenres(guineaPig);
 	}
+	
+	@Test
+	public void testCompareTo() {
+		testCompareTo(factory.getRandomArtist());
+		testCompareTo(artistFactory.createArtist(TypeArtist.GROUP, "someRandomArtist"));
+	}
+	
+	private void testCompareTo(Artist artist) {
+		assertEquals(guineaPig.getName().compareTo(artist.getName()), guineaPig.compareTo(artist));
+	}
 
 }
