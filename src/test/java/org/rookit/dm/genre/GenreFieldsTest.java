@@ -83,5 +83,16 @@ public class GenreFieldsTest {
 		final String testName = "genre";
 		assertTrue(factory.createGenre(testName).equals(factory.createGenre(testName)));
 	}
+	
+	@Test
+	public void testCompareTo() {
+		testCompareTo(guineaPig);
+		testCompareTo(factory.getRandomGenre());
+		testCompareTo(GenreFactory.getDefault().createGenre("someRandomGenre"));
+	}
+	
+	private void testCompareTo(Genre genre) {
+		assertEquals(guineaPig.getName().compareTo(genre.getName()), guineaPig.compareTo(genre));
+	}
 
 }
