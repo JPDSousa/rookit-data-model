@@ -368,4 +368,15 @@ public class TrackFieldsTest {
 		track1.setId(track2.getId());
 		assertEquals(track1, track2);
 	}
+	
+	@Test
+	public void testCompareTo() {
+		testCompareTo(guineaPig);
+		testCompareTo(factory.getRandomTrack());
+		testCompareTo(factory.getRandomTrack("someRandomTrack"));
+	}
+	
+	private void testCompareTo(Track track) {
+		assertEquals(guineaPig.getTitle().toString().compareTo(track.getTitle().toString()), guineaPig.compareTo(track));
+	}
 }
