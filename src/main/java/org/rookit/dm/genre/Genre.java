@@ -36,7 +36,7 @@ import org.smof.index.IndexType;
 	@SmofIndex(fields = {@SmofIndexField(name = NAME, type = IndexType.TEXT)}, unique=true)
 })
 @ForceInspection({DefaultGenre.class})
-public interface Genre extends Element, Playable {
+public interface Genre extends Element, Playable, Comparable<Genre> {
 	
 	public String getName();
 	

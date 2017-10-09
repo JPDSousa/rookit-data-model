@@ -215,5 +215,11 @@ abstract class AbstractTrack extends AbstractPlayable implements Track {
 		}
 		return super.getDuration();
 	}
+
+	@Override
+	public int compareTo(Track o) {
+		final int title = getTitle().toString().compareTo(o.getTitle().toString());
+		return title == 0 ? getIdAsString().compareTo(o.getIdAsString()) : title;
+	}
 	
 }

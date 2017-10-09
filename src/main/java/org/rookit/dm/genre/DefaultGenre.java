@@ -86,5 +86,11 @@ class DefaultGenre extends AbstractPlayable implements Genre {
 			return false;
 		return true;
 	}
+
+	@Override
+	public int compareTo(Genre o) {
+		final int name = getName().compareTo(o.getName());
+		return name == 0 ? getIdAsString().compareTo(o.getIdAsString()) : name;
+	}
 	
 }

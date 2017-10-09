@@ -496,4 +496,12 @@ public abstract class AbstractAlbum extends AbstractPlayable implements Album {
 		return null;
 	}
 
+	@Override
+	public int compareTo(Album o) {
+		final int title = getTitle().compareTo(o.getTitle());
+		return title == 0 ? getIdAsString().compareTo(o.getIdAsString()) : title;
+	}
+	
+	
+
 }

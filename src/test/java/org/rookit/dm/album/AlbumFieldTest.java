@@ -377,5 +377,16 @@ public class AlbumFieldTest {
 		guineaPig.getCover().getAttachedByteArray().read(actual);
 		assertArrayEquals("Cover not being properly set!", cover, actual);
 	}
+	
+	@Test
+	public void testCompareTo() {
+		final AlbumFactory factory = AlbumFactory.getDefault();
+		testCompareTo(AlbumFieldTest.factory.getRandomAlbum());
+		testCompareTo(factory.createVAAlbum("someRandomTitle", TypeRelease.BESTOF));
+	}
+	
+	private void testCompareTo(Album album) {
+		assertEquals(guineaPig.getTitle().compareTo(album.getTitle()), guineaPig.compareTo(album));
+	}
 
 }

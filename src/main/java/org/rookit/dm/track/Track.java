@@ -47,7 +47,7 @@ import org.smof.index.IndexType;
 	@SmofIndex(fields={@SmofIndexField(name=TITLE, type = IndexType.TEXT)})
 })
 @ForceInspection({OriginalTrack.class, VersionTrack.class})
-public interface Track extends Playable, Genreable, Element {
+public interface Track extends Playable, Genreable, Element, Comparable<Track> {
 
 	String AUDIO = "audio";
 	

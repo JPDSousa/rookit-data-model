@@ -281,4 +281,10 @@ public abstract class AbstractArtist extends AbstractPlayable implements Extende
 		this.isni = isni;
 	}
 
+	@Override
+	public int compareTo(Artist o) {
+		final int name = getName().compareTo(o.getName());
+		return name == 0 ? getIdAsString().compareTo(o.getIdAsString()) : name;
+	}
+	
 }
