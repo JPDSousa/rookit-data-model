@@ -48,7 +48,7 @@ import org.smof.index.IndexType;
 	@SmofIndex(fields={@SmofIndexField(name = TITLE, type = IndexType.TEXT)})
 })
 @ForceInspection({SingleArtistAlbum.class, VariousArtistAlbum.class})
-public interface Album extends Genreable, Element, Playable{
+public interface Album extends Genreable, Element, Playable, Comparable<Album>{
 	
 	String COVER_BUCKET = "album_covers";
 
