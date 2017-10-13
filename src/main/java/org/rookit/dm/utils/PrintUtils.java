@@ -32,6 +32,8 @@ import org.rookit.dm.track.Track;
 import org.rookit.dm.track.VersionTrack;
 import org.rookit.utils.print.TypeFormat;
 
+import com.google.common.collect.Iterables;
+
 @SuppressWarnings("javadoc")
 public final class PrintUtils {
 
@@ -79,20 +81,22 @@ public final class PrintUtils {
 	public static String track(Track track){
 		final ExtStringBuilder builder = ExtStringBuilder.create();
 
-		builder.append("Content: ").append(track.getPath().getId()).breakLine()
+		
+		builder.appendIf(track.getPath().getId() != null, "Content: " + track.getPath().getId() + "\n")
 		.append("Type: ").append(track.getType()).breakLine()
-		.append("Id: ").append(track.getIdAsString()).breakLine()
+		.appendIf(track.getIdAsString() != null, "Id: " + track.getIdAsString() + "\n")
 		.append("Title: ").append(track.getTitle().getTitle()).breakLine()
 		.append("Main Artists: ").append(getIterableAsString(track.getMainArtists(), TypeFormat.TAG)).breakLine()
-		.append("Features: ").append(getIterableAsString(track.getFeatures(), TypeFormat.TAG)).breakLine()
-		.append("Producers: ").append(getIterableAsString(track.getProducers(), TypeFormat.TAG)).breakLine()
-		.append("Genres: ").append(getIterableAsString(track.getGenres(), TypeFormat.TAG)).breakLine()
-		.append("HiddenTrack: ").append(track.getHiddenTrack()).breakLine()
-		.append("Plays: ").append(track.getPlays()).breakLine();
+		.appendIf(!Iterables.isEmpty(track.getFeatures()), "Features: " + getIterableAsString(track.getFeatures(), TypeFormat.TAG) + "\n")
+		.appendIf(!Iterables.isEmpty(track.getProducers()), "Producers: " + getIterableAsString(track.getProducers(), TypeFormat.TAG) + "\n")
+		.appendIf(!Iterables.isEmpty(track.getGenres()), "Genres: " + getIterableAsString(track.getGenres(), TypeFormat.TAG) + "\n")
+		.appendIf(!track.getHiddenTrack().isEmpty(), "HiddenTrack: " + track.getHiddenTrack() + "\n")
+		.append("Plays: ").append(track.getPlays()).breakLine()
+		.append("Duration: ").append(track.getDuration()).breakLine();
 		if(track.isVersionTrack()) {
 			final VersionTrack versionTrack = track.getAsVersionTrack();
-			builder.append("\nVersion Type: ").append(versionTrack.getVersionType())
-			.append("\nVersion Artists: ").append(getIterableAsString(versionTrack.getVersionArtists(), TypeFormat.TAG));
+			builder.append("Version Type: ").append(versionTrack.getVersionType()).breakLine()
+			.append("Version Artists: ").append(getIterableAsString(versionTrack.getVersionArtists(), TypeFormat.TAG)).breakLine();
 		}
 		return builder
 				.breakLine()
