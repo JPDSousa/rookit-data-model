@@ -10,6 +10,8 @@ import org.smof.parsers.SmofType;
 
 import com.google.common.collect.Sets;
 
+import static org.rookit.dm.play.DatabaseFields.*;
+
 class PlaylistImpl extends AbstractPlayable implements Playlist {
 	
 	@SmofString(name = NAME)
