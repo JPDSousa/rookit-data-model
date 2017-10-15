@@ -33,6 +33,7 @@ import org.smof.annnotations.SmofIndex;
 import org.smof.annnotations.SmofIndexField;
 import org.smof.annnotations.SmofIndexes;
 import org.smof.element.Element;
+import org.smof.gridfs.SmofGridRef;
 import org.smof.index.IndexType;
 
 
@@ -58,6 +59,8 @@ public interface Artist extends Genreable, Element, Playable, Comparable<Artist>
 	 * when the artist of a track or album is required but unknown.
 	 */
 	String UNKNOWN = "Unknown Artists";
+	
+	String PICTURE_BUCKET = "artist_pictures";
 	
 	/**
 	 * TODO: Move this constant to a suitable place
@@ -123,4 +126,7 @@ public interface Artist extends Genreable, Element, Playable, Comparable<Artist>
 	
 	public void setISNI(String isni);
 	public String getISNI();
+	
+	public SmofGridRef getPicture();
+	public void setPicture(byte[] picture);
 }
