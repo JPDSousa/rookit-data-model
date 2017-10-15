@@ -3,20 +3,17 @@ package org.rookit.dm.play;
 import java.util.stream.Stream;
 
 import org.rookit.dm.track.Track;
+import org.smof.annnotations.SmofIndex;
+import org.smof.annnotations.SmofIndexField;
+import org.smof.annnotations.SmofIndexes;
 import org.smof.element.Element;
+import org.smof.index.IndexType;
 
 @SuppressWarnings("javadoc")
+@SmofIndexes({
+	@SmofIndex(fields = {@SmofIndexField(name = DatabaseFields.NAME, type = IndexType.ASCENDING)}),
+})
 public interface Playlist extends Element, Playable {
-	
-	/**
-	 * Playlist name
-	 */
-	String NAME = "name";
-	
-	/**
-	 * List of tracks
-	 */
-	String TRACKS = "trakcs";
 	
 	String getName();
 	
