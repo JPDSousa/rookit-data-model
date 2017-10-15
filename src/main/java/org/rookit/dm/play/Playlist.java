@@ -30,5 +30,7 @@ public interface Playlist extends Element, Playable {
 	Iterable<Track> getTracks();
 	
 	void addTrack(Track track);
+	
+	boolean removeTrack(Track track);
 
 }
