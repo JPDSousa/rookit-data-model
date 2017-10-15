@@ -63,4 +63,6 @@ public interface DatabaseFields {
 	String MEMBERS = "members";
 	
 	String GROUP_TYPE = "group_type";
+	
+	String PICTURE = "picture";
 }

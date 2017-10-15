@@ -23,6 +23,7 @@ package org.rookit.dm.artist;
 
 import static org.rookit.dm.artist.DatabaseFields.*;
 
+import java.io.ByteArrayInputStream;
 import java.time.LocalDate;
 import java.util.LinkedHashSet;
 import java.util.Set;
@@ -36,7 +37,10 @@ import org.rookit.dm.track.Track;
 import org.rookit.dm.utils.DataModelValidator;
 import org.smof.annnotations.SmofArray;
 import org.smof.annnotations.SmofDate;
+import org.smof.annnotations.SmofObject;
 import org.smof.annnotations.SmofString;
+import org.smof.gridfs.SmofGridRef;
+import org.smof.gridfs.SmofGridRefFactory;
 import org.smof.parsers.SmofType;
 
 import com.google.common.collect.Sets;
@@ -94,6 +98,9 @@ public abstract class AbstractArtist extends AbstractPlayable implements Extende
 	
 	@SmofString(name = TYPE)
 	private final TypeArtist type;
+	
+	@SmofObject(name = PICTURE, bucketName = PICTURE_BUCKET, preInsert = false)
+	private final SmofGridRef picture;
 		
 	/**
 	 * Abstract constructor. Use this constructor to
@@ -112,6 +119,7 @@ public abstract class AbstractArtist extends AbstractPlayable implements Extende
 		this.type = type;
 		this.isni = "";
 		this.ipi = "";
+		this.picture = SmofGridRefFactory.newEmptyRef();
 	}
 
 	@Override
@@ -285,6 +293,16 @@ public abstract class AbstractArtist extends AbstractPlayable implements Extende
 	public int compareTo(Artist o) {
 		final int name = getName().compareTo(o.getName());
 		return name == 0 ? getIdAsString().compareTo(o.getIdAsString()) : name;
+	}
+
+	@Override
+	public SmofGridRef getPicture() {
+		return picture;
+	}
+
+	@Override
+	public void setPicture(byte[] picture) {
+		this.picture.attachByteArray(new ByteArrayInputStream(picture));
 	}
 	
 }
