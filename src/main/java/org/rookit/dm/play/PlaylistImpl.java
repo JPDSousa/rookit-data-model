@@ -10,7 +10,6 @@ import org.smof.parsers.SmofType;
 
 import com.google.common.collect.Sets;
 
-
 class PlaylistImpl extends AbstractPlayable implements Playlist {
 	
 	@SmofString(name = NAME)
@@ -43,6 +42,11 @@ class PlaylistImpl extends AbstractPlayable implements Playlist {
 	public void addTrack(Track track) {
 		VALIDATOR.checkArgumentNotNull(track, "Cannot add a null track");
 		tracks.add(track);
+	}
+
+	@Override
+	public boolean removeTrack(Track track) {
+		return tracks.remove(track);
 	}
 
 }
