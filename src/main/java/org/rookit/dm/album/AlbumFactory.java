@@ -23,6 +23,7 @@ package org.rookit.dm.album;
 
 import static org.rookit.dm.album.DatabaseFields.*;
 
+import java.io.Serializable;
 import java.util.Set;
 
 import org.apache.commons.lang3.tuple.Pair;
@@ -42,10 +43,10 @@ import com.mpatric.mp3agic.ID3v2;
  * @author Joao
  *
  */
-public class AlbumFactory {
+public class AlbumFactory implements Serializable {
 
+	private static final long serialVersionUID = 1L;
 	private static final DataModelValidator VALIDATOR = DataModelValidator.getDefault();
-	
 	private static AlbumFactory factory;
 
 	/**
