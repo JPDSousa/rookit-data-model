@@ -23,13 +23,16 @@ package org.rookit.dm.genre;
 
 import static org.rookit.dm.genre.DatabaseFields.*;
 
+import java.io.Serializable;
+
 import org.rookit.dm.utils.DataModelValidator;
 import org.smof.annnotations.SmofBuilder;
 import org.smof.annnotations.SmofParam;
 
 @SuppressWarnings("javadoc")
-public class GenreFactory {
+public class GenreFactory implements Serializable {
 
+	private static final long serialVersionUID = 1L;
 	private static final DataModelValidator VALIDATOR = DataModelValidator.getDefault();
 	
 	private static GenreFactory singleton;
