@@ -23,14 +23,17 @@ package org.rookit.dm.track;
 
 import static org.rookit.dm.track.DatabaseFields.*;
 
+import java.io.Serializable;
+
 import org.smof.annnotations.SmofBuilder;
 import org.smof.annnotations.SmofParam;
 
 @SuppressWarnings("javadoc")
-public class TrackFactory {
+public class TrackFactory implements Serializable {
 
+	private static final long serialVersionUID = 1L;
+	
 	private static TrackFactory singleton;
-
 
 	public static TrackFactory getDefault(){
 		if(singleton == null) {
