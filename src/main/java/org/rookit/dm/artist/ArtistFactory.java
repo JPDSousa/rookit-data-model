@@ -23,6 +23,7 @@ package org.rookit.dm.artist;
 
 import static org.rookit.dm.artist.DatabaseFields.*;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
@@ -46,8 +47,9 @@ import com.google.common.collect.Sets;
  * @author Joao
  *
  */
-public class ArtistFactory {
+public class ArtistFactory implements Serializable {
 
+	private static final long serialVersionUID = 1L;
 	private static final String SPLIT_REGEX = "\\s&\\s|,|\\sx\\s|\\sX\\s|\\svs\\s|\\sVs.\\s|\\sVs\\s|\\svs.\\s";
 
 	private static final DataModelValidator VALIDATOR = DataModelValidator.getDefault();
