@@ -21,12 +21,16 @@
  ******************************************************************************/
 package org.rookit.dm.play;
 
+import java.io.ByteArrayInputStream;
 import java.util.Set;
 import java.util.stream.Stream;
 
 import org.rookit.dm.track.Track;
 import org.smof.annnotations.SmofArray;
+import org.smof.annnotations.SmofObject;
 import org.smof.annnotations.SmofString;
+import org.smof.gridfs.SmofGridRef;
+import org.smof.gridfs.SmofGridRefFactory;
 import org.smof.parsers.SmofType;
 
 import com.google.common.collect.Sets;
@@ -41,9 +45,13 @@ class PlaylistImpl extends AbstractPlayable implements Playlist {
 	@SmofArray(name = TRACKS, type = SmofType.OBJECT)
 	private final Set<Track> tracks;
 	
+	@SmofObject(name = IMAGE, bucketName = IMAGE_BUCKET, preInsert = false)
+	private final SmofGridRef image;
+	
 	PlaylistImpl(String name) {
 		this.name = name;
 		this.tracks = Sets.newLinkedHashSet();
+		image = SmofGridRefFactory.newEmptyRef();
 	}
 
 	@Override
@@ -70,6 +78,16 @@ class PlaylistImpl extends AbstractPlayable implements Playlist {
 	@Override
 	public boolean removeTrack(Track track) {
 		return tracks.remove(track);
+	}
+
+	@Override
+	public SmofGridRef getImage() {
+		return image;
+	}
+
+	@Override
+	public void setImage(byte[] image) {
+		this.image.attachByteArray(new ByteArrayInputStream(image));
 	}
 
 }
