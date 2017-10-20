@@ -23,12 +23,16 @@ package org.rookit.dm.play;
 
 import static org.rookit.dm.genre.DatabaseFields.NAME;
 
+import java.io.Serializable;
+
 import org.rookit.dm.utils.DataModelValidator;
 import org.smof.annnotations.SmofBuilder;
 import org.smof.annnotations.SmofParam;
 
 @SuppressWarnings("javadoc")
-public class PlaylistFactory {
+public class PlaylistFactory implements Serializable {
+
+	private static final long serialVersionUID = 1L;
 
 	private static final DataModelValidator VALIDATOR = DataModelValidator.getDefault();
 	
