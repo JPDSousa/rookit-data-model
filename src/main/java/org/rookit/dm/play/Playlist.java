@@ -28,6 +28,7 @@ import org.smof.annnotations.SmofIndex;
 import org.smof.annnotations.SmofIndexField;
 import org.smof.annnotations.SmofIndexes;
 import org.smof.element.Element;
+import org.smof.gridfs.SmofGridRef;
 import org.smof.index.IndexType;
 
 @SuppressWarnings("javadoc")
@@ -35,6 +36,8 @@ import org.smof.index.IndexType;
 	@SmofIndex(fields = {@SmofIndexField(name = DatabaseFields.NAME, type = IndexType.ASCENDING)}),
 })
 public interface Playlist extends Element, Playable {
+	
+	String IMAGE_BUCKET = "Playlist_Images";
 	
 	String getName();
 	
@@ -50,5 +53,8 @@ public interface Playlist extends Element, Playable {
 	void addTrack(Track track);
 	
 	boolean removeTrack(Track track);
+	
+	SmofGridRef getImage();
+	void setImage(byte[] image);
 
 }

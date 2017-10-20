@@ -11,6 +11,8 @@ public interface DatabaseFields {
 	/**
 	 * List of tracks
 	 */
-	String TRACKS = "trakcs";
+	String TRACKS = "tracks";
+	
+	String IMAGE = "image";
 	
 }
