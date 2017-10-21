@@ -50,6 +50,7 @@ import com.google.common.collect.Sets;
 public class ArtistFactory implements Serializable {
 
 	private static final long serialVersionUID = 1L;
+	
 	private static final String SPLIT_REGEX = "\\s&\\s|,|\\sx\\s|\\sX\\s|\\svs\\s|\\sVs.\\s|\\sVs\\s|\\svs.\\s";
 
 	private static final DataModelValidator VALIDATOR = DataModelValidator.getDefault();

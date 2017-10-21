@@ -138,9 +138,10 @@ public abstract class AbstractArtist extends AbstractPlayable implements Extende
 	}
 
 	@Override
-	public void addRelatedArtist(Artist artist) {
+	public Void addRelatedArtist(Artist artist) {
 		VALIDATOR.checkArgumentNotNull(artist, "The related artist cannot be null");
 		related.add(artist);
+		return null;
 	}
 
 	@Override
@@ -159,9 +160,10 @@ public abstract class AbstractArtist extends AbstractPlayable implements Extende
 	}
 
 	@Override
-	public void setOrigin(String origin) {
+	public Void setOrigin(String origin) {
 		VALIDATOR.checkArgumentStringNotEmpty(origin, "Must specify an origin");
 		this.origin = origin;
+		return null;
 	}
 
 	@Override
@@ -236,15 +238,17 @@ public abstract class AbstractArtist extends AbstractPlayable implements Extende
 	}
 
 	@Override
-	public void addAlias(String alias) {
+	public Void addAlias(String alias) {
 		VALIDATOR.checkArgumentStringNotEmpty(alias, "Must specify an alias");
 		this.aliases.add(alias);
+		return null;
 	}
 
 	@Override
-	public void setAliases(Set<String> aliases) {
+	public Void setAliases(Set<String> aliases) {
 		VALIDATOR.checkArgumentNotNull(aliases, "Cannot set a null set of aliases.");
 		this.aliases = aliases;
+		return null;
 	}
 
 	@Override
@@ -253,8 +257,9 @@ public abstract class AbstractArtist extends AbstractPlayable implements Extende
 	}
 
 	@Override
-	public void setBeginDate(LocalDate beginDate) {
+	public Void setBeginDate(LocalDate beginDate) {
 		this.beginDate = beginDate;
+		return null;
 	}
 
 	@Override
@@ -263,8 +268,9 @@ public abstract class AbstractArtist extends AbstractPlayable implements Extende
 	}
 
 	@Override
-	public void setEndDate(LocalDate endDate) {
+	public Void setEndDate(LocalDate endDate) {
 		this.endDate = endDate;
+		return null;
 	}
 
 	@Override
@@ -273,9 +279,10 @@ public abstract class AbstractArtist extends AbstractPlayable implements Extende
 	}
 
 	@Override
-	public void setIPI(String ipi) {
+	public Void setIPI(String ipi) {
 		VALIDATOR.checkArgumentNotNull(ipi, "IPI cannot be null");
 		this.ipi = ipi;
+		return null;
 	}
 
 	@Override
@@ -284,9 +291,10 @@ public abstract class AbstractArtist extends AbstractPlayable implements Extende
 	}
 
 	@Override
-	public void setISNI(String isni) {
+	public Void setISNI(String isni) {
 		VALIDATOR.checkArgumentNotNull(isni, "ISNI cannot be null");
 		this.isni = isni;
+		return null;
 	}
 
 	@Override
@@ -301,8 +309,9 @@ public abstract class AbstractArtist extends AbstractPlayable implements Extende
 	}
 
 	@Override
-	public void setPicture(byte[] picture) {
+	public Void setPicture(byte[] picture) {
 		this.picture.attachByteArray(new ByteArrayInputStream(picture));
+		return null;
 	}
 	
 }

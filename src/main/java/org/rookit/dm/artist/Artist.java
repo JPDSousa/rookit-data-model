@@ -52,7 +52,7 @@ import org.smof.index.IndexType;
 	@SmofIndex(fields = {@SmofIndexField(name = NAME, type = IndexType.TEXT)}),
 })
 @ForceInspection({MusicianImpl.class, GroupArtistImpl.class})
-public interface Artist extends Genreable, Element, Playable, Comparable<Artist> {
+public interface Artist extends Genreable, Element, Playable, Comparable<Artist>, ArtistSetter<Void> {
 	
 	/**
 	 * String representation of an unknown artist. This constant may be used only
@@ -82,18 +82,6 @@ public interface Artist extends Genreable, Element, Playable, Comparable<Artist>
 	 * @return set of artists related to this artist
 	 */
 	public Iterable<Artist> getRelatedArtists();
-	/**
-	 * Add the artist passed as parameter to the list of related
-	 * artists. This operation should me mutual in both artist instance
-	 * and related artist instance, e.g.:
-	 * 
-	 * if one object calls <code> artist1.addRelatedArtist(artist2)</code>
-	 * it should also call <code> artist2.addRelatedArtist(artist1)</code>
-	 * in order to create a bidirectional relationship between the two instances.
-	 * 
-	 * @param artist artist to relate this artist with.
-	 */
-	public void addRelatedArtist(final Artist artist);
 	
 	/**
 	 * Returns the origin of this artist (location where the artist came from)
@@ -102,31 +90,15 @@ public interface Artist extends Genreable, Element, Playable, Comparable<Artist>
 	 */
 	public String getOrigin();
 	
-	/**
-	 * Sets a new origin for the artist
-	 * 
-	 * @param origin origin to set
-	 */
-	public void setOrigin(final String origin);
-	
 	public Iterable<String> getAliases();
-	
-	public void addAlias(String alias);
-	
-	public void setAliases(Set<String> aliases);
 
-	public void setBeginDate(LocalDate beginDate);
 	public LocalDate getBeginDate();
 	
-	public void setEndDate(LocalDate endDate);
 	public LocalDate getEndDate();
 	
-	public void setIPI(String ipi);
 	public String getIPI();
 	
-	public void setISNI(String isni);
 	public String getISNI();
 	
 	public SmofGridRef getPicture();
-	public void setPicture(byte[] picture);
 }
