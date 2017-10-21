@@ -33,6 +33,7 @@ import org.smof.annnotations.SmofParam;
 public class GenreFactory implements Serializable {
 
 	private static final long serialVersionUID = 1L;
+	
 	private static final DataModelValidator VALIDATOR = DataModelValidator.getDefault();
 	
 	private static GenreFactory singleton;
