@@ -35,7 +35,7 @@ import org.smof.index.IndexType;
 @SmofIndexes({
 	@SmofIndex(fields = {@SmofIndexField(name = DatabaseFields.NAME, type = IndexType.ASCENDING)}),
 })
-public interface Playlist extends Element, Playable {
+public interface Playlist extends Element, Playable, PlaylistSetter<Void> {
 	
 	String IMAGE_BUCKET = "Playlist_Images";
 	
@@ -49,12 +49,9 @@ public interface Playlist extends Element, Playable {
 	 * @return a list of tracks with all the tracks of the playlist
 	 */
 	Iterable<Track> getTracks();
-	
-	void addTrack(Track track);
-	
+
 	boolean removeTrack(Track track);
 	
 	SmofGridRef getImage();
-	void setImage(byte[] image);
 
 }

@@ -70,9 +70,10 @@ class PlaylistImpl extends AbstractPlayable implements Playlist {
 	}
 
 	@Override
-	public void addTrack(Track track) {
+	public Void addTrack(Track track) {
 		VALIDATOR.checkArgumentNotNull(track, "Cannot add a null track");
 		tracks.add(track);
+		return null;
 	}
 
 	@Override
@@ -86,8 +87,9 @@ class PlaylistImpl extends AbstractPlayable implements Playlist {
 	}
 
 	@Override
-	public void setImage(byte[] image) {
+	public Void setImage(byte[] image) {
 		this.image.attachByteArray(new ByteArrayInputStream(image));
+		return null;
 	}
 
 }
