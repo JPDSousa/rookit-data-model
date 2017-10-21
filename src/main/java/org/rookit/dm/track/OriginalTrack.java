@@ -69,9 +69,10 @@ final class OriginalTrack extends AbstractTrack {
 	}
 
 	@Override
-	public void setMainArtists(Set<Artist> mainArtists) {
+	public Void setMainArtists(Set<Artist> mainArtists) {
 		VALIDATOR.checkArgumentNonEmptyCollection(mainArtists, "The main artists set cannot be neither null or empty");
 		this.mainArtists = mainArtists;
+		return null;
 	}
 
 	@Override
@@ -80,21 +81,24 @@ final class OriginalTrack extends AbstractTrack {
 	}
 
 	@Override
-	public void setFeatures(Set<Artist> features) {
+	public Void setFeatures(Set<Artist> features) {
 		VALIDATOR.checkValidFeatures(features, mainArtists);
 		this.features = features;
+		return null;
 	}
 
 	@Override
-	public void addMainArtist(Artist artist) {
+	public Void addMainArtist(Artist artist) {
 		VALIDATOR.checkArgumentNotNull(artist, "Cannot add a null artist");
 		mainArtists.add(artist);
+		return null;
 	}
 
 	@Override
-	public void addFeature(Artist artist) {
+	public Void addFeature(Artist artist) {
 		VALIDATOR.checkArgumentNotContains(artist, mainArtists, "Cannot add a main artist as feature");
 		features.add(artist);
+		return null;
 	}
 
 	@Override
@@ -115,18 +119,20 @@ final class OriginalTrack extends AbstractTrack {
 	}
 
 	@Override
-	public void setTitle(TrackTitle title) {
+	public Void setTitle(TrackTitle title) {
 		VALIDATOR.checkArgumentNotNull(title, "Title cannot be null");
 		setTitle(title.getTitle());
 		if(title.getHiddenTrack() != null){
 			setHiddenTrack(title.getHiddenTrack());
 		}
+		return null;
 	}
 	
 	@Override
-	public void setTitle(String title) {
+	public Void setTitle(String title) {
 		VALIDATOR.checkArgumentStringNotEmpty(title, "Title cannot be null");
 		this.title = title;
+		return null;
 	}
 
 	@Override

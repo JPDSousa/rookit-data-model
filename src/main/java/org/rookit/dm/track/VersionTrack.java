@@ -116,13 +116,13 @@ public final class VersionTrack extends AbstractTrack {
 	}
 
 	@Override
-	public void setMainArtists(Set<Artist> artists) {
-		original.setMainArtists(artists);
+	public Void setMainArtists(Set<Artist> artists) {
+		return original.setMainArtists(artists);
 	}
 
 	@Override
-	public void addMainArtist(Artist artist) {
-		original.addMainArtist(artist);
+	public Void addMainArtist(Artist artist) {
+		return original.addMainArtist(artist);
 	}
 
 	@Override
@@ -131,23 +131,23 @@ public final class VersionTrack extends AbstractTrack {
 	}
 
 	@Override
-	public void setFeatures(Set<Artist> features) {
-		original.setFeatures(features);
+	public Void setFeatures(Set<Artist> features) {
+		return original.setFeatures(features);
 	}
 
 	@Override
-	public void addFeature(Artist artist) {
-		original.addFeature(artist);
+	public Void addFeature(Artist artist) {
+		return original.addFeature(artist);
 	}
 
 	@Override
-	public void setTitle(String title) {
-		original.setTitle(title);
+	public Void setTitle(String title) {
+		return original.setTitle(title);
 	}
 
 	@Override
-	public void setTitle(TrackTitle title) {
-		original.setTitle(title);
+	public Void setTitle(TrackTitle title) {
+		return original.setTitle(title);
 	}
 
 	@Override

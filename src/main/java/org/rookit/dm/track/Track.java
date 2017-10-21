@@ -23,8 +23,6 @@ package org.rookit.dm.track;
 
 import static org.rookit.dm.track.DatabaseFields.*;
 
-import java.util.Set;
-
 import org.rookit.dm.artist.Artist;
 import org.rookit.dm.genre.Genreable;
 import org.rookit.dm.play.Playable;
@@ -47,7 +45,7 @@ import org.smof.index.IndexType;
 	@SmofIndex(fields={@SmofIndexField(name=TITLE, type = IndexType.TEXT)})
 })
 @ForceInspection({OriginalTrack.class, VersionTrack.class})
-public interface Track extends Playable, Genreable, Element, Comparable<Track> {
+public interface Track extends Playable, Genreable, Element, Comparable<Track>, TrackSetter<Void> {
 
 	String AUDIO = "audio";
 	
@@ -56,38 +54,25 @@ public interface Track extends Playable, Genreable, Element, Comparable<Track> {
 	TypeTrack getType();
 	
 	TrackTitle getTitle();
-	void setTitle(String title);
-	
-	void setTitle(TrackTitle title);
 
 	TrackTitle getLongFullTitle();
 	TrackTitle getFullTitle();
 	
 	Iterable<Artist> getMainArtists();
-	void setMainArtists(Set<Artist> artists);
-	void addMainArtist(Artist artist);
 	
 	Iterable<Artist> getFeatures();
-	void setFeatures(Set<Artist> features);
-	void addFeature(Artist artist);
 	
-	void setHiddenTrack(String hiddenTrack);
 	String getHiddenTrack();
 	
-	void setProducers(Set<Artist> producer);
 	Iterable<Artist> getProducers();
-	void addProducer(Artist producer);
 	
 	VersionTrack getAsVersionTrack();
 	boolean isVersionTrack();
 	
-	void setBPM(short bpm);
 	short getBPM();
 	
 	String getLyrics();
-	void setLyrics(String lyrics);
 	
-	void setExplicit(boolean explicit);
 	boolean isExplicit();
 	
 	SmofGridRef getPath();

@@ -101,9 +101,10 @@ abstract class AbstractTrack extends AbstractPlayable implements Track {
 	}
 
 	@Override
-	public void setHiddenTrack(String hiddenTrack) {
+	public Void setHiddenTrack(String hiddenTrack) {
 		VALIDATOR.checkArgumentNotNull(hiddenTrack, "The title \"" + hiddenTrack + "\" is not valid for a track");
 		this.hiddenTrack = hiddenTrack;
+		return null;
 	}
 
 	@Override
@@ -112,9 +113,10 @@ abstract class AbstractTrack extends AbstractPlayable implements Track {
 	}
 
 	@Override
-	public void setProducers(Set<Artist> producers) {
+	public Void setProducers(Set<Artist> producers) {
 		VALIDATOR.checkArgumentNotNull(producers, "The set of producers cannot be null");
 		this.producers = producers;
+		return null;
 	}
 
 	@Override
@@ -123,17 +125,19 @@ abstract class AbstractTrack extends AbstractPlayable implements Track {
 	}
 
 	@Override
-	public void addProducer(Artist producer) {
+	public Void addProducer(Artist producer) {
 		VALIDATOR.checkArgumentNotNull(producer, "Cannot add a null producer");
 		producers.add(producer);
+		return null;
 	}
 
 	@Override
-	public void setBPM(short bpm) {
+	public Void setBPM(short bpm) {
 		VALIDATOR.checkArgumentBetween(bpm, 0, MAX_BPM, 
 				"The bpm cannot be negative. Use 0 to erase bpm data", 
 				"The bpm value (" + bpm + ") cannot be bigger than " + MAX_BPM);
 		this.bpm = bpm;
+		return null;
 	}
 
 	@Override
@@ -147,9 +151,10 @@ abstract class AbstractTrack extends AbstractPlayable implements Track {
 	}
 
 	@Override
-	public void setLyrics(String lyrics) {
+	public Void setLyrics(String lyrics) {
 		VALIDATOR.checkArgumentNotNull(lyrics, "The lyrics string cannot be null");
 		this.lyrics = lyrics;
+		return null;
 	}
 	
 	@Override
@@ -158,8 +163,9 @@ abstract class AbstractTrack extends AbstractPlayable implements Track {
 	}
 
 	@Override
-	public void setExplicit(boolean explicit) {
+	public Void setExplicit(boolean explicit) {
 		this.explicit = explicit;
+		return null;
 	}
 
 	@Override
@@ -199,13 +205,14 @@ abstract class AbstractTrack extends AbstractPlayable implements Track {
 	}
 
 	@Override
-	public void setDuration(long duration) {
+	public Void setDuration(long duration) {
 		if(path != null) {
 			path.putMetadataEntry(DURATION, duration);
 		}
 		else {
 			super.setDuration(duration);
 		}
+		return null;
 	}
 
 	@Override
