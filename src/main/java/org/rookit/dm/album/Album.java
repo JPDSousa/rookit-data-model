@@ -69,7 +69,7 @@ import org.smof.index.IndexType;
 	@SmofIndex(fields={@SmofIndexField(name = TITLE, type = IndexType.TEXT)})
 })
 @ForceInspection({SingleArtistAlbum.class, VariousArtistAlbum.class})
-public interface Album extends Genreable, Element, Playable, Comparable<Album>{
+public interface Album extends Genreable, Element, Playable, Comparable<Album>, AlbumSetter<Void>{
 	
 	String COVER_BUCKET = "album_covers";
 
@@ -114,13 +114,6 @@ public interface Album extends Genreable, Element, Playable, Comparable<Album>{
 	String getTitle();
 
 	/**
-	 * Sets a new title for the album.
-	 * 
-	 * @param title new title for the album.
-	 */
-	void setTitle(final String title);
-
-	/**
 	 * Returns the artists that are authors of the album.
 	 * <p>
 	 * Do not confuse the set returned as a set of all artists involved
@@ -133,20 +126,6 @@ public interface Album extends Genreable, Element, Playable, Comparable<Album>{
 	 * @return set of authors of this album
 	 */
 	Iterable<Artist> getArtists();
-
-	/**
-	 * Adds the artist passed by parameter to the set of album authors.
-	 * 
-	 * @param artist artists to be added to the set of album authors
-	 */
-	void addArtist(final Artist artist);
-	
-	/**
-	 * Sets the set of album author's, overwriting any previous data.
-	 * 
-	 * @param artists album author's
-	 */
-	void setArtists(final Set<Artist> artists);
 
 	/**
 	 * Returns the list of tracks with all the tracks from all
@@ -169,26 +148,6 @@ public interface Album extends Genreable, Element, Playable, Comparable<Album>{
 	Iterable<Integer> getTrackNumbers(String cd);
 	
 	Track getTrack(String discName, Integer number);
-
-	/**
-	 * Adds a track to the list of tracks released through this album.
-	 * <p> Tracks added through this method can be accessed through {@link #getTracks()}.
-	 * 
-	 * @param track track object to be added to the album track list.
-	 */
-	void addTrack(Track track, Integer number);
-
-	void addTrack(Track track, Integer number, String discName);
-	
-	/**
-	 * Adds a track to the last position in the track list.
-	 * 
-	 * @param track track number in the disc
-	 * @see Album#addTrack(Track)
-	 */
-	void addTrackLast(Track track);
-	
-	void addTrackLast(Track track, String discName);
 
 	/**
 	 * Returns the number of tracks in the entire album. This method will
@@ -215,12 +174,6 @@ public interface Album extends Genreable, Element, Playable, Comparable<Album>{
 	 * @return release date of the album.
 	 */
 	LocalDate getReleaseDate();
-	/**
-	 * Sets a new release date for the album. The old
-	 * date assigned will be overwritten.
-	 * @param date new date to be assigned
-	 */
-	void setReleaseDate(LocalDate date);
 
 	/**
 	 * Returns the total duration of the album in seconds
@@ -260,32 +213,6 @@ public interface Album extends Genreable, Element, Playable, Comparable<Album>{
 	TypeRelease getReleaseType();
 
 	/**
-	 * Sets a new cover art for the album. The cover art is represented
-	 * as a byte array so, in order to read from a JPEG file one should
-	 * use {@link Files#readAllBytes(java.nio.file.Path)} as so:
-	 * <pre>Files.readAllBytes(Paths.get("jpeg-path-as-string");</pre>
-	 * <p>In order to download an image into a byte array:</p>
-	 * <pre> 
-	 * 	URL u = new URL("http://localhost:8080/images/anImage.jpg");
-	 * 	ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-	 * 	try {
-	 * 		byte[] chunk = new byte[4096];
-	 * 		int bytesRead;
-	 * 		InputStream stream = toDownload.openStream();
-	 * 
-	 * 		while ((bytesRead = stream.read(chunk)) > 0) {
-	 * 			outputStream.write(chunk, 0, bytesRead);
-	 * 		}
-	 * 
-	 * 	} catch (IOException e) {
-	 * 		e.printStackTrace();
-	 * 	}
-	 * 	outputStream.toByteArray();//image bytes
-	 * </pre>
-	 * @param image byte array that represents the image to be set as cover
-	 */
-	void setCover(byte[] image);
-	/**
 	 * Returns the cover art of the album as a byte array.
 	 * 
 	 * <p>Use {@link Files#write(java.nio.file.Path, byte[], java.nio.file.OpenOption...)} in order
@@ -320,18 +247,6 @@ public interface Album extends Genreable, Element, Playable, Comparable<Album>{
 	 * @return album type
 	 */
 	TypeAlbum getAlbumType();
-
-	/**
-	 * <b>This method is only used by {@link Track} to relocate tracks when its number and/or disc
-	 * are changed. Do not use this method otherwise.</b>
-	 * 
-	 * This method relocates the track in the album's track list to the disc and number passed as parameter.
-	 * 
-	 * @param track track to relocate
-	 * @param disc old disc name
-	 * @param trackNumber old track number
-	 */
-	void relocate(String discName, Integer number, String newDiscName, Integer newNumber);
 
 	Integer getTrackNumber(Track track);
 	

@@ -126,9 +126,10 @@ public abstract class AbstractAlbum extends AbstractPlayable implements Album {
 	}
 
 	@Override
-	public void setTitle(String title) {
+	public Void setTitle(String title) {
 		VALIDATOR.checkArgumentStringNotEmpty(title, "A title must be specified");
 		this.title = title;
+		return null;
 	}
 
 	@Override
@@ -137,15 +138,17 @@ public abstract class AbstractAlbum extends AbstractPlayable implements Album {
 	}
 
 	@Override
-	public void addArtist(Artist artist) {
+	public Void addArtist(Artist artist) {
 		VALIDATOR.checkArgumentNotNull(artist, "Cannot add a null artist");
 		artists.add(artist);
+		return null;
 	}
 
 	@Override
-	public void setArtists(Set<Artist> artists) {
+	public Void setArtists(Set<Artist> artists) {
 		VALIDATOR.checkArgumentNonEmptyCollection(artists, "Albums cannot have an empty artist set");
 		this.artists = artists;
+		return null;
 	}
 
 	@Override
@@ -189,10 +192,11 @@ public abstract class AbstractAlbum extends AbstractPlayable implements Album {
 	}
 
 	@Override
-	public final void addTrack(Track track, Integer number) {
+	public final Void addTrack(Track track, Integer number) {
 		VALIDATOR.checkArgumentPositive(number, "The track number cannot be null or negative");
 		final Disc disc = getDefaultDisc();
 		addTrack(track, number, disc);
+		return null;
 	}
 
 	private Disc getDefaultDisc() {
@@ -203,9 +207,10 @@ public abstract class AbstractAlbum extends AbstractPlayable implements Album {
 	}
 
 	@Override
-	public final void addTrack(Track track, Integer number, String discName) {
+	public final Void addTrack(Track track, Integer number, String discName) {
 		final Disc disc = getDisc(discName, true);
 		addTrack(track, number, disc);
+		return null;
 	}
 
 	private void addTrack(Track track, Integer number, Disc disc) {
@@ -220,15 +225,17 @@ public abstract class AbstractAlbum extends AbstractPlayable implements Album {
 	}
 
 	@Override
-	public final void addTrackLast(Track track) {
+	public final Void addTrackLast(Track track) {
 		final Disc disc = getDefaultDisc();
 		addTrackLast(track, disc);
+		return null;
 	}
 
 	@Override
-	public final void addTrackLast(Track track, String discName) {
+	public final Void addTrackLast(Track track, String discName) {
 		final Disc disc = getDisc(discName, true);
 		addTrackLast(track, disc);
+		return null;
 	}
 
 	private void addTrackLast(Track track, Disc disc) {
@@ -270,9 +277,10 @@ public abstract class AbstractAlbum extends AbstractPlayable implements Album {
 	}
 
 	@Override
-	public final void setReleaseDate(LocalDate year) {
+	public final Void setReleaseDate(LocalDate year) {
 		VALIDATOR.checkArgumentNotNull(year, "The year cannot be null");
 		this.releaseDate = year;
+		return null;
 	}
 
 	@Override
@@ -338,9 +346,10 @@ public abstract class AbstractAlbum extends AbstractPlayable implements Album {
 	}
 
 	@Override
-	public final void setCover(byte[] image) {
+	public final Void setCover(byte[] image) {
 		VALIDATOR.checkArgumentNotNull(image, "The image must contain data");
 		cover.attachByteArray(new ByteArrayInputStream(image));
+		return null;
 	}
 
 	@Override
