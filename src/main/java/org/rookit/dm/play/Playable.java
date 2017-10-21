@@ -24,7 +24,7 @@ package org.rookit.dm.play;
 import java.time.LocalDate;
 
 @SuppressWarnings("javadoc")
-public interface Playable {
+public interface Playable extends PlayableSetter<Void> {
 	
 	String PLAYS = "plays";
 	String LAST_PLAYED = "last_played";
@@ -33,19 +33,12 @@ public interface Playable {
 	String DURATION = "duration";
 
 	public long getPlays();
-	public void play();
-	public void setPlays(long plays);
 	
 	public LocalDate getLastPlayed();
-	public void setLastPlayed(LocalDate lastPlayed);
 	
 	public long getSkipped();
-	public void skip();
-	public void setSkipped(long skipped);
 	
 	public LocalDate getLastSkipped();
-	public void setLastSkipped(LocalDate lastSkipped);
 	
-	void setDuration(long duration);
 	long getDuration();
 }

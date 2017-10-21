@@ -56,20 +56,22 @@ public abstract class AbstractPlayable extends AbstractElement implements Playab
 	}
 
 	@Override
-	public void play() {
+	public Void play() {
 		plays++;
-		setLastPlayed(LocalDate.now());
+		return setLastPlayed(LocalDate.now());
 	}
 
 	@Override
-	public void setPlays(long plays) {
+	public Void setPlays(long plays) {
 		VALIDATOR.checkArgumentPositive(plays, "Plays cannot be negative");
 		this.plays = plays;
+		return null;
 	}
 	
 	@Override
-	public void setDuration(long duration) {
+	public Void setDuration(long duration) {
 		this.duration = duration;
+		return null;
 	}
 
 	@Override
@@ -83,8 +85,9 @@ public abstract class AbstractPlayable extends AbstractElement implements Playab
 	}
 
 	@Override
-	public void setLastPlayed(LocalDate lastPlayed) {
+	public Void setLastPlayed(LocalDate lastPlayed) {
 		this.lastPlayed = lastPlayed;
+		return null;
 	}
 
 	@Override
@@ -93,15 +96,16 @@ public abstract class AbstractPlayable extends AbstractElement implements Playab
 	}
 
 	@Override
-	public void skip() {
+	public Void skip() {
 		skipped++;
-		setLastSkipped(LocalDate.now());
+		return setLastSkipped(LocalDate.now());
 	}
 
 	@Override
-	public void setSkipped(long skipped) {
+	public Void setSkipped(long skipped) {
 		VALIDATOR.checkArgumentPositive(plays, "Skipped cannot be negative");
 		this.skipped = skipped;
+		return null;
 	}
 
 	@Override
@@ -110,8 +114,9 @@ public abstract class AbstractPlayable extends AbstractElement implements Playab
 	}
 
 	@Override
-	public void setLastSkipped(LocalDate lastSkipped) {
+	public Void setLastSkipped(LocalDate lastSkipped) {
 		this.lastSkipped = lastSkipped;
+		return null;
 	}
 
 }
