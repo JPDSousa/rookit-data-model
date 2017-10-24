@@ -21,6 +21,7 @@
  ******************************************************************************/
 package org.rookit.dm.play;
 
+import java.time.Duration;
 import java.time.LocalDate;
 
 import org.rookit.dm.utils.DataModelValidator;
@@ -46,7 +47,7 @@ public abstract class AbstractPlayable extends AbstractElement implements Playab
 	private LocalDate lastPlayed;
 	
 	@SmofNumber(name = DURATION)
-	private long duration;
+	private Duration duration;
 	
 	protected AbstractPlayable() {}
 
@@ -69,13 +70,13 @@ public abstract class AbstractPlayable extends AbstractElement implements Playab
 	}
 	
 	@Override
-	public Void setDuration(long duration) {
+	public Void setDuration(Duration duration) {
 		this.duration = duration;
 		return null;
 	}
 
 	@Override
-	public long getDuration() {
+	public Duration getDuration() {
 		return duration;
 	}
 	
