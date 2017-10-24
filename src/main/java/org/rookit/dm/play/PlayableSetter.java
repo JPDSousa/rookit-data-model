@@ -2,6 +2,7 @@ package org.rookit.dm.play;
 
 import java.time.LocalDate;
 
+@SuppressWarnings("javadoc")
 public interface PlayableSetter<T> {
 
 	T play();
