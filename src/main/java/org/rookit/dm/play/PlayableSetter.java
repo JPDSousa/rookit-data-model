@@ -1,7 +1,9 @@
 package org.rookit.dm.play;
 
+import java.time.Duration;
 import java.time.LocalDate;
 
+@SuppressWarnings("javadoc")
 public interface PlayableSetter<T> {
 
 	T play();
@@ -14,6 +16,6 @@ public interface PlayableSetter<T> {
 
 	T setLastSkipped(LocalDate lastSkipped);
 
-	T setDuration(long duration);
+	T setDuration(Duration duration);
 	
 }

@@ -24,6 +24,7 @@ package org.rookit.dm.album;
 import static org.rookit.dm.album.DatabaseFields.*;
 
 import java.io.ByteArrayInputStream;
+import java.time.Duration;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -39,6 +40,7 @@ import org.rookit.dm.genre.Genre;
 import org.rookit.dm.play.AbstractPlayable;
 import org.rookit.dm.track.Track;
 import org.rookit.dm.utils.DataModelValidator;
+import org.rookit.utils.exception.InvalidOperationException;
 import org.smof.annnotations.SmofArray;
 import org.smof.annnotations.SmofBuilder;
 import org.smof.annnotations.SmofDate;
@@ -282,24 +284,29 @@ public abstract class AbstractAlbum extends AbstractPlayable implements Album {
 		this.releaseDate = year;
 		return null;
 	}
+	
+	@Override
+	public final Void setDuration(Duration duration) {
+		throw new InvalidOperationException("Cannot set duration for albums");
+	}
 
 	@Override
-	public final double getDurationSec() {
-		long total = 0;
+	public final Duration getDuration() {
+		final Duration total = Duration.ZERO;
 
 		for(Track track : getTracks()){
-			total += track.getDuration();
+			total.plus(track.getDuration());
 		}
 
 		return total;
 	}
 
 	@Override
-	public final double getDurationSec(String discName){
-		long total = 0;
+	public final Duration getDuration(String discName){
+		final Duration total = Duration.ZERO;
 
 		for(Track track : getTracks(discName)){
-			total += track.getDuration();
+			total.plus(track.getDuration());
 		}
 
 		return total;

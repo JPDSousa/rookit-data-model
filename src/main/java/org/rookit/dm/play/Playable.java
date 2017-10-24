@@ -21,6 +21,7 @@
  ******************************************************************************/
 package org.rookit.dm.play;
 
+import java.time.Duration;
 import java.time.LocalDate;
 
 @SuppressWarnings("javadoc")
@@ -40,5 +41,5 @@ public interface Playable extends PlayableSetter<Void> {
 	
 	public LocalDate getLastSkipped();
 	
-	long getDuration();
+	Duration getDuration();
 }

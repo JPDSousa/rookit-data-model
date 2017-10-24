@@ -24,6 +24,7 @@ package org.rookit.dm.album;
 import static org.rookit.dm.album.DatabaseFields.*;
 
 import java.nio.file.Files;
+import java.time.Duration;
 import java.time.LocalDate;
 import java.util.Set;
 
@@ -176,14 +177,6 @@ public interface Album extends Genreable, Element, Playable, Comparable<Album>, 
 	LocalDate getReleaseDate();
 
 	/**
-	 * Returns the total duration of the album in seconds
-	 * The length of the album should be the sum of the length
-	 * of all the tracks.
-	 * <p>In order to get the length of a specific disc, use {@link #getDurationSec(String)}.
-	 * @return the total length of the album in seconds.
-	 */
-	double getDurationSec();
-	/**
 	 * Returns the total duration of the disc in seconds. The length
 	 * of the disc should be the sum of the length of all the tracks
 	 * in the disc.
@@ -192,7 +185,7 @@ public interface Album extends Genreable, Element, Playable, Comparable<Album>, 
 	 * @param cd name of the disc
 	 * @return the total length of the disc in seconds.
 	 */
-	double getDurationSec(String cd);
+	Duration getDuration(String cd);
 
 	/**
 	 * Return a set of discs with the discs on the album.

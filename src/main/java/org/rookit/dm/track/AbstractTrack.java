@@ -23,6 +23,7 @@ package org.rookit.dm.track;
 
 import static org.rookit.dm.track.DatabaseFields.*;
 
+import java.time.Duration;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
@@ -205,7 +206,7 @@ abstract class AbstractTrack extends AbstractPlayable implements Track {
 	}
 
 	@Override
-	public Void setDuration(long duration) {
+	public Void setDuration(Duration duration) {
 		if(path != null) {
 			path.putMetadataEntry(DURATION, duration);
 		}
@@ -216,9 +217,9 @@ abstract class AbstractTrack extends AbstractPlayable implements Track {
 	}
 
 	@Override
-	public long getDuration() {
+	public Duration getDuration() {
 		if(path != null) {
-			return path.getMetadata().getLong(DURATION);
+			return path.getMetadata().get(DURATION, Duration.ZERO);
 		}
 		return super.getDuration();
 	}
