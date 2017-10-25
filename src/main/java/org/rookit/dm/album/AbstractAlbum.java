@@ -36,8 +36,8 @@ import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.tuple.Pair;
 import org.rookit.dm.artist.Artist;
+import org.rookit.dm.genre.AbstractGenreable;
 import org.rookit.dm.genre.Genre;
-import org.rookit.dm.play.AbstractPlayable;
 import org.rookit.dm.track.Track;
 import org.rookit.dm.utils.DataModelValidator;
 import org.rookit.utils.exception.InvalidOperationException;
@@ -54,7 +54,7 @@ import org.smof.parsers.SmofType;
  * Abstract implementation of the {@link Album} interface. Extend this class in
  * order to create a custom album type. 
  */
-public abstract class AbstractAlbum extends AbstractPlayable implements Album {
+public abstract class AbstractAlbum extends AbstractGenreable implements Album {
 
 	private static final DataModelValidator VALIDATOR = DataModelValidator.getDefault();
 	
@@ -75,12 +75,6 @@ public abstract class AbstractAlbum extends AbstractPlayable implements Album {
 	 */
 	@SmofObject(name = DISCS)
 	private Map<String, Disc> discs;
-
-	/**
-	 * Genres of the album
-	 */
-	@SmofArray(name = GENRES, type = SmofType.OBJECT)
-	private Set<Genre> genres;
 
 	/**
 	 * Release of the album
@@ -113,7 +107,6 @@ public abstract class AbstractAlbum extends AbstractPlayable implements Album {
 		this.type = type;
 		this.artists = artists;
 		discs = new LinkedHashMap<>();
-		genres = new LinkedHashSet<>();
 		cover = SmofGridRefFactory.newEmptyRef();
 	}
 
@@ -318,23 +311,6 @@ public abstract class AbstractAlbum extends AbstractPlayable implements Album {
 		getTracks().forEach(t -> t.getGenres().forEach(g -> genres.add(g)));
 
 		return genres;
-	}
-
-	@Override
-	public final Iterable<Genre> getGenres() {
-		return genres;
-	}
-
-	@Override
-	public final void addGenre(Genre genre) {
-		VALIDATOR.checkArgumentNotNull(genre, "Cannot add a null genre");
-		genres.add(genre);
-	}
-
-	@Override
-	public void setGenres(Set<Genre> genres) {
-		VALIDATOR.checkArgumentNotNull(genres, "The genre set cannot be null");
-		this.genres = genres;
 	}
 
 	@Override

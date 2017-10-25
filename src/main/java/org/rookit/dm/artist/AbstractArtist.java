@@ -31,8 +31,8 @@ import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
 import org.rookit.dm.album.Album;
+import org.rookit.dm.genre.AbstractGenreable;
 import org.rookit.dm.genre.Genre;
-import org.rookit.dm.play.AbstractPlayable;
 import org.rookit.dm.track.Track;
 import org.rookit.dm.utils.DataModelValidator;
 import org.smof.annnotations.SmofArray;
@@ -49,7 +49,7 @@ import com.google.common.collect.Sets;
  * Abstract implementation of the {@link Artist} interface. Extend this class
  * in order to create a custom artist type.
  */
-public abstract class AbstractArtist extends AbstractPlayable implements ExtendedArtist {
+public abstract class AbstractArtist extends AbstractGenreable implements ExtendedArtist {
 
 	protected static final DataModelValidator VALIDATOR = DataModelValidator.getDefault();
 	
@@ -68,12 +68,6 @@ public abstract class AbstractArtist extends AbstractPlayable implements Extende
 	 * Albums in which this artist this marked as author
 	 */
 	private final Set<Album> albuns;
-	/**
-	 * Set of genres that describe this artists (not necessarily
-	 * the ones associated to the artist's albums or tracks)
-	 */
-	@SmofArray(name = GENRES, type = SmofType.OBJECT)
-	private Set<Genre> genres;
 
 	/**
 	 * Artist origin (location)
@@ -113,9 +107,8 @@ public abstract class AbstractArtist extends AbstractPlayable implements Extende
 		this.artistName = artistName;
 		this.related = Sets.newLinkedHashSet();
 		this.albuns = Sets.newLinkedHashSet();
-		this.genres = Sets.newLinkedHashSet();
 		this.origin = "";
-		this.aliases = Sets.newLinkedHashSet();
+		this.aliases = Sets.newLinkedHashSetWithExpectedSize(5);
 		this.type = type;
 		this.isni = "";
 		this.ipi = "";
@@ -201,26 +194,9 @@ public abstract class AbstractArtist extends AbstractPlayable implements Extende
 	}
 
 	@Override
-	public Iterable<Genre> getGenres() {
-		return genres;
-	}
-
-	@Override
-	public void addGenre(Genre genre) {
-		VALIDATOR.checkArgumentNotNull(genre, "Cannot add a null genre");
-		genres.add(genre);
-	}
-
-	@Override
-	public void setGenres(Set<Genre> genres) {
-		VALIDATOR.checkArgumentNotNull(genres, "Cannot set a null set of genres");
-		this.genres = genres;
-	}
-
-	@Override
 	public Iterable<Genre> getAllGenres() {
 		final Set<Genre> genres = new LinkedHashSet<>();
-		genres.addAll(this.genres);
+		getGenres().forEach(genres::add);
 
 		albuns.forEach(a -> a.getAllGenres().forEach(g -> genres.add(g)));
 

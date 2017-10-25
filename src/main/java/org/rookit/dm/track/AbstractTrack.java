@@ -24,12 +24,11 @@ package org.rookit.dm.track;
 import static org.rookit.dm.track.DatabaseFields.*;
 
 import java.time.Duration;
-import java.util.LinkedHashSet;
 import java.util.Set;
 
 import org.rookit.dm.artist.Artist;
+import org.rookit.dm.genre.AbstractGenreable;
 import org.rookit.dm.genre.Genre;
-import org.rookit.dm.play.AbstractPlayable;
 import org.smof.annnotations.SmofArray;
 import org.smof.annnotations.SmofBoolean;
 import org.smof.annnotations.SmofNumber;
@@ -39,7 +38,9 @@ import org.smof.gridfs.SmofGridRef;
 import org.smof.gridfs.SmofGridRefFactory;
 import org.smof.parsers.SmofType;
 
-abstract class AbstractTrack extends AbstractPlayable implements Track {
+import com.google.common.collect.Sets;
+
+abstract class AbstractTrack extends AbstractGenreable implements Track {
 	
 	@SmofString(name = TYPE)
 	private final TypeTrack type;
@@ -56,9 +57,6 @@ abstract class AbstractTrack extends AbstractPlayable implements Track {
 	@SmofString(name = HIDDEN_TRACK)
 	private String hiddenTrack;
 	
-	@SmofArray(name = GENRES, type = SmofType.OBJECT)
-	private Set<Genre> genres;
-	
 	@SmofArray(name = PRODUCERS, type = SmofType.OBJECT)
 	private Set<Artist> producers;
 	
@@ -67,8 +65,7 @@ abstract class AbstractTrack extends AbstractPlayable implements Track {
 		
 	protected AbstractTrack(TypeTrack type){
 		super();
-		producers = new LinkedHashSet<>();
-		genres = new LinkedHashSet<>();
+		producers = Sets.newLinkedHashSetWithExpectedSize(3);
 		path = SmofGridRefFactory.newEmptyRef();
 		hiddenTrack = "";
 		this.type = type;
@@ -77,23 +74,6 @@ abstract class AbstractTrack extends AbstractPlayable implements Track {
 	@Override
 	public Iterable<Genre> getAllGenres() {
 		return getGenres();
-	}
-
-	@Override
-	public Iterable<Genre> getGenres() {
-		return genres;
-	}
-
-	@Override
-	public void addGenre(Genre genre) {
-		VALIDATOR.checkArgumentNotNull(genre, "Cannot add a null genre");
-		genres.add(genre);
-	}
-
-	@Override
-	public void setGenres(Set<Genre> genres) {
-		VALIDATOR.checkArgumentNotNull(genres, "The genre set cannot be null");
-		this.genres = genres;
 	}
 
 	@Override
