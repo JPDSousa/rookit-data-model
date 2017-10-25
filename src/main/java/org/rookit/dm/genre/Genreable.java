@@ -21,11 +21,11 @@
  ******************************************************************************/
 package org.rookit.dm.genre;
 
-import java.util.Set;
-
 @SuppressWarnings("javadoc")
-public interface Genreable {
+public interface Genreable extends GenreableSetter<Void>{
 
+	int AVERAGE_N_GENRES = 4;
+	
 	/**
 	 * Database field name for the genres
 	 */
@@ -33,7 +33,5 @@ public interface Genreable {
 	
 	Iterable<Genre> getAllGenres();
 	Iterable<Genre> getGenres();
-	void addGenre(final Genre genre);
-	void setGenres(final Set<Genre> genres);
 
 }
