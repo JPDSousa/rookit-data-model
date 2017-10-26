@@ -21,6 +21,7 @@
  ******************************************************************************/
 package org.rookit.dm.utils;
 
+import java.time.Duration;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
@@ -36,6 +37,8 @@ import com.google.common.collect.Iterables;
 
 @SuppressWarnings("javadoc")
 public final class PrintUtils {
+	
+	private static final Duration ONE_HOUR = Duration.ofHours(1);
 
 	public static String album(Album album){
 		final ExtStringBuilder builder = ExtStringBuilder.create();
@@ -92,7 +95,7 @@ public final class PrintUtils {
 		.appendIf(!Iterables.isEmpty(track.getGenres()), "Genres: " + getIterableAsString(track.getGenres(), TypeFormat.TAG) + "\n")
 		.appendIf(!track.getHiddenTrack().isEmpty(), "HiddenTrack: " + track.getHiddenTrack() + "\n")
 		.append("Plays: ").append(track.getPlays()).breakLine()
-		.append("Duration: ").append(track.getDuration()).breakLine();
+		.append("Duration: ").append(duration(track.getDuration())).breakLine();
 		if(track.isVersionTrack()) {
 			final VersionTrack versionTrack = track.getAsVersionTrack();
 			builder.append("Version Type: ").append(versionTrack.getVersionType()).breakLine()
@@ -100,6 +103,27 @@ public final class PrintUtils {
 		}
 		return builder
 				.breakLine()
+				.toString();
+	}
+	
+	public static String duration(Duration duration) {
+		if(duration.minus(ONE_HOUR).isNegative()) {
+			return new StringBuilder(5)
+					.append(duration.toMinutes())
+					.append(':')
+					.append(duration.getSeconds() % 60)
+					.toString();
+		}
+		return durationHMS(duration);
+	}
+	
+	private static String durationHMS(Duration duration) {
+		return new StringBuilder(10)
+				.append(duration.toHours())
+				.append(':')
+				.append(duration.toMinutes() % 60)
+				.append(':')
+				.append(duration.getSeconds() % 60)
 				.toString();
 	}
 	
