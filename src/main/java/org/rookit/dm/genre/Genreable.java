@@ -21,8 +21,10 @@
  ******************************************************************************/
 package org.rookit.dm.genre;
 
+import org.rookit.dm.play.Playable;
+
 @SuppressWarnings("javadoc")
-public interface Genreable extends GenreableSetter<Void>{
+public interface Genreable extends Playable, GenreableSetter<Void>{
 
 	int AVERAGE_N_GENRES = 4;
 	
