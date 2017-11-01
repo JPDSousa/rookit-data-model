@@ -36,7 +36,6 @@ import org.smof.annnotations.ForceInspection;
 import org.smof.annnotations.SmofIndex;
 import org.smof.annnotations.SmofIndexField;
 import org.smof.annnotations.SmofIndexes;
-import org.smof.element.Element;
 import org.smof.gridfs.SmofGridRef;
 import org.smof.index.IndexType;
 
@@ -70,7 +69,7 @@ import org.smof.index.IndexType;
 	@SmofIndex(fields={@SmofIndexField(name = TITLE, type = IndexType.TEXT)})
 })
 @ForceInspection({SingleArtistAlbum.class, VariousArtistAlbum.class})
-public interface Album extends Genreable, Element, Playable, Comparable<Album>, AlbumSetter<Void>{
+public interface Album extends Genreable, Playable, Comparable<Album>, AlbumSetter<Void> {
 	
 	String COVER_BUCKET = "album_covers";
 

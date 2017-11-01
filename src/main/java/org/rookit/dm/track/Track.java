@@ -30,7 +30,6 @@ import org.smof.annnotations.ForceInspection;
 import org.smof.annnotations.SmofIndex;
 import org.smof.annnotations.SmofIndexField;
 import org.smof.annnotations.SmofIndexes;
-import org.smof.element.Element;
 import org.smof.gridfs.SmofGridRef;
 import org.smof.index.IndexType;
 
@@ -45,7 +44,7 @@ import org.smof.index.IndexType;
 	@SmofIndex(fields={@SmofIndexField(name=TITLE, type = IndexType.TEXT)})
 })
 @ForceInspection({OriginalTrack.class, VersionTrack.class})
-public interface Track extends Playable, Genreable, Element, Comparable<Track>, TrackSetter<Void> {
+public interface Track extends Playable, Genreable, Comparable<Track>, TrackSetter<Void> {
 
 	String AUDIO = "audio";
 	

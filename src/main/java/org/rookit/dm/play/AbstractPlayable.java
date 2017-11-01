@@ -24,13 +24,13 @@ package org.rookit.dm.play;
 import java.time.Duration;
 import java.time.LocalDate;
 
+import org.rookit.dm.AbstractRookitModel;
 import org.rookit.dm.utils.DataModelValidator;
 import org.smof.annnotations.SmofDate;
 import org.smof.annnotations.SmofNumber;
-import org.smof.element.AbstractElement;
 
 @SuppressWarnings("javadoc")
-public abstract class AbstractPlayable extends AbstractElement implements Playable {
+public abstract class AbstractPlayable extends AbstractRookitModel implements Playable {
 
 	protected static final DataModelValidator VALIDATOR = DataModelValidator.getDefault();
 	

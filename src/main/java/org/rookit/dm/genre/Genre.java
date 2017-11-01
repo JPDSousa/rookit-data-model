@@ -28,7 +28,6 @@ import org.smof.annnotations.ForceInspection;
 import org.smof.annnotations.SmofIndex;
 import org.smof.annnotations.SmofIndexField;
 import org.smof.annnotations.SmofIndexes;
-import org.smof.element.Element;
 import org.smof.index.IndexType;
 
 @SuppressWarnings("javadoc")
@@ -36,7 +35,7 @@ import org.smof.index.IndexType;
 	@SmofIndex(fields = {@SmofIndexField(name = NAME, type = IndexType.TEXT)}, unique=true)
 })
 @ForceInspection({DefaultGenre.class})
-public interface Genre extends Element, Playable, Comparable<Genre>, GenreSetter<Void> {
+public interface Genre extends Playable, Comparable<Genre>, GenreSetter<Void> {
 	
 	public String getName();
 	

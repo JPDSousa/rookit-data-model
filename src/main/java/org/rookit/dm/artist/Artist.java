@@ -24,15 +24,12 @@ package org.rookit.dm.artist;
 import static org.rookit.dm.artist.DatabaseFields.*;
 
 import java.time.LocalDate;
-import java.util.Set;
-
 import org.rookit.dm.genre.Genreable;
 import org.rookit.dm.play.Playable;
 import org.smof.annnotations.ForceInspection;
 import org.smof.annnotations.SmofIndex;
 import org.smof.annnotations.SmofIndexField;
 import org.smof.annnotations.SmofIndexes;
-import org.smof.element.Element;
 import org.smof.gridfs.SmofGridRef;
 import org.smof.index.IndexType;
 
@@ -52,7 +49,7 @@ import org.smof.index.IndexType;
 	@SmofIndex(fields = {@SmofIndexField(name = NAME, type = IndexType.TEXT)}),
 })
 @ForceInspection({MusicianImpl.class, GroupArtistImpl.class})
-public interface Artist extends Genreable, Element, Playable, Comparable<Artist>, ArtistSetter<Void> {
+public interface Artist extends Genreable, Playable, Comparable<Artist>, ArtistSetter<Void> {
 	
 	/**
 	 * String representation of an unknown artist. This constant may be used only
