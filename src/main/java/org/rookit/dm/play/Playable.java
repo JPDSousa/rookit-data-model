@@ -24,10 +24,10 @@ package org.rookit.dm.play;
 import java.time.Duration;
 import java.time.LocalDate;
 
-import org.smof.element.Element;
+import org.rookit.dm.RookitModel;
 
 @SuppressWarnings("javadoc")
-public interface Playable extends Element, PlayableSetter<Void> {
+public interface Playable extends PlayableSetter<Void>, RookitModel {
 	
 	String PLAYS = "plays";
 	String LAST_PLAYED = "last_played";

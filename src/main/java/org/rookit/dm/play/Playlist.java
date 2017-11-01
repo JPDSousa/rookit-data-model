@@ -27,7 +27,6 @@ import org.rookit.dm.track.Track;
 import org.smof.annnotations.SmofIndex;
 import org.smof.annnotations.SmofIndexField;
 import org.smof.annnotations.SmofIndexes;
-import org.smof.element.Element;
 import org.smof.gridfs.SmofGridRef;
 import org.smof.index.IndexType;
 
@@ -35,7 +34,7 @@ import org.smof.index.IndexType;
 @SmofIndexes({
 	@SmofIndex(fields = {@SmofIndexField(name = DatabaseFields.NAME, type = IndexType.ASCENDING)}),
 })
-public interface Playlist extends Element, Playable, PlaylistSetter<Void> {
+public interface Playlist extends Playable, PlaylistSetter<Void> {
 	
 	String IMAGE_BUCKET = "Playlist_Images";
 	
