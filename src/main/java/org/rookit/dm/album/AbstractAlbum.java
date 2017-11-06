@@ -129,7 +129,7 @@ public abstract class AbstractAlbum extends AbstractGenreable implements Album {
 	}
 
 	@Override
-	public Iterable<Artist> getArtists() {
+	public Collection<Artist> getArtists() {
 		return artists;
 	}
 
@@ -148,7 +148,7 @@ public abstract class AbstractAlbum extends AbstractGenreable implements Album {
 	}
 
 	@Override
-	public final Iterable<Track> getTracks() {
+	public final Collection<Track> getTracks() {
 		final List<Track> tracks = discs.values().stream()
 				.flatMap(d -> d.getTracks().stream())
 				.collect(Collectors.toList());
@@ -156,13 +156,13 @@ public abstract class AbstractAlbum extends AbstractGenreable implements Album {
 	}
 
 	@Override
-	public final Iterable<Track> getTracks(String discName){
+	public final Collection<Track> getTracks(String discName){
 		final Disc disc = getDisc(discName, false);
 		return disc.getTracks();
 	}
 
 	@Override
-	public Iterable<Integer> getTrackNumbers(String cd) {
+	public Collection<Integer> getTrackNumbers(String cd) {
 		final Disc disc = getDisc(cd, false);
 		return disc.tracks.keySet();
 	}
