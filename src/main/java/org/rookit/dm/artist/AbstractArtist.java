@@ -182,7 +182,7 @@ public abstract class AbstractArtist extends AbstractGenreable implements Extend
 			return false;
 		}
 		AbstractArtist other = (AbstractArtist) obj;
-		if (!artistName.equals(other.artistName)) {
+		if (!artistName.equalsIgnoreCase(other.artistName)) {
 			return false;
 		}
 		if (!isni.equals(other.isni)) {
