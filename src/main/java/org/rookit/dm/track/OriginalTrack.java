@@ -167,7 +167,7 @@ final class OriginalTrack extends AbstractTrack {
 			if (other.title != null) {
 				return false;
 			}
-		} else if (!title.equals(other.title)) {
+		} else if (!title.equalsIgnoreCase(other.title)) {
 			return false;
 		}
 		return true;
