@@ -1,5 +1,6 @@
 package org.rookit.dm.genre;
 
+import java.util.Collection;
 import java.util.Set;
 
 import org.rookit.dm.play.AbstractPlayable;
@@ -36,12 +37,12 @@ public abstract class AbstractGenreable extends AbstractPlayable implements Genr
 	}
 
 	@Override
-	public Iterable<Genre> getAllGenres() {
+	public Collection<Genre> getAllGenres() {
 		return getGenres();
 	}
 
 	@Override
-	public Iterable<Genre> getGenres() {
+	public Collection<Genre> getGenres() {
 		return genres;
 	}
 

@@ -28,7 +28,6 @@ import java.util.Set;
 
 import org.rookit.dm.artist.Artist;
 import org.rookit.dm.genre.AbstractGenreable;
-import org.rookit.dm.genre.Genre;
 import org.smof.annnotations.SmofArray;
 import org.smof.annnotations.SmofBoolean;
 import org.smof.annnotations.SmofNumber;
@@ -69,11 +68,6 @@ abstract class AbstractTrack extends AbstractGenreable implements Track {
 		path = SmofGridRefFactory.newEmptyRef();
 		hiddenTrack = "";
 		this.type = type;
-	}
-
-	@Override
-	public Iterable<Genre> getAllGenres() {
-		return getGenres();
 	}
 
 	@Override

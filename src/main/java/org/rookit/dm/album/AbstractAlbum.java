@@ -27,6 +27,7 @@ import java.io.ByteArrayInputStream;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -306,7 +307,7 @@ public abstract class AbstractAlbum extends AbstractGenreable implements Album {
 	}
 
 	@Override
-	public final Iterable<Genre> getAllGenres() {
+	public final Collection<Genre> getAllGenres() {
 		final Set<Genre> genres = new LinkedHashSet<Genre>();
 		getTracks().forEach(t -> t.getGenres().forEach(g -> genres.add(g)));
 
@@ -373,7 +374,7 @@ public abstract class AbstractAlbum extends AbstractGenreable implements Album {
 			if (other.title != null) {
 				return false;
 			}
-		} else if (!title.equals(other.title)) {
+		} else if (!title.equalsIgnoreCase(other.title)) {
 			return false;
 		}
 		if (releaseType != other.releaseType) {

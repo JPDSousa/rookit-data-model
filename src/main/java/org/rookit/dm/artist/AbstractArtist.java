@@ -25,6 +25,7 @@ import static org.rookit.dm.artist.DatabaseFields.*;
 
 import java.io.ByteArrayInputStream;
 import java.time.LocalDate;
+import java.util.Collection;
 import java.util.LinkedHashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -194,7 +195,7 @@ public abstract class AbstractArtist extends AbstractGenreable implements Extend
 	}
 
 	@Override
-	public Iterable<Genre> getAllGenres() {
+	public Collection<Genre> getAllGenres() {
 		final Set<Genre> genres = new LinkedHashSet<>();
 		getGenres().forEach(genres::add);
 
