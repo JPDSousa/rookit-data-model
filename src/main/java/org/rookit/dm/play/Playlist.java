@@ -21,6 +21,7 @@
  ******************************************************************************/
 package org.rookit.dm.play;
 
+import java.util.Collection;
 import java.util.stream.Stream;
 
 import org.rookit.dm.track.Track;
@@ -47,7 +48,7 @@ public interface Playlist extends Playable, PlaylistSetter<Void> {
 	 * 
 	 * @return a list of tracks with all the tracks of the playlist
 	 */
-	Iterable<Track> getTracks();
+	Collection<Track> getTracks();
 
 	boolean removeTrack(Track track);
 	

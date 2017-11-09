@@ -22,6 +22,7 @@
 package org.rookit.dm.play;
 
 import java.io.ByteArrayInputStream;
+import java.util.Collection;
 import java.util.Set;
 import java.util.stream.Stream;
 
@@ -65,7 +66,7 @@ class PlaylistImpl extends AbstractPlayable implements Playlist {
 	}
 
 	@Override
-	public Iterable<Track> getTracks() {
+	public Collection<Track> getTracks() {
 		return tracks;
 	}
 
