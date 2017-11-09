@@ -24,6 +24,7 @@ package org.rookit.dm.track;
 import static org.rookit.dm.track.DatabaseFields.*;
 
 import java.time.Duration;
+import java.util.Collection;
 import java.util.Set;
 
 import org.rookit.dm.artist.Artist;
@@ -95,7 +96,7 @@ abstract class AbstractTrack extends AbstractGenreable implements Track {
 	}
 
 	@Override
-	public Iterable<Artist> getProducers() {
+	public Collection<Artist> getProducers() {
 		return producers;
 	}
 

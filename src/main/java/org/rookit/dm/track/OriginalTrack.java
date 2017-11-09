@@ -23,6 +23,7 @@ package org.rookit.dm.track;
 
 import static org.rookit.dm.track.DatabaseFields.*;
 
+import java.util.Collection;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
@@ -64,7 +65,7 @@ final class OriginalTrack extends AbstractTrack {
 	}
 
 	@Override
-	public Set<Artist> getMainArtists() {
+	public Collection<Artist> getMainArtists() {
 		return mainArtists;
 	}
 
