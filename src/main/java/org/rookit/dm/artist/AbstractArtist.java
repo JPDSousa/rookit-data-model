@@ -210,7 +210,7 @@ public abstract class AbstractArtist extends AbstractGenreable implements Extend
 	}
 
 	@Override
-	public Iterable<String> getAliases() {
+	public Collection<String> getAliases() {
 		return aliases;
 	}
 
