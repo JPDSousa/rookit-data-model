@@ -199,7 +199,7 @@ abstract class AbstractTrack extends AbstractGenreable implements Track {
 	@Override
 	public Duration getDuration() {
 		if(path != null) {
-			return Duration.ofMillis(path.getMetadata().get(DURATION, 0));
+			return Duration.ofMillis(path.getMetadata().get(DURATION, new Long(0)));
 		}
 		return super.getDuration();
 	}
