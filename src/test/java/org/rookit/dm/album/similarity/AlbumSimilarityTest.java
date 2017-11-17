@@ -1,4 +1,4 @@
-package org.rookit.dm.album;
+package org.rookit.dm.album.similarity;
 
 import static org.junit.Assert.*;
 import static org.hamcrest.number.OrderingComparison.*;
@@ -7,6 +7,11 @@ import java.util.Set;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.rookit.dm.album.Album;
+import org.rookit.dm.album.AlbumFactory;
+import org.rookit.dm.album.TypeAlbum;
+import org.rookit.dm.album.TypeRelease;
+import org.rookit.dm.album.similarity.AlbumComparator;
 import org.rookit.dm.artist.Artist;
 import org.rookit.dm.utils.DMTestFactory;
 
