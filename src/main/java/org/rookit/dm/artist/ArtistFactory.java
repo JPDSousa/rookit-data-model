@@ -60,7 +60,7 @@ public class ArtistFactory implements Serializable {
 
 	private static final DataModelValidator VALIDATOR = DataModelValidator.getDefault();
 	
-	private static final Path SPECIAL_PATH = Paths.get("src", "main", "resources", "parser", "special.txt");
+	private static final Path SPECIAL_PATH = Paths.get("src", "main", "resources", "artist", "special.txt");
 
 	private static ArtistFactory factory;
 	
