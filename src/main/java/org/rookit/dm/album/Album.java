@@ -73,19 +73,10 @@ import org.smof.index.IndexType;
 public interface Album extends Genreable, Playable, Comparable<Album>, AlbumSetter<Void> {
 
 	/**
-	 * Standard nomenclature for a disc.
-	 */
-	String CD = "CD";
-
-	/**
 	 * Standard date format, used when for parsing and formatting release dates
 	 * related to albums
 	 */
-	String DATE_FORMAT = "dd-MM-yyyy";
-	/**
-	 * Alternative formats to the data format, commonly used on unparsed tracks
-	 */
-	String[] DATE_FORMAT_ALT = {"yyyy"};
+	String[] DATE_FORMAT = {"dd-MM-yyyy", "yyyy"};
 
 	/**
 	 * This value represents the name of the disc when the album has only
