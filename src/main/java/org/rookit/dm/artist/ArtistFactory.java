@@ -204,7 +204,7 @@ public class ArtistFactory implements Serializable {
 		}
 
 		for(String artist : str.split(SPLIT_REGEX)){
-			if(!artist.equals("") && !artist.equalsIgnoreCase(Artist.UNKNOWN)){
+			if(!artist.equals("") && !artist.equalsIgnoreCase(Artist.UNKNOWN_ARTISTS)){
 				artists.add(artist.trim());
 			}
 		}

@@ -50,7 +50,7 @@ public class TrackTitle {
 	}
 
 	public TrackTitle appendArtists(Collection<Artist> artists){
-		this.artists = PrintUtils.getIterableAsString(artists, TypeFormat.TITLE, Artist.UNKNOWN);
+		this.artists = PrintUtils.getIterableAsString(artists, TypeFormat.TITLE, Artist.UNKNOWN_ARTISTS);
 		return this;
 	}
 
@@ -73,7 +73,7 @@ public class TrackTitle {
 				builder.append(artists);
 			}
 			else{
-				builder.append(Artist.UNKNOWN);
+				builder.append(Artist.UNKNOWN_ARTISTS);
 			}
 			builder.append(" - ");
 		}

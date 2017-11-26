@@ -86,7 +86,7 @@ public final class VersionTrack extends AbstractTrack {
 	}
 	
 	private String getExtras() {
-		final StringBuilder builder = new StringBuilder(PrintUtils.getIterableAsString(extraArtists, TypeFormat.TITLE, Artist.UNKNOWN));
+		final StringBuilder builder = new StringBuilder(PrintUtils.getIterableAsString(extraArtists, TypeFormat.TITLE, Artist.UNKNOWN_ARTISTS));
 		builder.append(" ").append(getVersionType().getName());
 		return builder.toString();
 	}
