@@ -26,6 +26,7 @@ import static org.rookit.dm.album.DatabaseFields.*;
 import java.nio.file.Files;
 import java.time.Duration;
 import java.time.LocalDate;
+import java.util.Collection;
 import java.util.Set;
 
 import org.rookit.dm.artist.Artist;
@@ -125,7 +126,7 @@ public interface Album extends Genreable, Playable, Comparable<Album>, AlbumSett
 	 * </p>
 	 * @return set of authors of this album
 	 */
-	Iterable<Artist> getArtists();
+	Collection<Artist> getArtists();
 
 	/**
 	 * Returns the list of tracks with all the tracks from all
@@ -133,7 +134,7 @@ public interface Album extends Genreable, Playable, Comparable<Album>, AlbumSett
 	 * 
 	 * @return a list of tracks with all the tracks of the album
 	 */
-	Iterable<Track> getTracks();
+	Collection<Track> getTracks();
 
 	/**
 	 * Returns the set of tracks from the disc passed as parameter.
@@ -141,11 +142,11 @@ public interface Album extends Genreable, Playable, Comparable<Album>, AlbumSett
 	 * @param cd disc name
 	 * @return the list of tracks from the disc passed as parameter
 	 */
-	Iterable<Track> getTracks(String cd);
+	Collection<Track> getTracks(String cd);
 	
 	String getTrackDisc(Track track);
 
-	Iterable<Integer> getTrackNumbers(String cd);
+	Collection<Integer> getTrackNumbers(String cd);
 	
 	Track getTrack(String discName, Integer number);
 
@@ -190,7 +191,7 @@ public interface Album extends Genreable, Playable, Comparable<Album>, AlbumSett
 	 * Return a set of discs with the discs on the album.
 	 * @return a set of the album discs.
 	 */
-	Iterable<String> getDiscs();
+	Collection<String> getDiscs();
 	/**
 	 * Return the number of discs in the album.
 	 * @return number of discs in the album.

@@ -27,6 +27,7 @@ import java.io.ByteArrayInputStream;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -128,7 +129,7 @@ public abstract class AbstractAlbum extends AbstractGenreable implements Album {
 	}
 
 	@Override
-	public Iterable<Artist> getArtists() {
+	public Collection<Artist> getArtists() {
 		return artists;
 	}
 
@@ -147,7 +148,7 @@ public abstract class AbstractAlbum extends AbstractGenreable implements Album {
 	}
 
 	@Override
-	public final Iterable<Track> getTracks() {
+	public final Collection<Track> getTracks() {
 		final List<Track> tracks = discs.values().stream()
 				.flatMap(d -> d.getTracks().stream())
 				.collect(Collectors.toList());
@@ -155,13 +156,13 @@ public abstract class AbstractAlbum extends AbstractGenreable implements Album {
 	}
 
 	@Override
-	public final Iterable<Track> getTracks(String discName){
+	public final Collection<Track> getTracks(String discName){
 		final Disc disc = getDisc(discName, false);
 		return disc.getTracks();
 	}
 
 	@Override
-	public Iterable<Integer> getTrackNumbers(String cd) {
+	public Collection<Integer> getTrackNumbers(String cd) {
 		final Disc disc = getDisc(cd, false);
 		return disc.tracks.keySet();
 	}
@@ -306,7 +307,7 @@ public abstract class AbstractAlbum extends AbstractGenreable implements Album {
 	}
 
 	@Override
-	public final Iterable<Genre> getAllGenres() {
+	public final Collection<Genre> getAllGenres() {
 		final Set<Genre> genres = new LinkedHashSet<Genre>();
 		getTracks().forEach(t -> t.getGenres().forEach(g -> genres.add(g)));
 
@@ -373,7 +374,7 @@ public abstract class AbstractAlbum extends AbstractGenreable implements Album {
 			if (other.title != null) {
 				return false;
 			}
-		} else if (!title.equals(other.title)) {
+		} else if (!title.equalsIgnoreCase(other.title)) {
 			return false;
 		}
 		if (releaseType != other.releaseType) {

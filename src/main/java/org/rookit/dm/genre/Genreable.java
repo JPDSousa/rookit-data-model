@@ -21,6 +21,8 @@
  ******************************************************************************/
 package org.rookit.dm.genre;
 
+import java.util.Collection;
+
 import org.rookit.dm.play.Playable;
 
 @SuppressWarnings("javadoc")
@@ -33,7 +35,7 @@ public interface Genreable extends Playable, GenreableSetter<Void>{
 	 */
 	String GENRES = "genres";
 	
-	Iterable<Genre> getAllGenres();
-	Iterable<Genre> getGenres();
+	Collection<Genre> getAllGenres();
+	Collection<Genre> getGenres();
 
 }

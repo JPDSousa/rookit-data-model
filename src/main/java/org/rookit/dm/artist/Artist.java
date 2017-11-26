@@ -24,6 +24,8 @@ package org.rookit.dm.artist;
 import static org.rookit.dm.artist.DatabaseFields.*;
 
 import java.time.LocalDate;
+import java.util.Collection;
+
 import org.rookit.dm.genre.Genreable;
 import org.rookit.dm.play.Playable;
 import org.smof.annnotations.ForceInspection;
@@ -87,7 +89,7 @@ public interface Artist extends Genreable, Playable, Comparable<Artist>, ArtistS
 	 */
 	public String getOrigin();
 	
-	public Iterable<String> getAliases();
+	public Collection<String> getAliases();
 
 	public LocalDate getBeginDate();
 	

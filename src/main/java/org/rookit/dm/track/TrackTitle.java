@@ -21,7 +21,7 @@
  ******************************************************************************/
 package org.rookit.dm.track;
 
-import java.util.Set;
+import java.util.Collection;
 
 import org.rookit.dm.artist.Artist;
 import org.rookit.dm.utils.PrintUtils;
@@ -49,7 +49,7 @@ public class TrackTitle {
 		return this;
 	}
 
-	public TrackTitle appendArtists(Set<Artist> artists){
+	public TrackTitle appendArtists(Collection<Artist> artists){
 		this.artists = PrintUtils.getIterableAsString(artists, TypeFormat.TITLE, Artist.UNKNOWN);
 		return this;
 	}
@@ -59,7 +59,7 @@ public class TrackTitle {
 		return this;
 	}
 
-	public TrackTitle appendFeats(Set<Artist> artists){
+	public TrackTitle appendFeats(Collection<Artist> artists){
 		this.feats = PrintUtils.getIterableAsString(artists, TypeFormat.TITLE);
 		return this;
 	}

@@ -23,6 +23,8 @@ package org.rookit.dm.track;
 
 import static org.rookit.dm.track.DatabaseFields.*;
 
+import java.util.Collection;
+
 import org.rookit.dm.artist.Artist;
 import org.rookit.dm.genre.Genreable;
 import org.rookit.dm.play.Playable;
@@ -57,13 +59,13 @@ public interface Track extends Playable, Genreable, Comparable<Track>, TrackSett
 	TrackTitle getLongFullTitle();
 	TrackTitle getFullTitle();
 	
-	Iterable<Artist> getMainArtists();
+	Collection<Artist> getMainArtists();
 	
-	Iterable<Artist> getFeatures();
+	Collection<Artist> getFeatures();
 	
 	String getHiddenTrack();
 	
-	Iterable<Artist> getProducers();
+	Collection<Artist> getProducers();
 	
 	VersionTrack getAsVersionTrack();
 	boolean isVersionTrack();

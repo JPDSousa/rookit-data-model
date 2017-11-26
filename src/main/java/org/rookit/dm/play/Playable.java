@@ -35,13 +35,13 @@ public interface Playable extends PlayableSetter<Void>, RookitModel {
 	String LAST_SKIPPED = "last_skipped";
 	String DURATION = "duration";
 
-	public long getPlays();
+	long getPlays();
 	
-	public LocalDate getLastPlayed();
+	LocalDate getLastPlayed();
 	
-	public long getSkipped();
+	long getSkipped();
 	
-	public LocalDate getLastSkipped();
+	LocalDate getLastSkipped();
 	
 	Duration getDuration();
 }

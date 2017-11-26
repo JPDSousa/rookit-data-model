@@ -24,11 +24,11 @@ package org.rookit.dm.track;
 import static org.rookit.dm.track.DatabaseFields.*;
 
 import java.time.Duration;
+import java.util.Collection;
 import java.util.Set;
 
 import org.rookit.dm.artist.Artist;
 import org.rookit.dm.genre.AbstractGenreable;
-import org.rookit.dm.genre.Genre;
 import org.smof.annnotations.SmofArray;
 import org.smof.annnotations.SmofBoolean;
 import org.smof.annnotations.SmofNumber;
@@ -72,11 +72,6 @@ abstract class AbstractTrack extends AbstractGenreable implements Track {
 	}
 
 	@Override
-	public Iterable<Genre> getAllGenres() {
-		return getGenres();
-	}
-
-	@Override
 	public TypeTrack getType() {
 		return type;
 	}
@@ -101,7 +96,7 @@ abstract class AbstractTrack extends AbstractGenreable implements Track {
 	}
 
 	@Override
-	public Iterable<Artist> getProducers() {
+	public Collection<Artist> getProducers() {
 		return producers;
 	}
 

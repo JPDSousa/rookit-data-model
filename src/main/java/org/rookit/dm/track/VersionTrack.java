@@ -23,6 +23,7 @@ package org.rookit.dm.track;
 
 import static org.rookit.dm.track.DatabaseFields.*;
 
+import java.util.Collection;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
@@ -61,7 +62,7 @@ public final class VersionTrack extends AbstractTrack {
 		return versionType;
 	}
 
-	public Iterable<Artist> getVersionArtists() {
+	public Collection<Artist> getVersionArtists() {
 		return extraArtists;
 	}
 
@@ -111,7 +112,7 @@ public final class VersionTrack extends AbstractTrack {
 	}
 
 	@Override
-	public Iterable<Artist> getMainArtists() {
+	public Collection<Artist> getMainArtists() {
 		return original.getMainArtists();
 	}
 
@@ -126,7 +127,7 @@ public final class VersionTrack extends AbstractTrack {
 	}
 
 	@Override
-	public Iterable<Artist> getFeatures() {
+	public Collection<Artist> getFeatures() {
 		return original.getFeatures();
 	}
 

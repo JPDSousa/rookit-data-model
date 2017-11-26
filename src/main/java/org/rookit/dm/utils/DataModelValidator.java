@@ -70,4 +70,13 @@ public class DataModelValidator extends Validator {
 		Errors.handleException(e, Logs.CORE);
 	}
 
+	public void checkSumIs(Collection<Float> values, int i) {
+		final double sum = values.stream()
+				.mapToDouble(Float::doubleValue)
+				.sum();
+		if(sum != i) {
+			handleException(new IllegalArgumentException("The sum of all values must be " + i));
+		}
+	}
+
 }
