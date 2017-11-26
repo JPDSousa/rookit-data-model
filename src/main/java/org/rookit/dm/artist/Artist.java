@@ -59,11 +59,6 @@ public interface Artist extends Genreable, Playable, Comparable<Artist>, ArtistS
 	 */
 	String UNKNOWN_ARTISTS = "Unknown Artists";
 	
-	/**
-	 * TODO: Move this constant to a suitable place
-	 */
-	public static final String[] SUSPICIOUS_NAME_CHARSEQS = new String[]{"- ", " -",  "[", "]", "{", "}", "~", "|", "�", ")", "("};
-	
 	public TypeArtist getType();
 	
 	/**
