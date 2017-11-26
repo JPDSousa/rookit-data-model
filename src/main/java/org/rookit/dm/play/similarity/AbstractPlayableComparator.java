@@ -13,11 +13,6 @@ public class AbstractPlayableComparator<T extends Playable> extends AbstractSimi
 	}
 
 	@Override
-	public int compare(T o1, T o2) {
-		return 0;
-	}
-
-	@Override
 	protected Map<String, Integer> createTopMap(T element1, T element2) {
 		// all fields in playable are ignored in a comparison
 		return super.createTopMap(element1, element2);
