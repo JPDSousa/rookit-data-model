@@ -71,8 +71,6 @@ import org.smof.index.IndexType;
 })
 @ForceInspection({SingleArtistAlbum.class, VariousArtistAlbum.class})
 public interface Album extends Genreable, Playable, Comparable<Album>, AlbumSetter<Void> {
-	
-	String COVER_BUCKET = "album_covers";
 
 	/**
 	 * Standard nomenclature for a disc.
