@@ -53,6 +53,8 @@ public interface AlbumSetter<T> {
 	T addTrack(Track track, Integer number);
 
 	T addTrack(TrackSlot slot);
+
+	T addTrack(Track track, Integer i, String discName);
 	
 	/**
 	 * Adds a track to the last position in the track list.
