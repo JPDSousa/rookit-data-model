@@ -210,10 +210,15 @@ public abstract class AbstractAlbum extends AbstractGenreable implements Album {
 	}
 
 	@Override
-	public final Void addTrack(TrackSlot track) {
-		final Disc disc = getDisc(track.getDisc(), true);
-		addTrack(track.getTrack(), track.getNumber(), disc);
+	public Void addTrack(Track track, Integer number, String discName) {
+		final Disc disc = getDisc(discName, true);
+		addTrack(track, number, disc);
 		return null;
+	}
+
+	@Override
+	public final Void addTrack(TrackSlot track) {
+		return addTrack(track.getTrack(), track.getNumber(), track.getDisc());
 	}
 
 	@Override

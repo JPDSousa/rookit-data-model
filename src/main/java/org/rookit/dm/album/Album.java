@@ -250,4 +250,5 @@ public interface Album extends Genreable, Playable, Comparable<Album>, AlbumSett
 	int hashCode();
 
 	Collection<Integer> getTrackNumbers(String cd);
+
 }
