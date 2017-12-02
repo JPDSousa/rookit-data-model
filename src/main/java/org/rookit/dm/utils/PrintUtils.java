@@ -28,6 +28,7 @@ import java.util.stream.StreamSupport;
 import org.apache.commons.collections4.IterableUtils;
 import org.extendedStringBuilder.ExtStringBuilder;
 import org.rookit.dm.album.Album;
+import org.rookit.dm.album.TrackSlot;
 import org.rookit.dm.artist.Artist;
 import org.rookit.dm.track.Track;
 import org.rookit.dm.track.VersionTrack;
@@ -61,9 +62,12 @@ public final class PrintUtils {
 	}
 
 	private static void printAlbumTrack(ExtStringBuilder builder, Album album, String discName, Integer number) {
-		final Track track = album.getTrack(discName, number);
+		final TrackSlot trackSlot = album.getTrack(discName, number);
+		final Track track = trackSlot.getTrack();
 		builder.append(number).tab()
 		.append(track.getTitle()).breakLine()
+		.tab().append("Disc: ").append(trackSlot.getDisc()).breakLine()
+		.tab().append("Number: ").append(trackSlot.getNumber()).breakLine()
 		.tab().append("Main Artists: ").breakLine();
 		for(Artist artist : track.getMainArtists()){
 			builder.tab(2).append(artist.toString()).breakLine();
