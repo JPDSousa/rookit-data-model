@@ -14,4 +14,6 @@ public interface TrackSlot {
 	int getNumber();
 
 	Track getTrack();
+	
+	boolean isEmpty();
 }

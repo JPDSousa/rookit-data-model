@@ -37,8 +37,8 @@ class VariousArtistAlbum extends AbstractAlbum {
 	public Set<Artist> getArtists() {
 		final Set<Artist> artists = new HashSet<>();
 		
-		for(Track track : getTracks()){
-			track.getMainArtists().forEach(a -> artists.add(a));
+		for(TrackSlot track : getTracks()){
+			track.getTrack().getMainArtists().forEach(a -> artists.add(a));
 		}
 		
 		return artists;

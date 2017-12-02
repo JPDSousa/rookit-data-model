@@ -11,6 +11,8 @@ public class TrackSlotImpl implements TrackSlot {
 	
 	public TrackSlotImpl(String disc, int number, Track track) {
 		super();
+		assert disc != null && !disc.isEmpty();
+		assert number > 0;
 		this.disc = disc;
 		this.number = number;
 		this.track = track;
@@ -29,6 +31,11 @@ public class TrackSlotImpl implements TrackSlot {
 	@Override
 	public Track getTrack() {
 		return track;
+	}
+
+	@Override
+	public boolean isEmpty() {
+		return track == null;
 	}
 	
 	
