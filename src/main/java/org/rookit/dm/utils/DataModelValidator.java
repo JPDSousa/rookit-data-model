@@ -60,10 +60,10 @@ public class DataModelValidator extends Validator {
 		checkArgumentNotNull(disc, "The disc " + discName + " was not found in album " + albumTitle);
 	}
 	
-	public void checkValidFeatures(Iterable<Artist> features, Iterable<Artist> mainArtists) {
-		checkArgumentNotNull(features, "The feature artists set cannot be null");
-		final Collection<Artist> intersection = CollectionUtils.intersection(features, mainArtists);
-		checkArgumentEmptyCollection(intersection, "Artists " + intersection.toString() + " are already defined as main artist");
+	public void checkNotIntersecting(Iterable<Artist> source, Iterable<Artist> target, String targetName) {
+		checkArgumentNotNull(source, "The artist set cannot be null");
+		final Collection<Artist> intersection = CollectionUtils.intersection(source, target);
+		checkArgumentEmptyCollection(intersection, "Artists " + intersection.toString() + " are already defined as " + targetName);
 	}
 	
 	public void handleException(RuntimeException e) {
