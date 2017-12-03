@@ -47,8 +47,6 @@ import org.smof.index.IndexType;
 })
 @ForceInspection({OriginalTrack.class, VersionTrack.class})
 public interface Track extends Playable, Genreable, Comparable<Track>, TrackSetter<Void> {
-
-	String AUDIO = "audio";
 	
 	short MAX_BPM = 400;
 	

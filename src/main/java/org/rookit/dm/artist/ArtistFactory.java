@@ -23,13 +23,18 @@ package org.rookit.dm.artist;
 
 import static org.rookit.dm.artist.DatabaseFields.*;
 
+import java.io.IOException;
 import java.io.Serializable;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
 import org.rookit.dm.utils.DataModelValidator;
@@ -55,30 +60,7 @@ public class ArtistFactory implements Serializable {
 
 	private static final DataModelValidator VALIDATOR = DataModelValidator.getDefault();
 	
-	/**
-	 * List of special artist names that are to be interpreted as a single artist
-	 */
-	public static final String[] SPECIAL = new String[]{"Case & Point",
-														"Above & Beyond",
-														"Lights & Motion",
-														"Mumford & Sons",
-														"Paris & Simo",
-														"Kerafix & Vultaire",
-														"Dzeko & Torres",
-														"Polo & Pan",
-														"Sean & Bobo",
-														"Styles & Complete",
-														"Tegan & Sara",
-														"Ryan & Vin",
-														"T & Sugah",
-														"Florence & The Machine",
-														"Ark & Ocean",
-														"Bonnie x Clyde",
-														"Clips x Ahoy",
-														"Chase & Status",
-														"Clay & Cam",
-														"Dodge & Fuski",
-														"Matisse & Sadko"};
+	private static final Path SPECIAL_PATH = Paths.get("src", "main", "resources", "artist", "special.txt");
 
 	private static ArtistFactory factory;
 	
@@ -89,13 +71,22 @@ public class ArtistFactory implements Serializable {
 	 */
 	public static ArtistFactory getDefault(){
 		if(factory == null){
-			factory = new ArtistFactory();
+			factory = new ArtistFactory(SPECIAL_PATH);
 		}
 		return factory;
 	}
 	
+	private final Set<String> exceptionsSplit;
 	
-	private ArtistFactory(){}
+	private ArtistFactory(Path exceptionsSplitPath){
+		try {
+			exceptionsSplit = Files.lines(exceptionsSplitPath)
+					.collect(Collectors.toSet());
+		} catch (IOException e) {
+			VALIDATOR.handleIOException(e);
+			throw new RuntimeException("dead code");
+		}
+	}
 	
 	/**
 	 * Creates a new artist with the specified name. 
@@ -180,13 +171,13 @@ public class ArtistFactory implements Serializable {
 		return createArtists(splitArtists(rawArtists));
 	}
 	
-	private static final String[] splitArtists(final String raw){
+	private final String[] splitArtists(final String raw){
 		final Set<String> artists = new HashSet<>();
 		String str = raw;
 		int index;
 		StringBuilder builder;
 
-		for(String special : ArtistFactory.SPECIAL){
+		for(String special : exceptionsSplit){
 			if(StringUtils.containsIgnoreCase(str, special) || StringUtils.containsIgnoreCase(str, special.replace(" & ", "&"))){
 				artists.add(special);
 				index = StringUtils.indexOfIgnoreCase(str, special);
@@ -204,7 +195,7 @@ public class ArtistFactory implements Serializable {
 		}
 
 		for(String artist : str.split(SPLIT_REGEX)){
-			if(!artist.equals("") && !artist.equalsIgnoreCase(Artist.UNKNOWN)){
+			if(!artist.equals("") && !artist.equalsIgnoreCase(Artist.UNKNOWN_ARTISTS)){
 				artists.add(artist.trim());
 			}
 		}

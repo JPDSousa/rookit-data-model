@@ -91,7 +91,7 @@ public abstract class AbstractAlbum extends AbstractGenreable implements Album {
 	/**
 	 * Smof GridFS Reference containing the image of the album
 	 */
-	@SmofObject(name = COVER, bucketName = COVER_BUCKET, preInsert = false)
+	@SmofObject(name = COVER, preInsert = false)
 	private final SmofGridRef cover;
 
 	/**

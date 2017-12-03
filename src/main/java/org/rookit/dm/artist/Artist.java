@@ -57,14 +57,7 @@ public interface Artist extends Genreable, Playable, Comparable<Artist>, ArtistS
 	 * String representation of an unknown artist. This constant may be used only
 	 * when the artist of a track or album is required but unknown.
 	 */
-	String UNKNOWN = "Unknown Artists";
-	
-	String PICTURE_BUCKET = "artist_pictures";
-	
-	/**
-	 * TODO: Move this constant to a suitable place
-	 */
-	public static final String[] SUSPICIOUS_NAME_CHARSEQS = new String[]{"- ", " -",  "[", "]", "{", "}", "~", "|", "�", ")", "("};
+	String UNKNOWN_ARTISTS = "Unknown Artists";
 	
 	public TypeArtist getType();
 	

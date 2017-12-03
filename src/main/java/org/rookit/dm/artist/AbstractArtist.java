@@ -94,7 +94,7 @@ public abstract class AbstractArtist extends AbstractGenreable implements Extend
 	@SmofString(name = TYPE)
 	private final TypeArtist type;
 	
-	@SmofObject(name = PICTURE, bucketName = PICTURE_BUCKET, preInsert = false)
+	@SmofObject(name = PICTURE, preInsert = false)
 	private final SmofGridRef picture;
 		
 	/**
