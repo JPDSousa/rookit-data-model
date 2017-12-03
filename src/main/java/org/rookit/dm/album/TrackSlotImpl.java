@@ -37,6 +37,50 @@ public class TrackSlotImpl implements TrackSlot {
 	public boolean isEmpty() {
 		return track == null;
 	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((disc == null) ? 0 : disc.hashCode());
+		result = prime * result + number;
+		result = prime * result + ((track == null) ? 0 : track.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) {
+			return true;
+		}
+		if (obj == null) {
+			return false;
+		}
+		if (getClass() != obj.getClass()) {
+			return false;
+		}
+		TrackSlotImpl other = (TrackSlotImpl) obj;
+		if (disc == null) {
+			if (other.disc != null) {
+				return false;
+			}
+		} else if (!disc.equals(other.disc)) {
+			return false;
+		}
+		if (number != other.number) {
+			return false;
+		}
+		if (track == null) {
+			if (other.track != null) {
+				return false;
+			}
+		} else if (!track.equals(other.track)) {
+			return false;
+		}
+		return true;
+	}
+	
+	
 	
 	
 }
