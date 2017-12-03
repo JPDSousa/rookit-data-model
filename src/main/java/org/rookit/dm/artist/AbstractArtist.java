@@ -32,6 +32,7 @@ import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
 import org.rookit.dm.album.Album;
+import org.rookit.dm.album.TrackSlot;
 import org.rookit.dm.genre.AbstractGenreable;
 import org.rookit.dm.genre.Genre;
 import org.rookit.dm.track.Track;
@@ -68,7 +69,7 @@ public abstract class AbstractArtist extends AbstractGenreable implements Extend
 	/**
 	 * Albums in which this artist this marked as author
 	 */
-	private final Set<Album> albuns;
+	private final Set<Album> albums;
 
 	/**
 	 * Artist origin (location)
@@ -107,7 +108,7 @@ public abstract class AbstractArtist extends AbstractGenreable implements Extend
 		VALIDATOR.checkArgumentStringNotEmpty(artistName, "Must specify an artist name");
 		this.artistName = artistName;
 		this.related = Sets.newLinkedHashSet();
-		this.albuns = Sets.newLinkedHashSet();
+		this.albums = Sets.newLinkedHashSet();
 		this.origin = "";
 		this.aliases = Sets.newLinkedHashSetWithExpectedSize(5);
 		this.type = type;
@@ -140,12 +141,14 @@ public abstract class AbstractArtist extends AbstractGenreable implements Extend
 
 	@Override
 	public Iterable<Album> getAlbuns() {
-		return albuns;
+		return albums;
 	}
 
 	@Override
 	public Iterable<Track> getTracks() {
-		return albuns.stream().flatMap(a -> StreamSupport.stream(a.getTracks().spliterator(), false)).collect(Collectors.toSet());
+		return albums.stream().flatMap(a -> StreamSupport.stream(a.getTracks().spliterator(), false))
+				.map(TrackSlot::getTrack)
+				.collect(Collectors.toSet());
 	}
 
 	@Override
@@ -199,7 +202,7 @@ public abstract class AbstractArtist extends AbstractGenreable implements Extend
 		final Set<Genre> genres = new LinkedHashSet<>();
 		getGenres().forEach(genres::add);
 
-		albuns.forEach(a -> a.getAllGenres().forEach(g -> genres.add(g)));
+		albums.forEach(a -> a.getAllGenres().forEach(g -> genres.add(g)));
 
 		return genres;
 	}

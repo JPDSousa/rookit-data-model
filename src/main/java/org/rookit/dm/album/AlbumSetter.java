@@ -22,8 +22,7 @@ public interface AlbumSetter<T> {
 	 * @param title new title for the album.
 	 * @return object to return
 	 */
-	T setTitle(final String title);
-	
+	T setTitle(String title);
 
 	/**
 	 * Adds the artist passed by parameter to the set of album authors.
@@ -31,7 +30,7 @@ public interface AlbumSetter<T> {
 	 * @param artist artists to be added to the set of album authors
 	 * @return object to return
 	 */
-	T addArtist(final Artist artist);
+	T addArtist(Artist artist);
 	
 	/**
 	 * Sets the set of album author's, overwriting any previous data.
@@ -39,7 +38,7 @@ public interface AlbumSetter<T> {
 	 * @param artists album author's
 	 * @return object to return
 	 */
-	T setArtists(final Set<Artist> artists);
+	T setArtists(Set<Artist> artists);
 
 	/**
 	 * Adds a track to the list of tracks released through this album.
@@ -53,7 +52,9 @@ public interface AlbumSetter<T> {
 	 */
 	T addTrack(Track track, Integer number);
 
-	T addTrack(Track track, Integer number, String discName);
+	T addTrack(TrackSlot slot);
+
+	T addTrack(Track track, Integer i, String discName);
 	
 	/**
 	 * Adds a track to the last position in the track list.

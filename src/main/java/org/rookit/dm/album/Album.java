@@ -123,7 +123,7 @@ public interface Album extends Genreable, Playable, Comparable<Album>, AlbumSett
 	 * 
 	 * @return a list of tracks with all the tracks of the album
 	 */
-	Collection<Track> getTracks();
+	Collection<TrackSlot> getTracks();
 
 	/**
 	 * Returns the set of tracks from the disc passed as parameter.
@@ -131,13 +131,11 @@ public interface Album extends Genreable, Playable, Comparable<Album>, AlbumSett
 	 * @param cd disc name
 	 * @return the list of tracks from the disc passed as parameter
 	 */
-	Collection<Track> getTracks(String cd);
+	Collection<TrackSlot> getTracks(String cd);
 	
 	String getTrackDisc(Track track);
 
-	Collection<Integer> getTrackNumbers(String cd);
-	
-	Track getTrack(String discName, Integer number);
+	TrackSlot getTrack(String discName, Integer number);
 
 	/**
 	 * Returns the number of tracks in the entire album. This method will
@@ -213,6 +211,8 @@ public interface Album extends Genreable, Playable, Comparable<Album>, AlbumSett
 	 */
 	boolean contains(Track track);
 	
+	boolean contains(TrackSlot slot);
+	
 	/**
 	 * Searches for the track number passed as parameter in the disc (also passed as parameter).
 	 * 
@@ -237,4 +237,7 @@ public interface Album extends Genreable, Playable, Comparable<Album>, AlbumSett
 	
 	@Override
 	int hashCode();
+
+	Collection<Integer> getTrackNumbers(String cd);
+
 }

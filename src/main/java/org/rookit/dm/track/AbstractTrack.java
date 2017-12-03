@@ -57,6 +57,9 @@ abstract class AbstractTrack extends AbstractGenreable implements Track {
 	@SmofString(name = HIDDEN_TRACK)
 	private String hiddenTrack;
 	
+	@SmofArray(name = FEATURES, type = SmofType.OBJECT)
+	private Set<Artist> features;
+	
 	@SmofArray(name = PRODUCERS, type = SmofType.OBJECT)
 	private Set<Artist> producers;
 	
@@ -66,6 +69,7 @@ abstract class AbstractTrack extends AbstractGenreable implements Track {
 	protected AbstractTrack(TypeTrack type){
 		super();
 		producers = Sets.newLinkedHashSetWithExpectedSize(3);
+		features = Sets.newLinkedHashSetWithExpectedSize(3);
 		path = SmofGridRefFactory.newEmptyRef();
 		hiddenTrack = "";
 		this.type = type;
@@ -87,10 +91,33 @@ abstract class AbstractTrack extends AbstractGenreable implements Track {
 	public String getHiddenTrack() {
 		return hiddenTrack;
 	}
+	
+	@Override
+	public Collection<Artist> getFeatures() {
+		return features;
+	}
+
+	@Override
+	public Void setFeatures(Set<Artist> features) {
+		VALIDATOR.checkNotIntersecting(features, getMainArtists(), "main artists");
+		VALIDATOR.checkNotIntersecting(features, getProducers(), "producers");
+		this.features = features;
+		return null;
+	}
+	
+	@Override
+	public Void addFeature(Artist artist) {
+		VALIDATOR.checkArgumentNotNull(artist, "Cannot add a null feature");
+		VALIDATOR.checkArgumentNotContains(artist, getMainArtists(), "Cannot add a main artist as feature");
+		VALIDATOR.checkArgumentNotContains(artist, getProducers(), "Cannot add a producer as feature");
+		features.add(artist);
+		return null;
+	}
 
 	@Override
 	public Void setProducers(Set<Artist> producers) {
-		VALIDATOR.checkArgumentNotNull(producers, "The set of producers cannot be null");
+		VALIDATOR.checkNotIntersecting(producers, getMainArtists(), "main artists");
+		VALIDATOR.checkNotIntersecting(producers, getFeatures(), "features");
 		this.producers = producers;
 		return null;
 	}
@@ -103,6 +130,8 @@ abstract class AbstractTrack extends AbstractGenreable implements Track {
 	@Override
 	public Void addProducer(Artist producer) {
 		VALIDATOR.checkArgumentNotNull(producer, "Cannot add a null producer");
+		VALIDATOR.checkArgumentNotContains(producer, getMainArtists(), "Cannot add a main artist as producer");
+		VALIDATOR.checkArgumentNotContains(producer, getFeatures(), "Cannot add a feature as producer");
 		producers.add(producer);
 		return null;
 	}

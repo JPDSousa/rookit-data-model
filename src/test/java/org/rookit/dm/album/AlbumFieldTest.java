@@ -27,10 +27,12 @@ import java.io.IOException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Random;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
 import org.junit.Before;
@@ -118,7 +120,11 @@ public class AlbumFieldTest {
 		for(Track track : tracks){
 			guineaPig.addTrackLast(track);
 		}
-		assertEquals("Tracks are not being properly assigned!", tracks, guineaPig.getTracks());
+		final Collection<Track> actual = guineaPig.getTracks()
+				.stream()
+				.map(TrackSlot::getTrack)
+				.collect(Collectors.toList());
+		assertEquals("Tracks are not being properly assigned!", tracks, actual);
 	}
 
 	@Test
@@ -135,7 +141,11 @@ public class AlbumFieldTest {
 			guineaPig.addTrackLast(track, discName);
 		}
 		guineaPig.addTrackLast(factory.getRandomTrack(), "other disc");
-		assertEquals("Tracks are not benig properly assigned", tracks, guineaPig.getTracks(discName));
+		final Collection<Track> actual = guineaPig.getTracks(discName)
+				.stream()
+				.map(TrackSlot::getTrack)
+				.collect(Collectors.toList());
+		assertEquals("Tracks are not benig properly assigned", tracks, actual);
 	}
 	
 	@Test
@@ -202,7 +212,8 @@ public class AlbumFieldTest {
 		final String discName = "disc";
 		final Integer number = 8;
 		guineaPig.addTrack(track, number, discName);
-		assertEquals("Get/add track is not working", track, guineaPig.getTrack(discName, number));
+		final TrackSlot expected = TrackSlot.create(discName, number, track);
+		assertEquals("Get/add track is not working", expected, guineaPig.getTrack(discName, number));
 	}
 	
 	@Test(expected = IllegalArgumentException.class)
@@ -227,7 +238,11 @@ public class AlbumFieldTest {
 		for(Track track : tracks) {
 			guineaPig.addTrack(track, 0);
 		}
-		assertEquals("Numberless tracks are not being correctly added", tracks, guineaPig.getTracks());
+		final Collection<Track> actual = guineaPig.getTracks()
+				.stream()
+				.map(TrackSlot::getTrack)
+				.collect(Collectors.toList());
+		assertEquals("Numberless tracks are not being correctly added", tracks, actual);
 	}
 
 	@Test
@@ -237,7 +252,11 @@ public class AlbumFieldTest {
 		for(Track track : tracks) {
 			guineaPig.addTrackLast(track);
 		}
-		assertEquals("Tracks are not being properly added to last position!", tracks, guineaPig.getTracks());
+		final Collection<Track> actual = guineaPig.getTracks()
+				.stream()
+				.map(TrackSlot::getTrack)
+				.collect(Collectors.toList());
+		assertEquals("Tracks are not being properly added to last position!", tracks, actual);
 	}
 	
 	@Test(expected = RuntimeException.class)
@@ -252,9 +271,14 @@ public class AlbumFieldTest {
 	@Test
 	public void testRelocate() {
 		final Track track = factory.getRandomTrack();
-		guineaPig.addTrack(track, 1, "cd1");
-		guineaPig.relocate("cd1", 1, "cd2", 2);
-		assertEquals("Tracks are not being properly relocated", track, guineaPig.getTrack("cd2", 2));
+		final String previousDiscName = "cd1";
+		final int previousNumber = 1;
+		final int nextNumber = 2;
+		final String nextDiscName = "cd2";
+		guineaPig.addTrack(track, previousNumber, previousDiscName);
+		guineaPig.relocate(previousDiscName, previousNumber, nextDiscName, nextNumber);
+		final TrackSlot expected = TrackSlot.create(nextDiscName, nextNumber, track);
+		assertEquals("Tracks are not being properly relocated", expected, guineaPig.getTrack(nextDiscName, nextNumber));
 	}
 
 	@Test

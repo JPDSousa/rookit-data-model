@@ -24,13 +24,14 @@ package org.rookit.dm.track;
 import static org.rookit.dm.track.DatabaseFields.*;
 
 import java.util.Collection;
-import java.util.LinkedHashSet;
 import java.util.Set;
 
 import org.rookit.dm.artist.Artist;
 import org.smof.annnotations.SmofArray;
 import org.smof.annnotations.SmofString;
 import org.smof.parsers.SmofType;
+
+import com.google.common.collect.Sets;
 
 final class OriginalTrack extends AbstractTrack {
 
@@ -39,9 +40,6 @@ final class OriginalTrack extends AbstractTrack {
 	
 	@SmofArray(name = MAIN_ARTISTS, type = SmofType.OBJECT, required = true)
 	private Set<Artist> mainArtists;
-	
-	@SmofArray(name = FEATURES, type = SmofType.OBJECT)
-	private Set<Artist> features;
 
 	OriginalTrack(String title) {
 		this();
@@ -50,8 +48,7 @@ final class OriginalTrack extends AbstractTrack {
 	
 	private OriginalTrack() {
 		super(TypeTrack.ORIGINAL);
-		mainArtists = new LinkedHashSet<>();
-		features = new LinkedHashSet<>();
+		mainArtists = Sets.newLinkedHashSetWithExpectedSize(3);
 	}
 
 	@Override
@@ -72,33 +69,18 @@ final class OriginalTrack extends AbstractTrack {
 	@Override
 	public Void setMainArtists(Set<Artist> mainArtists) {
 		VALIDATOR.checkArgumentNonEmptyCollection(mainArtists, "The main artists set cannot be neither null or empty");
+		VALIDATOR.checkNotIntersecting(mainArtists, getFeatures(), "features");
+		VALIDATOR.checkNotIntersecting(mainArtists, getProducers(), "producers");
 		this.mainArtists = mainArtists;
-		return null;
-	}
-
-	@Override
-	public Set<Artist> getFeatures() {
-		return features;
-	}
-
-	@Override
-	public Void setFeatures(Set<Artist> features) {
-		VALIDATOR.checkValidFeatures(features, mainArtists);
-		this.features = features;
 		return null;
 	}
 
 	@Override
 	public Void addMainArtist(Artist artist) {
 		VALIDATOR.checkArgumentNotNull(artist, "Cannot add a null artist");
+		VALIDATOR.checkArgumentNotContains(artist, getProducers(), "Cannot add a producer as main artist");
+		VALIDATOR.checkArgumentNotContains(artist, getFeatures(), "Cannot add a feature as main artist");
 		mainArtists.add(artist);
-		return null;
-	}
-
-	@Override
-	public Void addFeature(Artist artist) {
-		VALIDATOR.checkArgumentNotContains(artist, mainArtists, "Cannot add a main artist as feature");
-		features.add(artist);
 		return null;
 	}
 

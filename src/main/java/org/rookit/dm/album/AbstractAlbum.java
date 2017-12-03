@@ -26,16 +26,12 @@ import static org.rookit.dm.album.DatabaseFields.*;
 import java.io.ByteArrayInputStream;
 import java.time.Duration;
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedHashMap;
-import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.stream.Collectors;
 
-import org.apache.commons.lang3.tuple.Pair;
 import org.rookit.dm.artist.Artist;
 import org.rookit.dm.genre.AbstractGenreable;
 import org.rookit.dm.genre.Genre;
@@ -51,6 +47,10 @@ import org.smof.gridfs.SmofGridRef;
 import org.smof.gridfs.SmofGridRefFactory;
 import org.smof.parsers.SmofType;
 
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
+import com.google.common.collect.Sets;
+
 /**
  * Abstract implementation of the {@link Album} interface. Extend this class in
  * order to create a custom album type. 
@@ -58,7 +58,7 @@ import org.smof.parsers.SmofType;
 public abstract class AbstractAlbum extends AbstractGenreable implements Album {
 
 	private static final DataModelValidator VALIDATOR = DataModelValidator.getDefault();
-	
+
 	/** Title of the album */
 	@SmofString(name = TITLE, required = true)
 	private String title;
@@ -148,17 +148,24 @@ public abstract class AbstractAlbum extends AbstractGenreable implements Album {
 	}
 
 	@Override
-	public final Collection<Track> getTracks() {
-		final List<Track> tracks = discs.values().stream()
-				.flatMap(d -> d.getTracks().stream())
-				.collect(Collectors.toList());
+	public final List<TrackSlot> getTracks() {
+		final List<TrackSlot> tracks = Lists.newArrayListWithCapacity(getTracksCount());
+		for(String disc : getDiscs()) {
+			for(Integer number : getTrackNumbers(disc)) {
+				tracks.add(getTrack(disc, number));
+			}
+		}
 		return tracks;
 	}
 
 	@Override
-	public final Collection<Track> getTracks(String discName){
+	public final Collection<TrackSlot> getTracks(String discName){
 		final Disc disc = getDisc(discName, false);
-		return disc.getTracks();
+		final Set<TrackSlot> tracks = Sets.newLinkedHashSetWithExpectedSize(disc.getTrackCount());
+		for(int number : getTrackNumbers(discName)) {
+			tracks.add(getTrack(discName, number));
+		}
+		return tracks;
 	}
 
 	@Override
@@ -168,9 +175,9 @@ public abstract class AbstractAlbum extends AbstractGenreable implements Album {
 	}
 
 	@Override
-	public final Track getTrack(String discName, Integer number) {
+	public final TrackSlot getTrack(String discName, Integer number) {
 		final Disc disc = getDisc(discName, false);
-		return disc.getTrack(number);
+		return TrackSlot.create(discName, number, disc.getTrack(number));
 	}
 
 	private Disc getDisc(String discName, boolean create) {
@@ -203,10 +210,20 @@ public abstract class AbstractAlbum extends AbstractGenreable implements Album {
 	}
 
 	@Override
-	public final Void addTrack(Track track, Integer number, String discName) {
+	public Void addTrack(Track track, Integer number, String discName) {
 		final Disc disc = getDisc(discName, true);
 		addTrack(track, number, disc);
 		return null;
+	}
+
+	@Override
+	public final Void addTrack(TrackSlot track) {
+		return addTrack(track.getTrack(), track.getNumber(), track.getDisc());
+	}
+
+	@Override
+	public boolean contains(TrackSlot slot) {
+		return contains(slot.getDisc(), slot.getNumber());
 	}
 
 	private void addTrack(Track track, Integer number, Disc disc) {
@@ -278,7 +295,7 @@ public abstract class AbstractAlbum extends AbstractGenreable implements Album {
 		this.releaseDate = year;
 		return null;
 	}
-	
+
 	@Override
 	public final Void setDuration(Duration duration) {
 		throw new InvalidOperationException("Cannot set duration for albums");
@@ -288,8 +305,10 @@ public abstract class AbstractAlbum extends AbstractGenreable implements Album {
 	public final Duration getDuration() {
 		final Duration total = Duration.ZERO;
 
-		for(Track track : getTracks()){
-			total.plus(track.getDuration());
+		for(String disc : discs.keySet()) {
+			for(Track track : discs.get(disc).tracks.values()) {
+				total.plus(track.getDuration());
+			}
 		}
 
 		return total;
@@ -299,7 +318,7 @@ public abstract class AbstractAlbum extends AbstractGenreable implements Album {
 	public final Duration getDuration(String discName){
 		final Duration total = Duration.ZERO;
 
-		for(Track track : getTracks(discName)){
+		for(Track track : discs.get(discName).tracks.values()) {
 			total.plus(track.getDuration());
 		}
 
@@ -308,9 +327,12 @@ public abstract class AbstractAlbum extends AbstractGenreable implements Album {
 
 	@Override
 	public final Collection<Genre> getAllGenres() {
-		final Set<Genre> genres = new LinkedHashSet<Genre>();
-		getTracks().forEach(t -> t.getGenres().forEach(g -> genres.add(g)));
-
+		final Set<Genre> genres = Sets.newLinkedHashSet();
+		for(String disc : discs.keySet()) {
+			for(Track track : discs.get(disc).tracks.values()) {
+				genres.addAll(track.getGenres());
+			}
+		}
 		return genres;
 	}
 
@@ -427,7 +449,7 @@ public abstract class AbstractAlbum extends AbstractGenreable implements Album {
 
 		@SmofBuilder
 		private Disc(){
-			tracks = new LinkedHashMap<>();
+			tracks = Maps.newLinkedHashMap();
 		}
 
 		private Track getTrack(Integer number) {
@@ -451,7 +473,7 @@ public abstract class AbstractAlbum extends AbstractGenreable implements Album {
 		}
 
 		private List<Track> getTracks(){
-			return new ArrayList<>(tracks.values());
+			return Lists.newArrayList(tracks.values());
 		}
 
 		private int getTrackCount(){
@@ -461,28 +483,28 @@ public abstract class AbstractAlbum extends AbstractGenreable implements Album {
 
 	@Override
 	public Integer getTrackNumber(Track track) {
-		final Pair<String, Integer> meta = getTrackMetadata(track);
-		if(meta != null) {
-			return meta.getRight();
+		final TrackSlot slot = getTrackMetadata(track);
+		if(slot != null) {
+			return slot.getNumber();
 		}
 		return null;
 	}
 
 	@Override
 	public String getTrackDisc(Track track) {
-		final Pair<String, Integer> meta = getTrackMetadata(track);
-		if(meta != null) {
-			return meta.getLeft();
+		final TrackSlot slot = getTrackMetadata(track);
+		if(slot != null) {
+			return slot.getDisc();
 		}
 		return null;
 	}
-	
-	private Pair<String, Integer> getTrackMetadata(Track track) {
+
+	private TrackSlot getTrackMetadata(Track track) {
 		for(String discName : getDiscs()) {
 			for(Integer number : getTrackNumbers(discName)) {
-				final Track currentTrack = getTrack(discName, number);
-				if(track.equals(currentTrack)) {
-					return Pair.of(discName, number);
+				final TrackSlot currentTrack = getTrack(discName, number);
+				if(track.equals(currentTrack.getTrack())) {
+					return currentTrack;
 				}
 			}
 		}
@@ -494,7 +516,7 @@ public abstract class AbstractAlbum extends AbstractGenreable implements Album {
 		final int title = getTitle().compareTo(o.getTitle());
 		return title == 0 ? getIdAsString().compareTo(o.getIdAsString()) : title;
 	}
-	
-	
+
+
 
 }
