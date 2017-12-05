@@ -28,6 +28,8 @@ import java.util.Collection;
 import org.rookit.dm.artist.Artist;
 import org.rookit.dm.genre.Genreable;
 import org.rookit.dm.play.Playable;
+import org.rookit.dm.track.audio.TrackKey;
+import org.rookit.dm.track.audio.TrackMode;
 import org.smof.annnotations.ForceInspection;
 import org.smof.annnotations.SmofIndex;
 import org.smof.annnotations.SmofIndexField;
@@ -53,28 +55,33 @@ public interface Track extends Playable, Genreable, Comparable<Track>, TrackSett
 	TypeTrack getType();
 	
 	TrackTitle getTitle();
-
 	TrackTitle getLongFullTitle();
 	TrackTitle getFullTitle();
 	
 	Collection<Artist> getMainArtists();
-	
 	Collection<Artist> getFeatures();
+	Collection<Artist> getProducers();
 	
 	String getHiddenTrack();
 	
-	Collection<Artist> getProducers();
-	
 	VersionTrack getAsVersionTrack();
 	boolean isVersionTrack();
-	
-	short getBPM();
 	
 	String getLyrics();
 	
 	boolean isExplicit();
 	
 	SmofGridRef getPath();
+
+	short getBPM();
+	TrackKey getTrackKey();
+	TrackMode getTrackMode();
+	boolean isInstrumental();
+	boolean isLive();
+	boolean isAcoustic();
+	double getDanceability();
+	double getEnergy();
+	double getValence();
 	
 	@Override
 	boolean equals(Object track);

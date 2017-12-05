@@ -28,6 +28,7 @@ package org.rookit.dm.track;
  *
  */
 public interface DatabaseFields {
+	
 	String HIDDEN_TRACK = "hidden_track";
 	String TYPE = "track_type";
 	String PATH = "path";
@@ -37,9 +38,19 @@ public interface DatabaseFields {
 	String PRODUCERS = "producers";
 	String VERSION_ARTISTS = "version_artists";
 	String VERSION_TOKEN = "version_token";
-	String BPM = "bpm";
 	String LYRICS = "lyrics";
 	String ORIGINAL = "original";
 	String VERSION_TYPE = "version_type";
 	String EXPLICIT = "explicit";
+	// Audio features
+	String BPM = "bpm";
+	String KEY = "key";
+	String MODE = "mode";
+	String INSTRUMENTAL = "instrumental";
+	String LIVE = "live";
+	String ACOUSTIC = "acoustic";
+	String DANCEABILITY = "danceability";
+	String ENERGY = "energy";
+	String VALENCE = "valence";
+	
 }
