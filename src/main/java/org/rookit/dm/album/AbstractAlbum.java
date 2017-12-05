@@ -153,9 +153,7 @@ public abstract class AbstractAlbum extends AbstractGenreable implements Album {
 	public final List<TrackSlot> getTracks() {
 		final List<TrackSlot> tracks = Lists.newArrayListWithCapacity(getTracksCount());
 		for(String disc : getDiscs()) {
-			for(Integer number : getTrackNumbers(disc)) {
-				tracks.add(getTrack(disc, number));
-			}
+			tracks.addAll(discs.get(disc).getTracksAsSlot(disc));
 		}
 		return tracks;
 	}
@@ -163,16 +161,12 @@ public abstract class AbstractAlbum extends AbstractGenreable implements Album {
 	@Override
 	public final Collection<TrackSlot> getTracks(String discName){
 		final Disc disc = getDisc(discName, false);
-		final Set<TrackSlot> tracks = Sets.newLinkedHashSetWithExpectedSize(disc.getTrackCount());
-		for(int number : getTrackNumbers(discName)) {
-			tracks.add(getTrack(discName, number));
-		}
-		return tracks;
+		return disc.getTracksAsSlot(discName);
 	}
 
 	@Override
-	public Collection<Integer> getTrackNumbers(String cd) {
-		final Disc disc = getDisc(cd, false);
+	public Collection<Integer> getTrackNumbers(String discName) {
+		final Disc disc = getDisc(discName, false);
 		return disc.tracks.keySet();
 	}
 
@@ -228,7 +222,7 @@ public abstract class AbstractAlbum extends AbstractGenreable implements Album {
 		return contains(slot.getDisc(), slot.getNumber());
 	}
 
-	private void addTrack(Track track, Integer number, Disc disc) {
+	private synchronized void addTrack(Track track, Integer number, Disc disc) {
 		VALIDATOR.checkArgumentNotNull(number, "The number cannot be null");
 		if(number.equals(NUMBERLESS)) {
 			addTrackLast(track, disc);
@@ -255,8 +249,10 @@ public abstract class AbstractAlbum extends AbstractGenreable implements Album {
 	}
 
 	private void addTrackLast(Track track, Disc disc) {
-		final Integer number = disc.getNextEmpty();
-		addTrack(track, number, disc);
+		synchronized(disc) {
+			final Integer number = disc.getNextEmpty();
+			addTrack(track, number, disc);
+		}
 	}
 
 	@Override
@@ -266,6 +262,11 @@ public abstract class AbstractAlbum extends AbstractGenreable implements Album {
 		VALIDATOR.checkArgumentNotNull(newNumber, "Must specify a non-null track number to relocate");
 		final Disc oldDisc = getDisc(discName, false);
 		final Track track = oldDisc.remove(number);
+		if(track == null) {
+			final String errorMsg = "there is no track in [" + discName 
+					+ "|"+number + "] to relocate";
+			VALIDATOR.handleException(new RuntimeException(errorMsg));
+		}
 		final Disc newDisc = getDisc(newDiscName, true);
 		newDisc.add(track, newNumber);
 	}
@@ -449,6 +450,14 @@ public abstract class AbstractAlbum extends AbstractGenreable implements Album {
 			tracks = Maps.newLinkedHashMap();
 		}
 
+		private Collection<TrackSlot> getTracksAsSlot(String thisDiscName) {
+			final List<TrackSlot> tracks = Lists.newArrayListWithCapacity(getTrackCount());
+			for(Integer number : this.tracks.keySet()) {
+				tracks.add(TrackSlot.create(thisDiscName, number, this.tracks.get(number)));
+			}
+			return tracks;
+		}
+
 		private Track getTrack(Integer number) {
 			return tracks.get(number);
 		}
@@ -458,6 +467,10 @@ public abstract class AbstractAlbum extends AbstractGenreable implements Album {
 		}
 
 		private void add(Track track, Integer number) {
+			if(tracks.containsKey(number)) {
+				final String errorMsg = number + " already contains a track";
+				VALIDATOR.handleException(new RuntimeException(errorMsg));
+			}
 			tracks.put(number, track);
 		}
 
