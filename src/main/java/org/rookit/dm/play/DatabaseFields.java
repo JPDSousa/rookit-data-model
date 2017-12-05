@@ -15,4 +15,15 @@ public interface DatabaseFields {
 	
 	String IMAGE = "image";
 	
+	// Audio features
+	String BPM = "bpm";
+	String KEY = "key";
+	String MODE = "mode";
+	String INSTRUMENTAL = "instrumental";
+	String LIVE = "live";
+	String ACOUSTIC = "acoustic";
+	String DANCEABILITY = "danceability";
+	String ENERGY = "energy";
+	String VALENCE = "valence";
+	
 }

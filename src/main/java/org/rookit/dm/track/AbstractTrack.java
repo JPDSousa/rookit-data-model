@@ -29,6 +29,8 @@ import java.util.Set;
 
 import org.rookit.dm.artist.Artist;
 import org.rookit.dm.genre.AbstractGenreable;
+import org.rookit.dm.track.audio.TrackKey;
+import org.rookit.dm.track.audio.TrackMode;
 import org.smof.annnotations.SmofArray;
 import org.smof.annnotations.SmofBoolean;
 import org.smof.annnotations.SmofNumber;
@@ -42,14 +44,13 @@ import com.google.common.collect.Sets;
 
 abstract class AbstractTrack extends AbstractGenreable implements Track {
 	
+	private static final short UNINITIALIZED = -1;
+	
 	@SmofString(name = TYPE)
 	private final TypeTrack type;
 	
 	@SmofObject(name = PATH, required = true, preInsert = false)
 	private final SmofGridRef path;
-	
-	@SmofNumber(name = BPM)
-	private short bpm;
 	
 	@SmofString(name = LYRICS)
 	private String lyrics;
@@ -65,6 +66,34 @@ abstract class AbstractTrack extends AbstractGenreable implements Track {
 	
 	@SmofBoolean(name = EXPLICIT)
 	private boolean explicit;
+	
+	// Audio features
+	@SmofNumber(name = BPM)
+	private short bpm;
+	
+	@SmofString(name = KEY)
+	private TrackKey trackKey;
+	
+	@SmofString(name = MODE)
+	private TrackMode trackMode;
+	
+	@SmofBoolean(name = INSTRUMENTAL)
+	private boolean isInstrumental;
+	
+	@SmofBoolean(name = LIVE)
+	private boolean isLive;
+	
+	@SmofBoolean(name = ACOUSTIC)
+	private boolean isAcoustic;
+	
+	@SmofNumber(name = DANCEABILITY)
+	private double danceability;
+	
+	@SmofNumber(name = ENERGY)
+	private double energy;
+	
+	@SmofNumber(name = VALENCE)
+	private double valence;
 		
 	protected AbstractTrack(TypeTrack type){
 		super();
@@ -73,6 +102,11 @@ abstract class AbstractTrack extends AbstractGenreable implements Track {
 		path = SmofGridRefFactory.newEmptyRef();
 		hiddenTrack = "";
 		this.type = type;
+		// Audio features
+		bpm = UNINITIALIZED;
+		danceability = UNINITIALIZED;
+		energy = UNINITIALIZED;
+		valence = UNINITIALIZED;
 	}
 
 	@Override
@@ -233,5 +267,95 @@ abstract class AbstractTrack extends AbstractGenreable implements Track {
 		final int title = getTitle().toString().compareTo(o.getTitle().toString());
 		return title == 0 ? getIdAsString().compareTo(o.getIdAsString()) : title;
 	}
+
+	@Override
+	public Void setTrackKey(TrackKey trackKey) {
+		this.trackKey = trackKey;
+		return null;
+	}
+
+	@Override
+	public Void setTrackMode(TrackMode trackMode) {
+		this.trackMode = trackMode;
+		return null;
+	}
+
+	@Override
+	public Void setLive(boolean isLive) {
+		this.isLive = isLive;
+		return null;
+	}
+
+	@Override
+	public Void setInstrumental(boolean isInstrumental) {
+		this.isInstrumental = isInstrumental;
+		return null;
+	}
+
+	@Override
+	public Void setAcoustic(boolean isAcoustic) {
+		this.isAcoustic = isAcoustic;
+		return null;
+	}
+
+	@Override
+	public Void setDanceability(double danceability) {
+		this.danceability = danceability;
+		return null;
+	}
+
+	@Override
+	public Void setEnergy(double energy) {
+		this.energy = energy;
+		return null;
+	}
+
+	@Override
+	public Void setValence(double valence) {
+		this.valence = valence;
+		return null;
+	}
+
+	@Override
+	public TrackKey getTrackKey() {
+		return trackKey;
+	}
+
+	@Override
+	public TrackMode getTrackMode() {
+		return trackMode;
+	}
+
+	@Override
+	public boolean isInstrumental() {
+		return isInstrumental || !lyrics.equals("");
+	}
+
+	@Override
+	public boolean isLive() {
+		return isLive;
+	}
+
+	@Override
+	public boolean isAcoustic() {
+		return isAcoustic;
+	}
+
+	@Override
+	public double getDanceability() {
+		return danceability;
+	}
+
+	@Override
+	public double getEnergy() {
+		return energy;
+	}
+
+	@Override
+	public double getValence() {
+		return valence;
+	}
+	
+	
 	
 }

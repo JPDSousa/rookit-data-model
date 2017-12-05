@@ -5,10 +5,10 @@ import static org.rookit.dm.play.DatabaseFields.*;
 import java.util.Collections;
 import java.util.Map;
 
-import org.rookit.dm.play.Playlist;
+import org.rookit.dm.play.StaticPlaylist;
 
 @SuppressWarnings("javadoc")
-public class PlaylistComparator extends AbstractPlayableComparator<Playlist> {
+public class PlaylistComparator extends AbstractPlayableComparator<StaticPlaylist> {
 	
 	public PlaylistComparator() {
 		this(DEFAULT_THESHOLD);
@@ -27,10 +27,10 @@ public class PlaylistComparator extends AbstractPlayableComparator<Playlist> {
 	}
 
 	@Override
-	protected Map<String, Integer> createTopMap(Playlist element1, Playlist element2) {
+	protected Map<String, Integer> createTopMap(StaticPlaylist element1, StaticPlaylist element2) {
 		final Map<String, Integer> scores = super.createTopMap(element1, element2);
 		scores.put(NAME, compareStringIgnoreCase(element1.getName(), element2.getName()));
-		scores.put(TRACKS, reverseIntersect(element1.getTracks(), element2.getTracks()));
+		scores.put(TRACKS, reverseIntersect(element1, element2));
 		return scores;
 	}
 

@@ -21,76 +21,97 @@
  ******************************************************************************/
 package org.rookit.dm.play;
 
-import java.io.ByteArrayInputStream;
 import java.util.Collection;
+import java.util.Iterator;
 import java.util.Set;
 import java.util.stream.Stream;
 
 import org.rookit.dm.track.Track;
 import org.smof.annnotations.SmofArray;
-import org.smof.annnotations.SmofObject;
-import org.smof.annnotations.SmofString;
-import org.smof.gridfs.SmofGridRef;
-import org.smof.gridfs.SmofGridRefFactory;
 import org.smof.parsers.SmofType;
 
 import com.google.common.collect.Sets;
 
 import static org.rookit.dm.play.DatabaseFields.*;
 
-class PlaylistImpl extends AbstractPlayable implements Playlist {
-	
-	@SmofString(name = NAME)
-	private final String name;
+class StaticPlaylistImpl extends AbstractPlaylist implements StaticPlaylist {
 	
 	@SmofArray(name = TRACKS, type = SmofType.OBJECT)
 	private final Set<Track> tracks;
 	
-	@SmofObject(name = IMAGE, bucketName = IMAGE_BUCKET, preInsert = false)
-	private final SmofGridRef image;
-	
-	PlaylistImpl(String name) {
-		this.name = name;
+	StaticPlaylistImpl(String name) {
+		super(name);
 		this.tracks = Sets.newLinkedHashSet();
-		image = SmofGridRefFactory.newEmptyRef();
-	}
-
-	@Override
-	public String getName() {
-		return name;
 	}
 
 	@Override
 	public Stream<Track> streamTracks() {
-		return tracks.stream();
+		return stream();
 	}
 
 	@Override
-	public Collection<Track> getTracks() {
-		return tracks;
+	public int size() {
+		return tracks.size();
 	}
 
 	@Override
-	public Void addTrack(Track track) {
-		VALIDATOR.checkArgumentNotNull(track, "Cannot add a null track");
-		tracks.add(track);
-		return null;
+	public boolean isEmpty() {
+		return tracks.isEmpty();
 	}
 
 	@Override
-	public boolean removeTrack(Track track) {
-		return tracks.remove(track);
+	public boolean contains(Object o) {
+		return tracks.contains(o);
 	}
 
 	@Override
-	public SmofGridRef getImage() {
-		return image;
+	public Iterator<Track> iterator() {
+		return tracks.iterator();
 	}
 
 	@Override
-	public Void setImage(byte[] image) {
-		this.image.attachByteArray(new ByteArrayInputStream(image));
-		return null;
+	public Object[] toArray() {
+		return tracks.toArray();
+	}
+
+	@Override
+	public <T> T[] toArray(T[] a) {
+		return tracks.toArray(a);
+	}
+
+	@Override
+	public boolean add(Track e) {
+		return tracks.add(e);
+	}
+
+	@Override
+	public boolean remove(Object o) {
+		return tracks.remove(o);
+	}
+
+	@Override
+	public boolean containsAll(Collection<?> c) {
+		return tracks.containsAll(c);
+	}
+
+	@Override
+	public boolean addAll(Collection<? extends Track> c) {
+		return tracks.addAll(c);
+	}
+
+	@Override
+	public boolean removeAll(Collection<?> c) {
+		return tracks.removeAll(c);
+	}
+
+	@Override
+	public boolean retainAll(Collection<?> c) {
+		return tracks.retainAll(c);
+	}
+
+	@Override
+	public void clear() {
+		tracks.clear();
 	}
 
 }

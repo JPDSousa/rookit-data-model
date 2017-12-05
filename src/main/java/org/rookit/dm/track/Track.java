@@ -28,6 +28,7 @@ import java.util.Collection;
 import org.rookit.dm.artist.Artist;
 import org.rookit.dm.genre.Genreable;
 import org.rookit.dm.play.Playable;
+import org.rookit.dm.track.audio.AudioFeature;
 import org.smof.annnotations.ForceInspection;
 import org.smof.annnotations.SmofIndex;
 import org.smof.annnotations.SmofIndexField;
@@ -46,29 +47,24 @@ import org.smof.index.IndexType;
 	@SmofIndex(fields={@SmofIndexField(name=TITLE, type = IndexType.TEXT)})
 })
 @ForceInspection({OriginalTrack.class, VersionTrack.class})
-public interface Track extends Playable, Genreable, Comparable<Track>, TrackSetter<Void> {
+public interface Track extends AudioFeature, Playable, Genreable, Comparable<Track>, TrackSetter<Void> {
 	
 	short MAX_BPM = 400;
 	
 	TypeTrack getType();
 	
 	TrackTitle getTitle();
-
 	TrackTitle getLongFullTitle();
 	TrackTitle getFullTitle();
 	
 	Collection<Artist> getMainArtists();
-	
 	Collection<Artist> getFeatures();
+	Collection<Artist> getProducers();
 	
 	String getHiddenTrack();
 	
-	Collection<Artist> getProducers();
-	
 	VersionTrack getAsVersionTrack();
 	boolean isVersionTrack();
-	
-	short getBPM();
 	
 	String getLyrics();
 	
