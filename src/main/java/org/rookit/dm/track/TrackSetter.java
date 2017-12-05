@@ -3,11 +3,10 @@ package org.rookit.dm.track;
 import java.util.Set;
 
 import org.rookit.dm.artist.Artist;
-import org.rookit.dm.track.audio.TrackKey;
-import org.rookit.dm.track.audio.TrackMode;
+import org.rookit.dm.track.audio.AudioFeatureSetter;
 
 @SuppressWarnings("javadoc")
-public interface TrackSetter<T> {
+public interface TrackSetter<T> extends AudioFeatureSetter<T> {
 
 	T setTitle(String title);
 	T setTitle(TrackTitle title);
@@ -27,14 +26,4 @@ public interface TrackSetter<T> {
 
 	T setExplicit(boolean explicit);
 
-	//Audio features
-	T setBPM(short bpm);
-	T setTrackKey(TrackKey trackKey);
-	T setTrackMode(TrackMode trackMode);
-	T setInstrumental(boolean isInstrumental);
-	T setLive(boolean isLive);
-	T setAcoustic(boolean isAcoustic);
-	T setDanceability(double danceability);
-	T setEnergy(double energy);
-	T setValence(double valence);
 }

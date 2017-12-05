@@ -28,8 +28,7 @@ import java.util.Collection;
 import org.rookit.dm.artist.Artist;
 import org.rookit.dm.genre.Genreable;
 import org.rookit.dm.play.Playable;
-import org.rookit.dm.track.audio.TrackKey;
-import org.rookit.dm.track.audio.TrackMode;
+import org.rookit.dm.track.audio.AudioFeature;
 import org.smof.annnotations.ForceInspection;
 import org.smof.annnotations.SmofIndex;
 import org.smof.annnotations.SmofIndexField;
@@ -48,7 +47,7 @@ import org.smof.index.IndexType;
 	@SmofIndex(fields={@SmofIndexField(name=TITLE, type = IndexType.TEXT)})
 })
 @ForceInspection({OriginalTrack.class, VersionTrack.class})
-public interface Track extends Playable, Genreable, Comparable<Track>, TrackSetter<Void> {
+public interface Track extends AudioFeature, Playable, Genreable, Comparable<Track>, TrackSetter<Void> {
 	
 	short MAX_BPM = 400;
 	
@@ -72,16 +71,6 @@ public interface Track extends Playable, Genreable, Comparable<Track>, TrackSett
 	boolean isExplicit();
 	
 	SmofGridRef getPath();
-
-	short getBPM();
-	TrackKey getTrackKey();
-	TrackMode getTrackMode();
-	boolean isInstrumental();
-	boolean isLive();
-	boolean isAcoustic();
-	double getDanceability();
-	double getEnergy();
-	double getValence();
 	
 	@Override
 	boolean equals(Object track);

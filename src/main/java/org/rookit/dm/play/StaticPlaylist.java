@@ -21,36 +21,17 @@
  ******************************************************************************/
 package org.rookit.dm.play;
 
-import static org.rookit.dm.genre.DatabaseFields.NAME;
+import java.util.Collection;
 
-import java.io.Serializable;
-
-import org.rookit.dm.utils.DataModelValidator;
-import org.smof.annnotations.SmofBuilder;
-import org.smof.annnotations.SmofParam;
+import org.rookit.dm.track.Track;
 
 @SuppressWarnings("javadoc")
-public class PlaylistFactory implements Serializable {
+public interface StaticPlaylist extends Playlist, PlaylistSetter<Void>, Collection<Track> {
 
-	private static final long serialVersionUID = 1L;
-
-	private static final DataModelValidator VALIDATOR = DataModelValidator.getDefault();
-	
-	private static PlaylistFactory singleton;
-	
-	public static PlaylistFactory getDefault() {
-		if(singleton == null) {
-			singleton = new PlaylistFactory();
-		}
-		
-		return singleton;
+	static StaticPlaylist fromCollection(String name, Collection<Track> tracks) {
+		final StaticPlaylist playlist = new StaticPlaylistImpl(name);
+		playlist.addAll(tracks);
+		return playlist;
 	}
-		
-	private PlaylistFactory() {}
 	
-	@SmofBuilder
-	public StaticPlaylist createPlaylist(@SmofParam(name = NAME) String name) {
-		VALIDATOR.checkArgumentStringNotEmpty(name, "A playlist must have a non-null non-empty name");
-		return new StaticPlaylistImpl(name);
-	}
 }
