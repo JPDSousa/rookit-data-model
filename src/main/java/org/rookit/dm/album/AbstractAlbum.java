@@ -76,6 +76,7 @@ public abstract class AbstractAlbum extends AbstractGenreable implements Album {
 	 */
 	@SmofObject(name = DISCS)
 	private Map<String, Disc> discs;
+	private int tracks;
 
 	/**
 	 * Release of the album
@@ -107,6 +108,7 @@ public abstract class AbstractAlbum extends AbstractGenreable implements Album {
 		this.releaseType = releaseType;
 		this.type = type;
 		this.artists = artists;
+		this.tracks = 0;
 		discs = new LinkedHashMap<>();
 		cover = SmofGridRefFactory.newEmptyRef();
 	}
@@ -235,6 +237,7 @@ public abstract class AbstractAlbum extends AbstractGenreable implements Album {
 			VALIDATOR.checkArgumentNotNull(track, "The track cannot be null");
 			disc.add(track, number);
 		}
+		tracks++;
 	}
 
 	@Override
@@ -269,13 +272,7 @@ public abstract class AbstractAlbum extends AbstractGenreable implements Album {
 
 	@Override
 	public final int getTracksCount() {
-		int counter = 0;
-
-		for(Disc disc : discs.values()){
-			counter += disc.getTrackCount();
-		}
-
-		return counter;
+		return tracks;
 	}
 
 	@Override
@@ -446,7 +443,7 @@ public abstract class AbstractAlbum extends AbstractGenreable implements Album {
 		 */
 		@SmofObject(name="tracks", mapValueType = SmofType.OBJECT)
 		private final Map<Integer, Track> tracks;
-
+		
 		@SmofBuilder
 		private Disc(){
 			tracks = Maps.newLinkedHashMap();
