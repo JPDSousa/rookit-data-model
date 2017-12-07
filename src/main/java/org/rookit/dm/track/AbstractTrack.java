@@ -23,7 +23,6 @@ package org.rookit.dm.track;
 
 import static org.rookit.dm.track.DatabaseFields.*;
 
-import java.time.Duration;
 import java.util.Collection;
 import java.util.Set;
 
@@ -241,25 +240,6 @@ abstract class AbstractTrack extends AbstractGenreable implements Track {
 	@Override
 	public SmofGridRef getPath() {
 		return path;
-	}
-
-	@Override
-	public Void setDuration(Duration duration) {
-		if(path != null) {
-			path.putMetadataEntry(DURATION, duration.toMillis());
-		}
-		else {
-			super.setDuration(duration);
-		}
-		return null;
-	}
-
-	@Override
-	public Duration getDuration() {
-		if(path != null) {
-			return Duration.ofMillis(path.getMetadata().get(DURATION, new Long(0)));
-		}
-		return super.getDuration();
 	}
 
 	@Override
