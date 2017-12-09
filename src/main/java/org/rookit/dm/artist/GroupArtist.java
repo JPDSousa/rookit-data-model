@@ -22,7 +22,7 @@
 package org.rookit.dm.artist;
 
 @SuppressWarnings("javadoc")
-public interface GroupArtist extends ExtendedArtist {
+public interface GroupArtist extends Artist {
 	
 	public TypeGroup getGroupType();
 	public void setGroupType(TypeGroup type);

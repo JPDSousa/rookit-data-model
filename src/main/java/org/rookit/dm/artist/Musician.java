@@ -22,7 +22,7 @@
 package org.rookit.dm.artist;
 
 @SuppressWarnings("javadoc")
-public interface Musician extends ExtendedArtist {
+public interface Musician extends Artist {
 
 	TypeGender getGender();
 	void setGender(TypeGender gender);

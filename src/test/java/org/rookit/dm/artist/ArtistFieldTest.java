@@ -35,6 +35,8 @@ import org.rookit.dm.artist.TypeArtist;
 import org.rookit.dm.utils.DMTestFactory;
 import org.rookit.dm.utils.TestUtils;
 
+import com.google.common.collect.Sets;
+
 @SuppressWarnings("javadoc")
 public class ArtistFieldTest {
 
@@ -120,6 +122,22 @@ public class ArtistFieldTest {
 	@Test
 	public void testGenres() {
 		TestUtils.testGenres(guineaPig);
+	}
+	
+	@Test
+	public final void testGetAllGenres() {
+		assertEquals(guineaPig.getGenres(), guineaPig.getAllGenres());
+	}
+	
+	@Test
+	public final void testAliases() {
+		final String alias = factory.randomString();
+		guineaPig.addAlias(alias);
+		assertTrue(guineaPig.getAliases().contains(alias));
+		final Set<String> aliases = Sets.newLinkedHashSetWithExpectedSize(1);
+		aliases.add(alias);
+		guineaPig.setAliases(aliases);
+		assertEquals(aliases, guineaPig.getAliases());
 	}
 	
 	@Test

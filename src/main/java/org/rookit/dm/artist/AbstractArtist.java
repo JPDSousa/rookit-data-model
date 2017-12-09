@@ -26,16 +26,10 @@ import static org.rookit.dm.artist.DatabaseFields.*;
 import java.io.ByteArrayInputStream;
 import java.time.LocalDate;
 import java.util.Collection;
-import java.util.LinkedHashSet;
 import java.util.Set;
-import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
 
-import org.rookit.dm.album.Album;
-import org.rookit.dm.album.TrackSlot;
 import org.rookit.dm.genre.AbstractGenreable;
 import org.rookit.dm.genre.Genre;
-import org.rookit.dm.track.Track;
 import org.rookit.dm.utils.DataModelValidator;
 import org.smof.annnotations.SmofArray;
 import org.smof.annnotations.SmofDate;
@@ -51,7 +45,7 @@ import com.google.common.collect.Sets;
  * Abstract implementation of the {@link Artist} interface. Extend this class
  * in order to create a custom artist type.
  */
-public abstract class AbstractArtist extends AbstractGenreable implements ExtendedArtist {
+public abstract class AbstractArtist extends AbstractGenreable implements Artist {
 
 	protected static final DataModelValidator VALIDATOR = DataModelValidator.getDefault();
 	
@@ -66,10 +60,6 @@ public abstract class AbstractArtist extends AbstractGenreable implements Extend
 	 */
 	@SmofArray(name = RELATED, type = SmofType.OBJECT)
 	private final Set<Artist> related;
-	/**
-	 * Albums in which this artist this marked as author
-	 */
-	private final Set<Album> albums;
 
 	/**
 	 * Artist origin (location)
@@ -108,7 +98,6 @@ public abstract class AbstractArtist extends AbstractGenreable implements Extend
 		VALIDATOR.checkArgumentStringNotEmpty(artistName, "Must specify an artist name");
 		this.artistName = artistName;
 		this.related = Sets.newLinkedHashSet();
-		this.albums = Sets.newLinkedHashSet();
 		this.origin = "";
 		this.aliases = Sets.newLinkedHashSetWithExpectedSize(5);
 		this.type = type;
@@ -137,18 +126,6 @@ public abstract class AbstractArtist extends AbstractGenreable implements Extend
 		VALIDATOR.checkArgumentNotNull(artist, "The related artist cannot be null");
 		related.add(artist);
 		return null;
-	}
-
-	@Override
-	public Iterable<Album> getAlbuns() {
-		return albums;
-	}
-
-	@Override
-	public Iterable<Track> getTracks() {
-		return albums.stream().flatMap(a -> StreamSupport.stream(a.getTracks().spliterator(), false))
-				.map(TrackSlot::getTrack)
-				.collect(Collectors.toSet());
 	}
 
 	@Override
@@ -199,12 +176,7 @@ public abstract class AbstractArtist extends AbstractGenreable implements Extend
 
 	@Override
 	public Collection<Genre> getAllGenres() {
-		final Set<Genre> genres = new LinkedHashSet<>();
-		getGenres().forEach(genres::add);
-
-		albums.forEach(a -> a.getAllGenres().forEach(g -> genres.add(g)));
-
-		return genres;
+		return getGenres();
 	}
 
 	@Override
