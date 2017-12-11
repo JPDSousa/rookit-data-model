@@ -49,7 +49,9 @@ public abstract class AbstractPlayable extends AbstractRookitModel implements Pl
 	@SmofNumber(name = DURATION)
 	private Duration duration;
 	
-	protected AbstractPlayable() {}
+	protected AbstractPlayable() {
+		duration = Duration.ZERO;
+	}
 
 	@Override
 	public long getPlays() {
