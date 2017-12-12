@@ -23,6 +23,7 @@ package org.rookit.dm.artist;
 
 import static org.junit.Assert.*;
 
+import java.io.IOException;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -118,6 +119,34 @@ public class ArtistFieldTest {
 		artist2.setId(artist1.getId());
 		assertEquals(artist1.hashCode(), artist2.hashCode());
 	}
+	
+	@Test
+	public final void testIPI() {
+		final String ipi = factory.randomString();
+		assertNotEquals(ipi, guineaPig.getIPI());
+		guineaPig.setIPI(ipi);
+		assertEquals(ipi, guineaPig.getIPI());
+	}
+	
+	@Test
+	public final void testISNI() {
+		final String isni = factory.randomString();
+		assertNotEquals(isni, guineaPig.getISNI());
+		guineaPig.setISNI(isni);
+		assertEquals(isni, guineaPig.getISNI());
+	}
+	
+	@Test
+	public final void testPicture() throws IOException {
+		final byte[] picture = factory.randomString().getBytes();
+		assertNotNull(guineaPig.getPicture());
+		guineaPig.setPicture(picture);
+		final byte[] actual = new byte[picture.length];
+		guineaPig.getPicture().getAttachedByteArray().read(actual);
+		assertArrayEquals(picture, actual);
+	}
+	
+	//TODO test beginDate and endDate -> begin date cannot happen before endDate and so on
 
 	@Test
 	public void testGenres() {
