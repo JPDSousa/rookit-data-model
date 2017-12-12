@@ -33,6 +33,7 @@ import org.rookit.dm.artist.Artist;
 import org.rookit.dm.track.Track;
 import org.rookit.dm.track.VersionTrack;
 import org.rookit.utils.print.TypeFormat;
+import org.smof.gridfs.SmofGridRef;
 
 import com.google.common.collect.Iterables;
 
@@ -87,10 +88,13 @@ public final class PrintUtils {
 
 	public static String track(Track track){
 		final ExtStringBuilder builder = ExtStringBuilder.create();
-
-		
-		builder.appendIf(track.getPath().getId() != null, "Content: " + track.getPath().getId() + "\n")
-		.append("Type: ").append(track.getType()).breakLine()
+		final SmofGridRef path = track.getPath();
+		if(path != null && path.getId() != null) {
+			builder.append("Content: ")
+			.append(path.getId())
+			.append("\n");
+		}
+		builder.append("Type: ").append(track.getType()).breakLine()
 		.appendIf(track.getIdAsString() != null, "Id: " + track.getIdAsString() + "\n")
 		.append("Title: ").append(track.getTitle().getTitle()).breakLine()
 		.append("Main Artists: ").append(getIterableAsString(track.getMainArtists(), TypeFormat.TAG)).breakLine()
