@@ -64,7 +64,7 @@ abstract class AbstractTrack extends AbstractGenreable implements Track {
 	private Set<Artist> producers;
 	
 	@SmofBoolean(name = EXPLICIT)
-	private boolean explicit;
+	private Boolean explicit;
 	
 	// Audio features
 	@SmofNumber(name = BPM)
@@ -77,13 +77,13 @@ abstract class AbstractTrack extends AbstractGenreable implements Track {
 	private TrackMode trackMode;
 	
 	@SmofBoolean(name = INSTRUMENTAL)
-	private boolean isInstrumental;
+	private Boolean isInstrumental;
 	
 	@SmofBoolean(name = LIVE)
-	private boolean isLive;
+	private Boolean isLive;
 	
 	@SmofBoolean(name = ACOUSTIC)
-	private boolean isAcoustic;
+	private Boolean isAcoustic;
 	
 	@SmofNumber(name = DANCEABILITY)
 	private double danceability;
@@ -201,13 +201,13 @@ abstract class AbstractTrack extends AbstractGenreable implements Track {
 	}
 
 	@Override
-	public Void setExplicit(boolean explicit) {
+	public Void setExplicit(Boolean explicit) {
 		this.explicit = explicit;
 		return null;
 	}
 
 	@Override
-	public boolean isExplicit() {
+	public Boolean isExplicit() {
 		return explicit;
 	}
 
@@ -261,19 +261,19 @@ abstract class AbstractTrack extends AbstractGenreable implements Track {
 	}
 
 	@Override
-	public Void setLive(boolean isLive) {
+	public Void setLive(Boolean isLive) {
 		this.isLive = isLive;
 		return null;
 	}
 
 	@Override
-	public Void setInstrumental(boolean isInstrumental) {
+	public Void setInstrumental(Boolean isInstrumental) {
 		this.isInstrumental = isInstrumental;
 		return null;
 	}
 
 	@Override
-	public Void setAcoustic(boolean isAcoustic) {
+	public Void setAcoustic(Boolean isAcoustic) {
 		this.isAcoustic = isAcoustic;
 		return null;
 	}
@@ -307,17 +307,17 @@ abstract class AbstractTrack extends AbstractGenreable implements Track {
 	}
 
 	@Override
-	public boolean isInstrumental() {
-		return isInstrumental || !lyrics.equals("");
+	public Boolean isInstrumental() {
+		return isInstrumental;
 	}
 
 	@Override
-	public boolean isLive() {
+	public Boolean isLive() {
 		return isLive;
 	}
 
 	@Override
-	public boolean isAcoustic() {
+	public Boolean isAcoustic() {
 		return isAcoustic;
 	}
 

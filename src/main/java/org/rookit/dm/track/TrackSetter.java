@@ -3,10 +3,9 @@ package org.rookit.dm.track;
 import java.util.Set;
 
 import org.rookit.dm.artist.Artist;
-import org.rookit.dm.track.audio.AudioFeatureSetter;
 
 @SuppressWarnings("javadoc")
-public interface TrackSetter<T> extends AudioFeatureSetter<T> {
+public interface TrackSetter<T> {
 
 	T setTitle(String title);
 	T setTitle(TrackTitle title);
@@ -24,6 +23,6 @@ public interface TrackSetter<T> extends AudioFeatureSetter<T> {
 	
 	T setLyrics(String lyrics);
 
-	T setExplicit(boolean explicit);
+	T setExplicit(Boolean explicit);
 
 }

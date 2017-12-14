@@ -1,7 +1,7 @@
 package org.rookit.dm.track.audio;
 
 @SuppressWarnings("javadoc")
-public interface AudioFeature {
+public interface AudioFeature<T> extends AudioFeatureSetter<T> {
 
 	short getBPM();
 	
@@ -9,11 +9,11 @@ public interface AudioFeature {
 	
 	TrackMode getTrackMode();
 	
-	boolean isInstrumental();
+	Boolean isInstrumental();
 	
-	boolean isLive();
+	Boolean isLive();
 	
-	boolean isAcoustic();
+	Boolean isAcoustic();
 	
 	double getDanceability();
 	
