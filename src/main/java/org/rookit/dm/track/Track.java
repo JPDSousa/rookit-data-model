@@ -47,7 +47,7 @@ import org.smof.index.IndexType;
 	@SmofIndex(fields={@SmofIndexField(name=TITLE, type = IndexType.TEXT)})
 })
 @ForceInspection({OriginalTrack.class, VersionTrack.class})
-public interface Track extends AudioFeature<Void>, Playable, Genreable, Comparable<Track>, TrackSetter<Void> {
+public interface Track extends AudioFeature, Playable, Genreable, Comparable<Track>, TrackSetter<Void> {
 	
 	short MAX_BPM = 400;
 	

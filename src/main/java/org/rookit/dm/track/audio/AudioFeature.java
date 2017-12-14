@@ -1,7 +1,7 @@
 package org.rookit.dm.track.audio;
 
 @SuppressWarnings("javadoc")
-public interface AudioFeature<T> extends AudioFeatureSetter<T> {
+public interface AudioFeature extends AudioFeatureSetter<Void> {
 
 	short getBPM();
 	
