@@ -126,6 +126,20 @@ public class TrackFieldsTest {
 	public final void testAddNullMainArtists() {
 		guineaPig.addMainArtist(null);
 	}
+	
+	@Test(expected = IllegalArgumentException.class)
+	public final void testAddAlreadyFeatureAsMainArtist() {
+		final Artist artist = factory.getRandomArtist();
+		guineaPig.addFeature(artist);
+		guineaPig.addMainArtist(artist);
+	}
+	
+	@Test(expected = IllegalArgumentException.class)
+	public final void testAddAlreadyProducerAsMainArtist() {
+		final Artist artist = factory.getRandomArtist();
+		guineaPig.addProducer(artist);
+		guineaPig.addMainArtist(artist);
+	}
 
 	@Test
 	public final void testFeatures() {
