@@ -202,6 +202,7 @@ abstract class AbstractTrack extends AbstractGenreable implements Track {
 
 	@Override
 	public Void setExplicit(Boolean explicit) {
+		VALIDATOR.checkArgumentNotNull(explicit, "Explicit cannot be null");
 		this.explicit = explicit;
 		return null;
 	}
