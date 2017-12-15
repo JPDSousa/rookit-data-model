@@ -55,104 +55,104 @@ public class TrackFieldsTest {
 	}
 
 	@Before
-	public void createTrack() {
+	public final void createTrack() {
 		guineaPig = factory.getRandomOriginalTrack();
 	}
 
 	@Test
-	public void testTitle() {
+	public final void testTitle() {
 		TrackTitle testTitle = new TrackTitle(factory.randomString());
 		guineaPig.setTitle(testTitle.getTitle());
 		assertEquals(testTitle, guineaPig.getTitle());
 	}
 	
 	@Test
-	public void testTrackTitle() {
+	public final void testTrackTitle() {
 		TrackTitle testTitle = new TrackTitle(factory.randomString());
 		guineaPig.setTitle(testTitle);
 		assertEquals(testTitle, guineaPig.getTitle());
 	}
 
 	@Test(expected = IllegalArgumentException.class)
-	public void testEmptyTrackTitle(){
+	public final void testEmptyTrackTitle(){
 		guineaPig.setTitle("");
 	}
 	
 	@Test(expected = IllegalArgumentException.class)
-	public void testNullTrackTitleString() {
+	public final void testNullTrackTitleString() {
 		guineaPig.setTitle((String) null);
 	}
 	
 	@Test(expected = IllegalArgumentException.class)
-	public void testNullTrackTitle() {
+	public final void testNullTrackTitle() {
 		guineaPig.setTitle((TrackTitle) null);
 	}
 
 	@Test
-	public void testLongFullTitle() {
+	public final void testLongFullTitle() {
 		assertNotNull(guineaPig.getLongFullTitle());
 	}
 	
 	@Test
-	public void testFullTitle() {
+	public final void testFullTitle() {
 		assertNotNull(guineaPig.getFullTitle());
 	}
 	
 	@Test
-	public void testMainArtists() {
+	public final void testMainArtists() {
 		Set<Artist> artists = factory.getRandomSetOfArtists();
 		guineaPig.setMainArtists(artists);
 		assertEquals("Main artists are not being assigned!", artists, guineaPig.getMainArtists());
 	}
 	
 	@Test(expected = IllegalArgumentException.class)
-	public void testNullMainArtists() {
+	public final void testNullMainArtists() {
 		guineaPig.setMainArtists(null);
 	}
 	
 	@Test(expected = IllegalArgumentException.class)
-	public void testEmptyMainArtists() {
+	public final void testEmptyMainArtists() {
 		guineaPig.setMainArtists(Sets.newLinkedHashSet());
 	}
 	
 	@Test
-	public void testAddMainArtist() {
+	public final void testAddMainArtist() {
 		final Artist artist = factory.getRandomArtist();
 		guineaPig.addMainArtist(artist);
 		assertTrue(IterableUtils.contains(guineaPig.getMainArtists(), artist));
 	}
 	
 	@Test(expected = IllegalArgumentException.class)
-	public void testAddNullMainArtists() {
+	public final void testAddNullMainArtists() {
 		guineaPig.addMainArtist(null);
 	}
 
 	@Test
-	public void testFeatures() {
+	public final void testFeatures() {
 		Set<Artist> artists = factory.getRandomSetOfArtists();
 		guineaPig.setFeatures(artists);
 		assertEquals(artists, guineaPig.getFeatures());
 	}
 	
 	@Test(expected = IllegalArgumentException.class)
-	public void testNullFeatures() {
+	public final void testNullFeatures() {
 		guineaPig.setFeatures(null);
 	}
 	
 	@Test
-	public void testAddFeature() {
+	public final void testAddFeature() {
 		final Artist artist = factory.getRandomArtist();
 		guineaPig.addFeature(artist);
 		assertTrue(IterableUtils.contains(guineaPig.getFeatures(), artist));
 	}
 	
 	@Test(expected = IllegalArgumentException.class)
-	public void testAddNullFeature() {
+	public final void testAddNullFeature() {
 		guineaPig.addFeature(null);
 	}
 	
 	@Test(expected = IllegalArgumentException.class)
-	public void testAddAlreadyMainArtistAsFeature() {
+	public final void testAddAlreadyMainArtistAsFeature() {
 		final Artist artist = factory.getRandomArtist();
 		guineaPig.addMainArtist(artist);
 		guineaPig.addFeature(artist);
@@ -189,112 +189,112 @@ public class TrackFieldsTest {
 	}
 
 	@Test
-	public void testSetHiddenTrack() {
+	public final void testSetHiddenTrack() {
 		final String hiddenTrack = factory.randomString();
 		guineaPig.setHiddenTrack(hiddenTrack);
 		assertEquals(hiddenTrack, guineaPig.getHiddenTrack());
 	}
 	
 	@Test(expected = IllegalArgumentException.class)
-	public void testSetNullHiddenTrack() {
+	public final void testSetNullHiddenTrack() {
 		guineaPig.setHiddenTrack(null);
 	}
 	
 	@Test
-	public void testSetEmptyHiddenTrack() {
+	public final void testSetEmptyHiddenTrack() {
 		guineaPig.setHiddenTrack("");
 	}
 	
 	@Test
-	public void testGetHiddenTrackNotNull() {
+	public final void testGetHiddenTrackNotNull() {
 		assertNotNull(guineaPig.getHiddenTrack());
 	}
 
 	@Test
-	public void testProducers() {
+	public final void testProducers() {
 		Set<Artist> artists = factory.getRandomSetOfArtists();
 		guineaPig.setProducers(artists);
 		assertEquals(artists, guineaPig.getProducers());
 	}
 	
 	@Test(expected = IllegalArgumentException.class)
-	public void testNullProducers() {
+	public final void testNullProducers() {
 		guineaPig.setProducers(null);
 	}
 	
 	@Test
-	public void testAddProducer() {
+	public final void testAddProducer() {
 		final Artist artist = factory.getRandomArtist();
 		guineaPig.addProducer(artist);
 		assertTrue(IterableUtils.contains(guineaPig.getProducers(), artist));
 	}
 	
 	@Test(expected = IllegalArgumentException.class)
-	public void testAddNullProducer() {
+	public final void testAddNullProducer() {
 		guineaPig.addProducer(null);
 	}
 	
 	@Test
-	public void testGetAsVersionTrack() {
+	public final void testGetAsVersionTrack() {
 		final Track track = TrackFactory.getDefault().createVersionTrack(TypeVersion.ALTERNATIVE, guineaPig);
 		assertEquals(track, track.getAsVersionTrack());
 	}
 	
 	@Test(expected = InvalidOperationException.class)
-	public void testOriginalGetAsVersionTrack() {
+	public final void testOriginalGetAsVersionTrack() {
 		final Track track = TrackFactory.getDefault().createOriginalTrack(factory.randomString());
 		track.getAsVersionTrack();
 	}
 	
 	@Test
-	public void testIsVersionTrack() {
+	public final void testIsVersionTrack() {
 		final Track track = TrackFactory.getDefault().createVersionTrack(TypeVersion.ALTERNATIVE, guineaPig);
 		assertTrue(track.isVersionTrack());
 	}
 	
 	@Test
-	public void testOriginalIsVersionTrack() {
+	public final void testOriginalIsVersionTrack() {
 		final Track track = TrackFactory.getDefault().createOriginalTrack(factory.randomString());
 		assertFalse(track.isVersionTrack());
 	}
 	
 	@Test
-	public void testBpm() {
+	public final void testBpm() {
 		final short bpm = 140;
 		guineaPig.setBPM(bpm);
 		assertEquals(bpm, guineaPig.getBPM());
 	}
 	
 	@Test(expected = IllegalArgumentException.class)
-	public void testNegativeBpm() {
+	public final void testNegativeBpm() {
 		guineaPig.setBPM((short) -100);
 	}
 	
 	
 	@Test
-	public void testZeroBpm() {
+	public final void testZeroBpm() {
 		guineaPig.setBPM((short) 0);
 	}
 	
 	@Test
-	public void testLyrics() {
+	public final void testLyrics() {
 		final String lyrics = factory.randomString();
 		guineaPig.setLyrics(lyrics);
 		assertEquals(lyrics, guineaPig.getLyrics());
 	}
 	
 	@Test(expected = IllegalArgumentException.class)
-	public void testNullLyrics() {
+	public final void testNullLyrics() {
 		guineaPig.setLyrics(null);
 	}
 	
 	@Test
-	public void testEmptyLyrics() {
+	public final void testEmptyLyrics() {
 		guineaPig.setLyrics("");
 	}
 	
 	@Test
-	public void testGenres() {
+	public final void testGenres() {
 		TestUtils.testGenres(guineaPig);
 	}
 	
@@ -315,7 +315,7 @@ public class TrackFieldsTest {
 	}
 
 	@Test
-	public void testEqualsById() {
+	public final void testEqualsById() {
 		final String title = factory.randomString();
 		final Set<Artist> mainArtists = factory.getRandomSetOfArtists();
 		final Set<Artist> features = Sets.newLinkedHashSet();
@@ -330,7 +330,7 @@ public class TrackFieldsTest {
 	}
 	
 	@Test
-	public void testEqualsByType() {
+	public final void testEqualsByType() {
 		final TrackFactory trackFactory = TrackFactory.getDefault();
 		
 		final Track track1 = trackFactory.createOriginalTrack(factory.randomString());
@@ -339,7 +339,7 @@ public class TrackFieldsTest {
 	}	
 	
 	@Test
-	public void testEqualsOriginalTrack() {
+	public final void testEqualsOriginalTrack() {
 		final TrackFactory trackFactory = TrackFactory.getDefault();
 		final String title = factory.randomString();
 		final Track track1 = trackFactory.createOriginalTrack(title);
@@ -359,7 +359,7 @@ public class TrackFieldsTest {
 	}
 	
 	@Test
-	public void testEqualsVersionTrack() {
+	public final void testEqualsVersionTrack() {
 		final TrackFactory trackFactory = TrackFactory.getDefault();
 		final Track original = trackFactory.createOriginalTrack(factory.randomString());
 		final TypeVersion version = TypeVersion.LIVE;
@@ -370,7 +370,7 @@ public class TrackFieldsTest {
 	}
 	
 	@Test
-	public void testCompareTo() {
+	public final void testCompareTo() {
 		testCompareTo(guineaPig);
 		testCompareTo(factory.getRandomOriginalTrack());
 		testCompareTo(factory.getRandomTrack("someRandomTrack"));
