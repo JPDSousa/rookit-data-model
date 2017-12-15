@@ -70,6 +70,12 @@ public final class VersionTrack extends AbstractTrack {
 		VALIDATOR.checkArgumentNotNull(extraArtist, "Cannot add a null artist");
 		extraArtists.add(extraArtist);
 	}
+	
+	public void setVersionArtist(Set<Artist> artists) {
+		VALIDATOR.checkArgumentNotNull(artists, "Artist set cannot be null");
+		extraArtists.clear();
+		extraArtists.addAll(artists);
+	}
 
 	public void setVersionToken(String versionToken){
 		VALIDATOR.checkArgumentNotNull(versionToken, "The version token cannot be null");
