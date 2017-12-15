@@ -172,6 +172,13 @@ public class TrackFieldsTest {
 		guineaPig.addFeature(artist);
 	}
 	
+	@Test(expected = IllegalArgumentException.class)
+	public final void testAddAlreadyProducerAsFeature() {
+		final Artist artist = factory.getRandomArtist();
+		guineaPig.addProducer(artist);
+		guineaPig.addFeature(artist);
+	}
+	
 	@Test
 	public final void testPlayable() {
 		TestUtils.testPlayable(guineaPig);
