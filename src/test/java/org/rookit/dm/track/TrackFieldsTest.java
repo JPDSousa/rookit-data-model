@@ -192,6 +192,11 @@ public class TrackFieldsTest {
 		assertFalse(guineaPig.isExplicit());
 	}
 	
+	@Test(expected = IllegalArgumentException.class)
+	public final void testExplicitNull() {
+		guineaPig.setExplicit(null);
+	}
+	
 	@Test
 	public final void testTrackType() {
 		for(TypeTrack type : TypeTrack.values()) {
@@ -253,6 +258,20 @@ public class TrackFieldsTest {
 	@Test(expected = IllegalArgumentException.class)
 	public final void testAddNullProducer() {
 		guineaPig.addProducer(null);
+	}
+	
+	@Test(expected = IllegalArgumentException.class)
+	public final void testAddAlreadyMainArtistAsProducer() {
+		final Artist artist = factory.getRandomArtist();
+		guineaPig.addMainArtist(artist);
+		guineaPig.addProducer(artist);
+	}
+	
+	@Test(expected = IllegalArgumentException.class)
+	public final void testAddAlreadyFeatureAsProducer() {
+		final Artist artist = factory.getRandomArtist();
+		guineaPig.addFeature(artist);
+		guineaPig.addProducer(artist);
 	}
 	
 	@Test
