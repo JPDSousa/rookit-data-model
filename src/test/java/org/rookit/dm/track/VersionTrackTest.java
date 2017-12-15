@@ -120,14 +120,17 @@ public class VersionTrackTest {
 	
 	@Test
 	public final void testMainArtists() {
-		final Set<Artist> artists = factory.getRandomSetOfArtists();
 		assertEquals(original.getMainArtists(), guineaPig.getMainArtists());
+		
+		final Set<Artist> artists = factory.getRandomSetOfArtists();
 		guineaPig.setMainArtists(artists);
 		assertEquals(artists, guineaPig.getMainArtists());
+		assertEquals(artists, original.getMainArtists());
+		
+		final Artist artist = factory.getRandomArtist();
+		guineaPig.addMainArtist(artist);
 		assertEquals(original.getMainArtists(), guineaPig.getMainArtists());
-		guineaPig.addMainArtist(factory.getRandomArtist());
-		// TODO requires further testing
-		assertEquals(original.getMainArtists(), guineaPig.getMainArtists());
+		assertTrue(original.getMainArtists().contains(artist));
 	}
 	
 	@Test
