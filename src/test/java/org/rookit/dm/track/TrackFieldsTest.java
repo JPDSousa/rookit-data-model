@@ -56,7 +56,7 @@ public class TrackFieldsTest {
 
 	@Before
 	public void createTrack() {
-		guineaPig = factory.getRandomTrack();
+		guineaPig = factory.getRandomOriginalTrack();
 	}
 
 	@Test
@@ -372,7 +372,7 @@ public class TrackFieldsTest {
 	@Test
 	public void testCompareTo() {
 		testCompareTo(guineaPig);
-		testCompareTo(factory.getRandomTrack());
+		testCompareTo(factory.getRandomOriginalTrack());
 		testCompareTo(factory.getRandomTrack("someRandomTrack"));
 	}
 	

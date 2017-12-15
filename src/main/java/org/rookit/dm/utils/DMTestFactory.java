@@ -25,11 +25,11 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import java.util.Set;
+import java.util.function.Supplier;
 
 import org.apache.commons.text.RandomStringGenerator;
 import org.rookit.dm.album.Album;
@@ -73,13 +73,25 @@ public final class DMTestFactory {
 				.build();
 		trackFactory = TrackFactory.getDefault();
 	}
+	
+	private final <T> T getUnique(T item, Supplier<T> supplier) {
+		T another;
+		do {
+			another = supplier.get();
+		} while(item.equals(another));
+		return another;
+	}
 
-	public Track getRandomTrack() {
+	public final Track getRandomOriginalTrack() {
 		final String title = randomString();
 		return getRandomTrack(title);
 	}
 	
-	public Track getRandomTrack(String title) {
+	public final Track getRandomUniqueOriginalTrack(Track track) {
+		return getUnique(track, () -> getRandomOriginalTrack());
+	}
+	
+	public final Track getRandomTrack(String title) {
 		final Set<Artist> mainArtists = getRandomSetOfArtists();
 		final Set<Artist> features = Sets.newLinkedHashSet();
 		final Set<Genre> genres = getRandomSetOfGenres();
@@ -87,14 +99,22 @@ public final class DMTestFactory {
 		return createOriginalTrack(title, mainArtists, features, genres);
 	}
 	
+	public final Track getRandomUniqueTrack(String title, Track track) {
+		return getUnique(track, () -> getRandomTrack(title));
+	}
+	
 	public final Track getRandomTrack(TypeTrack type) {
 		final String title = randomString();
-		final Track original = getRandomTrack();
+		final Track original = getRandomOriginalTrack();
 		final TypeVersion versionType = TypeVersion.EXTENDED;
 		return trackFactory.createTrack(type, title, original, versionType);	
 	}
 	
-	public Track createOriginalTrack(String title, Set<Artist> mainArtists, Set<Artist> features, Set<Genre> genres) {
+	public final Track getRandomUniqueTrack(TypeTrack type, Track track) {
+		return getUnique(track, () -> getRandomTrack(type));
+	}
+	
+	private Track createOriginalTrack(String title, Set<Artist> mainArtists, Set<Artist> features, Set<Genre> genres) {
 		final Track track = trackFactory.createOriginalTrack(title);
 		track.setMainArtists(mainArtists);
 		track.setFeatures(features);
@@ -107,9 +127,13 @@ public final class DMTestFactory {
 		Set<Track> tracks = Sets.newLinkedHashSet();
 		Random random = new Random();
 		for(int i=0; i<random.nextInt(19)+1; i++){
-			tracks.add(getRandomTrack());
+			tracks.add(getRandomOriginalTrack());
 		}
 		return tracks;
+	}
+	
+	public Set<Track> getRandomUniqueSetOfTracks(Set<Track> tracks) {
+		return getUnique(tracks, () -> getRandomSetOfTracks());
 	}
 
 	public Album getRandomAlbum(){
@@ -120,14 +144,22 @@ public final class DMTestFactory {
 		
 		return AlbumFactory.getDefault().createSingleArtistAlbum(title, type, artists);
 	}
+	
+	public Album getRandomUniqueAlbum(Album album) {
+		return getUnique(album, () -> getRandomAlbum());
+	}
 
-	public Set<Album> getRandomSetOfAlbuns(){
-		Set<Album> albuns = Sets.newLinkedHashSet();
+	public Set<Album> getRandomSetOfAlbums(){
+		Set<Album> albums = Sets.newLinkedHashSet();
 		Random random = new Random();
 		for(int i=0; i<random.nextInt(19)+1; i++){
-			albuns.add(getRandomAlbum());
+			albums.add(getRandomAlbum());
 		}
-		return albuns;
+		return albums;
+	}
+	
+	public Set<Album> getRandomUniqueSetOfAlbums(Set<Album> albums) {
+		return getUnique(albums, () -> getRandomSetOfAlbums());
 	}
 
 	public Set<Artist> getRandomSetOfArtists(){
@@ -138,12 +170,20 @@ public final class DMTestFactory {
 		}
 		return artists;
 	}
+	
+	public Set<Artist> getRandomUniqueSetOfArtists(Set<Artist> artists) {
+		return getUnique(artists, () -> getRandomSetOfArtists());
+	}
 
 	public Artist getRandomArtist(){
 		Random random = new Random();
 		final TypeArtist type = TypeArtist.GROUP;
 		Artist artist = ArtistFactory.getDefault().createArtist(type, "art"+random.nextInt(RANDOM_LENGTH));
 		return artist;
+	}
+	
+	public Artist getRandomUniqueArtist(Artist artist) {
+		return getUnique(artist, () -> getRandomArtist());
 	}
 
 	public Set<Genre> getRandomSetOfGenres(){
@@ -154,10 +194,18 @@ public final class DMTestFactory {
 		}
 		return genres;
 	}
+	
+	public Set<Genre> getRandomUniqueSetOfGenres(Set<Genre> genres) {
+		return getUnique(genres, () -> getRandomSetOfGenres());
+	}
 
 	public Genre getRandomGenre(){
 		Random random = new Random();
 		return GenreFactory.getDefault().createGenre("Genre"+random.nextInt(RANDOM_LENGTH));
+	}
+	
+	public Genre getRandomUniqueGenre(Genre genre) {
+		return getUnique(genre, () -> getRandomGenre());
 	}
 	
 	public TypeTrack getRandomTrackType() {
@@ -166,12 +214,20 @@ public final class DMTestFactory {
 		final int index = random.nextInt(values.length);
 		return values[index];
 	}
+	
+	public TypeTrack getRandomUniqueTrackType(TypeTrack type) {
+		return getUnique(type, () -> getRandomTrackType());
+	}
 
 	public TypeVersion getRandomVersionType() {
 		final TypeVersion[] values = TypeVersion.values();
 		final Random random = new Random();
 		final int index = random.nextInt(values.length);
 		return values[index];
+	}
+	
+	public TypeVersion getRandomUniqueVersionType(TypeVersion version) {
+		return getUnique(version, () -> getRandomVersionType());
 	}
 	
 	public Map<String, String> getRandomDataMap(int size){

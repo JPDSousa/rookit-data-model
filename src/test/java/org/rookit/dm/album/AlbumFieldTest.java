@@ -141,7 +141,7 @@ public class AlbumFieldTest {
 		for(Track track : tracks) {
 			guineaPig.addTrackLast(track, discName);
 		}
-		guineaPig.addTrackLast(factory.getRandomTrack(), "other disc");
+		guineaPig.addTrackLast(factory.getRandomOriginalTrack(), "other disc");
 		final Collection<Track> actual = guineaPig.getTracks(discName)
 				.stream()
 				.map(TrackSlot::getTrack)
@@ -152,7 +152,7 @@ public class AlbumFieldTest {
 	@Test
 	public final void testNullTracksByDisc() {
 		final String discName = "disc1";
-		guineaPig.addTrackLast(factory.getRandomTrack(), discName);
+		guineaPig.addTrackLast(factory.getRandomOriginalTrack(), discName);
 		assertNotNull("The track set can never be null", guineaPig.getTracks(discName));
 	}
 
@@ -181,14 +181,14 @@ public class AlbumFieldTest {
 			guineaPig.addTrack(tracks.get(i), i+1, discName);
 			numbers.add(i+1);
 		}
-		guineaPig.addTrackLast(factory.getRandomTrack(), "other disc");
+		guineaPig.addTrackLast(factory.getRandomOriginalTrack(), "other disc");
 		assertEquals("Tracks are not being properly assigned", numbers, guineaPig.getTrackNumbers(discName));
 	}
 	
 	@Test
 	public final void testNullTrackNumbers() {
 		final String discName = "discName";
-		guineaPig.addTrackLast(factory.getRandomTrack(), discName);
+		guineaPig.addTrackLast(factory.getRandomOriginalTrack(), discName);
 		assertNotNull("The track set can never be null", guineaPig.getTrackNumbers(discName));
 	}
 
@@ -209,7 +209,7 @@ public class AlbumFieldTest {
 	
 	@Test
 	public final void testGetTrack() {
-		final Track track = factory.getRandomTrack();
+		final Track track = factory.getRandomOriginalTrack();
 		final String discName = "disc";
 		final Integer number = 8;
 		guineaPig.addTrack(track, number, discName);
@@ -224,12 +224,12 @@ public class AlbumFieldTest {
 	
 	@Test(expected = IllegalArgumentException.class)
 	public final void testNullNumberAddTrack() {
-		guineaPig.addTrack(factory.getRandomTrack(), null, "disc");
+		guineaPig.addTrack(factory.getRandomOriginalTrack(), null, "disc");
 	}
 	
 	@Test(expected = IllegalArgumentException.class)
 	public final void testNullDiscAddTrack() {
-		guineaPig.addTrack(factory.getRandomTrack(), 2, null);
+		guineaPig.addTrack(factory.getRandomOriginalTrack(), 2, null);
 	}
 
 	@Test
@@ -262,16 +262,16 @@ public class AlbumFieldTest {
 	
 	@Test(expected = RuntimeException.class)
 	public final void testDiscAmbiguityAddTrackLast() {
-		guineaPig.addTrackLast(factory.getRandomTrack(), "cd1");
-		guineaPig.addTrackLast(factory.getRandomTrack(), "cd2");
+		guineaPig.addTrackLast(factory.getRandomOriginalTrack(), "cd1");
+		guineaPig.addTrackLast(factory.getRandomOriginalTrack(), "cd2");
 		//this should throw an exception, as it is ambiguous to which of
 		//the discs the track is to be added
-		guineaPig.addTrackLast(factory.getRandomTrack());
+		guineaPig.addTrackLast(factory.getRandomOriginalTrack());
 	}
 	
 	@Test
 	public final void testRelocate() {
-		final Track track = factory.getRandomTrack();
+		final Track track = factory.getRandomOriginalTrack();
 		final String previousDiscName = "cd1";
 		final int previousNumber = 1;
 		final int nextNumber = 2;
@@ -372,16 +372,16 @@ public class AlbumFieldTest {
 	
 	@Test
 	public final void testDiscCount() {
-		guineaPig.addTrackLast(factory.getRandomTrack(), "dics1");
-		guineaPig.addTrackLast(factory.getRandomTrack(), "dics2");
+		guineaPig.addTrackLast(factory.getRandomOriginalTrack(), "dics1");
+		guineaPig.addTrackLast(factory.getRandomOriginalTrack(), "dics2");
 		assertEquals("Unexpected number of discs", 2, guineaPig.getDiscCount());
 	}
 	
 	@Test
 	public final void testDiscs() {
 		final Set<String> discs = Sets.newLinkedHashSet(Arrays.asList("disc1", "disc2"));
-		guineaPig.addTrackLast(factory.getRandomTrack(), "disc1");
-		guineaPig.addTrackLast(factory.getRandomTrack(), "disc2");
+		guineaPig.addTrackLast(factory.getRandomOriginalTrack(), "disc1");
+		guineaPig.addTrackLast(factory.getRandomOriginalTrack(), "disc2");
 		assertEquals("Discs do not match", discs, guineaPig.getDiscs());
 	}
 

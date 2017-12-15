@@ -58,13 +58,13 @@ public class VersionTrackTest {
 	@Before
 	public void createTrack() {
 		version = factory.getRandomVersionType();
-		original = factory.getRandomTrack();
+		original = factory.getRandomOriginalTrack();
 		guineaPig = trackFactory.createVersionTrack(version, original);
 	}
 	
 	@Test
 	public final void testVersionType() {
-		final Track orTrack = factory.getRandomTrack();
+		final Track orTrack = factory.getRandomOriginalTrack();
 		final TypeVersion version = TypeVersion.ACOUSTIC;
 		final VersionTrack track = trackFactory.createVersionTrack(version, orTrack);
 		assertEquals(version, track.getVersionType());
@@ -166,7 +166,7 @@ public class VersionTrackTest {
 		final VersionTrack differentArtists = trackFactory.createVersionTrack(this.version, original);
 		differentArtists.addVersionArtist(factory.getRandomArtist());
 		differentArtists.setId(id);
-		final VersionTrack differentOriginal = trackFactory.createVersionTrack(this.version, factory.getRandomTrack());
+		final VersionTrack differentOriginal = trackFactory.createVersionTrack(this.version, factory.getRandomOriginalTrack());
 		differentOriginal.setId(id);
 		final VersionTrack differentToken = trackFactory.createVersionTrack(this.version, original);
 		differentToken.setVersionToken("some different token");
