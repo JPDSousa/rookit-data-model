@@ -28,7 +28,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.rookit.dm.genre.Genre;
 import org.rookit.dm.genre.GenreFactory;
-import org.rookit.dm.utils.DMTestFactory;
+import org.rookit.dm.test.DMTestFactory;
 import org.rookit.dm.utils.TestUtils;
 
 @SuppressWarnings("javadoc")

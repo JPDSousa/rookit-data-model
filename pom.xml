@@ -51,7 +51,7 @@
 		<dependency>
 			<groupId>com.github.JPDSousa</groupId>
 			<artifactId>ExtendedStringBuilder</artifactId>
-			</dependency>
+		</dependency>
 		<dependency>
 			<groupId>com.github.JPDSousa</groupId>
 			<artifactId>mongo-obj-framework</artifactId>
@@ -125,6 +125,7 @@
 				<groupId>org.hamcrest</groupId>
 				<artifactId>hamcrest-all</artifactId>
 				<version>1.3</version>
+				<scope>test</scope>
 			</dependency>
 		</dependencies>
 	</dependencyManagement>

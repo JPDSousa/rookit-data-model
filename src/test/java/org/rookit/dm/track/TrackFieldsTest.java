@@ -32,12 +32,12 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.rookit.dm.artist.Artist;
 import org.rookit.dm.genre.Genre;
+import org.rookit.dm.test.DMTestFactory;
 import org.rookit.dm.track.Track;
 import org.rookit.dm.track.TrackFactory;
 import org.rookit.dm.track.TrackTitle;
 import org.rookit.dm.track.TypeTrack;
 import org.rookit.dm.track.TypeVersion;
-import org.rookit.dm.utils.DMTestFactory;
 import org.rookit.dm.utils.TestUtils;
 import org.rookit.utils.exception.InvalidOperationException;
 
@@ -48,10 +48,12 @@ public class TrackFieldsTest {
 
 	private Track guineaPig;
 	private static DMTestFactory factory;
+	private static TrackFactory trackFactory;
 
 	@BeforeClass
 	public static void initialize() {
 		factory = DMTestFactory.getDefault();
+		trackFactory = TrackFactory.getDefault();
 	}
 
 	@Before
@@ -359,9 +361,15 @@ public class TrackFieldsTest {
 		final String title = factory.randomString();
 		final Set<Artist> mainArtists = factory.getRandomSetOfArtists();
 		final Set<Artist> features = Sets.newLinkedHashSet();
-		final Set<Genre> genres = factory.getRandomSetOfGenres(); 
-		final Track track1 = factory.createOriginalTrack(title, mainArtists, features, genres);
-		final Track track2 = factory.createOriginalTrack(title, mainArtists, features, genres);
+		final Set<Genre> genres = factory.getRandomSetOfGenres();
+		final Track track1 = trackFactory.createOriginalTrack(title);
+		final Track track2 = trackFactory.createOriginalTrack(title);
+		track1.setMainArtists(mainArtists);
+		track2.setMainArtists(mainArtists);
+		track1.setFeatures(features);
+		track2.setFeatures(features);
+		track1.setGenres(genres);
+		track2.setGenres(genres);
 		final ObjectId id = new ObjectId();
 		
 		track1.setId(id);
