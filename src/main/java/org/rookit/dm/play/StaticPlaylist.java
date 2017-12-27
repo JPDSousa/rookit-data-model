@@ -26,7 +26,7 @@ import java.util.Collection;
 import org.rookit.dm.track.Track;
 
 @SuppressWarnings("javadoc")
-public interface StaticPlaylist extends Playlist, PlaylistSetter<Void>, Collection<Track> {
+public interface StaticPlaylist extends Playlist, PlaylistSetter<Void> {
 
 	static StaticPlaylist fromCollection(String name, Collection<Track> tracks) {
 		final StaticPlaylist playlist = new StaticPlaylistImpl(name);
@@ -34,4 +34,22 @@ public interface StaticPlaylist extends Playlist, PlaylistSetter<Void>, Collecti
 		return playlist;
 	}
 	
+	int size();
+	
+	boolean add(Track track);
+
+	boolean addAll(Collection<? extends Track> tracks);
+
+	boolean isEmpty();
+
+	boolean contains(Track o);
+
+	boolean remove(Track o);
+
+	boolean removeAll(Collection<? extends Track> c);
+
+	void clear();
+	
+	Collection<Track> getTracks();
+
 }

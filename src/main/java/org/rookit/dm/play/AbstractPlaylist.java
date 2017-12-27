@@ -1,30 +1,28 @@
 package org.rookit.dm.play;
 
-import static org.rookit.dm.play.DatabaseFields.IMAGE;
-import static org.rookit.dm.play.DatabaseFields.NAME;
-
-import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.util.Collection;
 import java.util.StringJoiner;
 
 import org.apache.commons.collections4.CollectionUtils;
-import org.smof.annnotations.SmofObject;
-import org.smof.annnotations.SmofString;
-import org.smof.gridfs.SmofGridRef;
-import org.smof.gridfs.SmofGridRefFactory;
+import org.mongodb.morphia.annotations.Embedded;
+import org.rookit.dm.track.Track;
+import org.rookit.dm.utils.bistream.BiStream;
 
 abstract class AbstractPlaylist extends AbstractPlayable implements Playlist {
 
 	private static final int DEFAULT_FREEZE_LIMIT = 200;
 
-	@SmofString(name = NAME)
 	private final String name;
 	
-	@SmofObject(name = IMAGE, bucketName = IMAGE_BUCKET, preInsert = false)
-	private final SmofGridRef image;
+	@Embedded
+	private final BiStream image;
 	
 	protected AbstractPlaylist(String name) {
 		this.name = name;
-		image = SmofGridRefFactory.newEmptyRef();
+		image = PlaylistFactory.getDefault()
+				.getBiStreamFactory()
+				.createEmpty();
 	}
 
 	@Override
@@ -33,13 +31,17 @@ abstract class AbstractPlaylist extends AbstractPlayable implements Playlist {
 	}
 
 	@Override
-	public SmofGridRef getImage() {
+	public BiStream getImage() {
 		return image;
 	}
 
 	@Override
 	public Void setImage(byte[] image) {
-		this.image.attachByteArray(new ByteArrayInputStream(image));
+		try {
+			this.image.toOutput().write(image);
+		} catch (IOException e) {
+			VALIDATOR.handleIOException(e);
+		}
 		return null;
 	}
 	
@@ -60,7 +62,10 @@ abstract class AbstractPlaylist extends AbstractPlayable implements Playlist {
 		final StaticPlaylist thisAsStatic = freezeIfNecessary(this);
 		final StaticPlaylist otherAsStatic = freezeIfNecessary(other);
 		final String name = jointName(other);
-		return StaticPlaylist.fromCollection(name, CollectionUtils.intersection(thisAsStatic, otherAsStatic));
+		final Collection<Track> intersection = CollectionUtils.intersection(
+				thisAsStatic.getTracks(), 
+				otherAsStatic.getTracks());
+		return StaticPlaylist.fromCollection(name, intersection);
 	}
 
 	@Override
@@ -68,7 +73,10 @@ abstract class AbstractPlaylist extends AbstractPlayable implements Playlist {
 		final StaticPlaylist thisAsStatic = freezeIfNecessary(this);
 		final StaticPlaylist otherAsStatic = freezeIfNecessary(other);
 		final String name = jointName(other);
-		return StaticPlaylist.fromCollection(name, CollectionUtils.union(thisAsStatic, otherAsStatic));
+		final Collection<Track> union = CollectionUtils.union(
+				thisAsStatic.getTracks(), 
+				otherAsStatic.getTracks());
+		return StaticPlaylist.fromCollection(name, union);
 	}
 	
 	private String jointName(Playlist other) {

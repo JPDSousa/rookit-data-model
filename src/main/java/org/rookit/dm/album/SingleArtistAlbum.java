@@ -23,6 +23,7 @@ package org.rookit.dm.album;
 
 import java.util.Set;
 
+import org.mongodb.morphia.annotations.Entity;
 import org.rookit.dm.artist.Artist;
 
 /**
@@ -32,8 +33,14 @@ import org.rookit.dm.artist.Artist;
  * @author Joao
  *
  */
+// TODO is it possible to turn this into Album.class.getName() somehow??
+@Entity(value="Album")
 class SingleArtistAlbum extends AbstractAlbum {
 
+	private SingleArtistAlbum() {
+		super(null, null, null, null);
+	}
+	
 	/**
 	 * The constructor has a package-view in order to forbid object creation through
 	 * objects on other packages. In order to create a new object of this type, use the

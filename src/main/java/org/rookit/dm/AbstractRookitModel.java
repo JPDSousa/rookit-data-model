@@ -1,37 +1,65 @@
 package org.rookit.dm;
 
-import java.util.Map;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 
-import org.bson.Document;
-import org.smof.annnotations.SmofObject;
-import org.smof.element.AbstractElement;
-import org.smof.parsers.SmofType;
-
-import com.google.common.collect.Maps;
+import org.bson.types.ObjectId;
+import org.mongodb.morphia.annotations.Id;
 
 @SuppressWarnings("javadoc")
-public abstract class AbstractRookitModel extends AbstractElement implements RookitModel {
+public abstract class AbstractRookitModel implements RookitModel {
+
+	@Id
+	private ObjectId _id;
 	
-	@SmofObject(name = EXTERNAL_META, mapValueType = SmofType.OBJECT)
-	protected final Map<String, Document> externalMetadata;
+	protected AbstractRookitModel() {
+		this(new ObjectId());
+	}
+
+	protected AbstractRookitModel(final ObjectId initialID) {
+		this(initialID, false);
+	}
 	
-	public AbstractRookitModel() {
-		externalMetadata = Maps.newHashMap();
+	protected AbstractRookitModel(ObjectId id, boolean allowInitialNullId) {
+		if(!allowInitialNullId && id == null) {
+			throw new IllegalArgumentException("Id cannot be null");
+		}
+		this._id = id;
 	}
 
 	@Override
-	public Document getExternalMetadata(String key) {
-		return externalMetadata.get(key);
+	public ObjectId getId() {
+		return _id;
 	}
 
 	@Override
-	public Map<String, Document> getExternalMetadata() {
-		return externalMetadata;
+	public void setId(final ObjectId id) {
+		if(id == null) {
+			throw new IllegalArgumentException("Id cannot be null");
+		}
+		this._id = id;
 	}
 
 	@Override
-	public void putExternalMetadata(String key, Document value) {
-		externalMetadata.put(key, value);
+	public String getIdAsString() {
+		return _id.toHexString();
 	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		return result * prime;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		return this == obj || obj != null && getClass() == obj.getClass();
+	}
+
+	@Override
+	public LocalDateTime getStorageTime() {
+		return LocalDateTime.ofInstant(_id.getDate().toInstant(), ZoneId.systemDefault());
+	}	
 	
 }

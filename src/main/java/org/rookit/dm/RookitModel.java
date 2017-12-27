@@ -1,18 +1,20 @@
 package org.rookit.dm;
 
-import java.util.Map;
+import java.time.LocalDateTime;
 
-import org.bson.Document;
-import org.smof.element.Element;
+import org.bson.types.ObjectId;
 
 @SuppressWarnings("javadoc")
-public interface RookitModel extends Element {
+public interface RookitModel {
 	
-	String EXTERNAL_META = "external_meta";
-	
-	Document getExternalMetadata(String key);
-	void putExternalMetadata(String key, Document value);
-	
-	Map<String, Document> getExternalMetadata();
+	String ID = "_id";
+
+	ObjectId getId();
+
+	String getIdAsString();
+
+	void setId(final ObjectId id);
+
+	LocalDateTime getStorageTime();
 
 }

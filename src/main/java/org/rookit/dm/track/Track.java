@@ -25,57 +25,71 @@ import static org.rookit.dm.track.DatabaseFields.*;
 
 import java.util.Collection;
 
+import org.mongodb.morphia.annotations.Entity;
+import org.mongodb.morphia.annotations.Field;
+import org.mongodb.morphia.annotations.Index;
+import org.mongodb.morphia.annotations.IndexOptions;
+import org.mongodb.morphia.annotations.Indexes;
+import org.mongodb.morphia.utils.IndexType;
 import org.rookit.dm.artist.Artist;
 import org.rookit.dm.genre.Genreable;
 import org.rookit.dm.play.Playable;
 import org.rookit.dm.track.audio.AudioFeature;
-import org.smof.annnotations.ForceInspection;
-import org.smof.annnotations.SmofIndex;
-import org.smof.annnotations.SmofIndexField;
-import org.smof.annnotations.SmofIndexes;
-import org.smof.gridfs.SmofGridRef;
-import org.smof.index.IndexType;
+import org.rookit.dm.utils.bistream.BiStream;
 
 @SuppressWarnings("javadoc")
-@SmofIndexes({
-	@SmofIndex(fields={
-			@SmofIndexField(name=TITLE, type = IndexType.ASCENDING),
-			@SmofIndexField(name=MAIN_ARTISTS, type=IndexType.ASCENDING),
-			@SmofIndexField(name=TYPE, type=IndexType.ASCENDING),
-			@SmofIndexField(name=VERSION_TYPE, type=IndexType.ASCENDING),
-			@SmofIndexField(name=VERSION_ARTISTS, type=IndexType.ASCENDING)},
-			unique = true),
-	@SmofIndex(fields={@SmofIndexField(name=TITLE, type = IndexType.TEXT)})
+//@SmofIndexes({
+//	@SmofIndex(fields={
+//			@SmofIndexField(name=TITLE, type = IndexType.ASCENDING),
+//			@SmofIndexField(name=MAIN_ARTISTS, type=IndexType.ASCENDING),
+//			@SmofIndexField(name=TYPE, type=IndexType.ASCENDING),
+//			@SmofIndexField(name=VERSION_TYPE, type=IndexType.ASCENDING),
+//			@SmofIndexField(name=VERSION_ARTISTS, type=IndexType.ASCENDING)},
+//			unique = true),
+//	@SmofIndex(fields={@SmofIndexField(name=TITLE, type = IndexType.TEXT)})
+//})
+@Entity
+@Indexes({
+	@Index(fields = {
+			@Field(value = TITLE, type = IndexType.ASC),
+			@Field(value = MAIN_ARTISTS, type=IndexType.ASC),
+			@Field(value = TYPE, type=IndexType.ASC),
+			@Field(value = VERSION_TYPE, type=IndexType.ASC),
+			@Field(value = VERSION_ARTISTS, type=IndexType.ASC),
+	}, options = @IndexOptions(
+			unique = true, 
+			disableValidation = true)),
+//	@Index(fields = @Field(value = TITLE, type = IndexType.TEXT), options = @IndexOptions(
+//			disableValidation = true))
 })
-@ForceInspection({OriginalTrack.class, VersionTrack.class})
 public interface Track extends AudioFeature, Playable, Genreable, Comparable<Track>, TrackSetter<Void> {
-	
+
 	short MAX_BPM = 400;
-	
+
 	TypeTrack getType();
-	
+
 	TrackTitle getTitle();
 	TrackTitle getLongFullTitle();
 	TrackTitle getFullTitle();
-	
+
 	Collection<Artist> getMainArtists();
 	Collection<Artist> getFeatures();
 	Collection<Artist> getProducers();
-	
+
 	String getHiddenTrack();
-	
+
 	VersionTrack getAsVersionTrack();
 	boolean isVersionTrack();
-	
+
 	String getLyrics();
-	
+
 	Boolean isExplicit();
-	
-	SmofGridRef getPath();
-	
+
+	BiStream getPath();
+
 	@Override
 	boolean equals(Object track);
-	
+
 	@Override
 	int hashCode();
 }

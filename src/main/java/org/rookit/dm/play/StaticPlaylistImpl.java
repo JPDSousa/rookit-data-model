@@ -22,21 +22,17 @@
 package org.rookit.dm.play;
 
 import java.util.Collection;
-import java.util.Iterator;
 import java.util.Set;
 import java.util.stream.Stream;
 
+import org.mongodb.morphia.annotations.Reference;
 import org.rookit.dm.track.Track;
-import org.smof.annnotations.SmofArray;
-import org.smof.parsers.SmofType;
 
 import com.google.common.collect.Sets;
 
-import static org.rookit.dm.play.DatabaseFields.*;
-
 class StaticPlaylistImpl extends AbstractPlaylist implements StaticPlaylist {
 	
-	@SmofArray(name = TRACKS, type = SmofType.OBJECT)
+	@Reference(lazy = true, idOnly = true)
 	private final Set<Track> tracks;
 	
 	StaticPlaylistImpl(String name) {
@@ -46,7 +42,7 @@ class StaticPlaylistImpl extends AbstractPlaylist implements StaticPlaylist {
 
 	@Override
 	public Stream<Track> streamTracks() {
-		return stream();
+		return tracks.stream();
 	}
 
 	@Override
@@ -60,23 +56,8 @@ class StaticPlaylistImpl extends AbstractPlaylist implements StaticPlaylist {
 	}
 
 	@Override
-	public boolean contains(Object o) {
+	public boolean contains(Track o) {
 		return tracks.contains(o);
-	}
-
-	@Override
-	public Iterator<Track> iterator() {
-		return tracks.iterator();
-	}
-
-	@Override
-	public Object[] toArray() {
-		return tracks.toArray();
-	}
-
-	@Override
-	public <T> T[] toArray(T[] a) {
-		return tracks.toArray(a);
 	}
 
 	@Override
@@ -85,13 +66,8 @@ class StaticPlaylistImpl extends AbstractPlaylist implements StaticPlaylist {
 	}
 
 	@Override
-	public boolean remove(Object o) {
+	public boolean remove(Track o) {
 		return tracks.remove(o);
-	}
-
-	@Override
-	public boolean containsAll(Collection<?> c) {
-		return tracks.containsAll(c);
 	}
 
 	@Override
@@ -100,18 +76,18 @@ class StaticPlaylistImpl extends AbstractPlaylist implements StaticPlaylist {
 	}
 
 	@Override
-	public boolean removeAll(Collection<?> c) {
+	public boolean removeAll(Collection<? extends Track> c) {
 		return tracks.removeAll(c);
-	}
-
-	@Override
-	public boolean retainAll(Collection<?> c) {
-		return tracks.retainAll(c);
 	}
 
 	@Override
 	public void clear() {
 		tracks.clear();
+	}
+
+	@Override
+	public Collection<Track> getTracks() {
+		return tracks;
 	}
 
 }

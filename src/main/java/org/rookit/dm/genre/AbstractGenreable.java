@@ -3,9 +3,8 @@ package org.rookit.dm.genre;
 import java.util.Collection;
 import java.util.Set;
 
+import org.mongodb.morphia.annotations.Reference;
 import org.rookit.dm.play.AbstractPlayable;
-import org.smof.annnotations.SmofArray;
-import org.smof.parsers.SmofType;
 
 import com.google.common.collect.Sets;
 
@@ -15,7 +14,7 @@ public abstract class AbstractGenreable extends AbstractPlayable implements Genr
 	/**
 	 * Genres of the album
 	 */
-	@SmofArray(name = GENRES, type = SmofType.OBJECT)
+	@Reference(idOnly = true)
 	private Set<Genre> genres;
 	
 	public AbstractGenreable() {

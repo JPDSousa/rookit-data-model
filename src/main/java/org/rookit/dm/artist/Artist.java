@@ -26,14 +26,15 @@ import static org.rookit.dm.artist.DatabaseFields.*;
 import java.time.LocalDate;
 import java.util.Collection;
 
+import org.mongodb.morphia.annotations.Entity;
+import org.mongodb.morphia.annotations.Field;
+import org.mongodb.morphia.annotations.Index;
+import org.mongodb.morphia.annotations.IndexOptions;
+import org.mongodb.morphia.annotations.Indexes;
+import org.mongodb.morphia.utils.IndexType;
 import org.rookit.dm.genre.Genreable;
 import org.rookit.dm.play.Playable;
-import org.smof.annnotations.ForceInspection;
-import org.smof.annnotations.SmofIndex;
-import org.smof.annnotations.SmofIndexField;
-import org.smof.annnotations.SmofIndexes;
-import org.smof.gridfs.SmofGridRef;
-import org.smof.index.IndexType;
+import org.rookit.dm.utils.bistream.BiStream;
 
 
 /**
@@ -43,54 +44,63 @@ import org.smof.index.IndexType;
  * an album artist (author) or to tracks as main artist, feature artist, or even as remix artist or
  * cover artist.
  */
-@SmofIndexes({
-	@SmofIndex(fields = {
-			@SmofIndexField(name = NAME, type = IndexType.ASCENDING),
-			@SmofIndexField(name = TYPE, type = IndexType.ASCENDING)}, 
-			unique=true),
-	@SmofIndex(fields = {@SmofIndexField(name = NAME, type = IndexType.TEXT)}),
+//@SmofIndexes({
+//	@SmofIndex(fields = {
+//			@SmofIndexField(name = NAME, type = IndexType.ASCENDING),
+//			@SmofIndexField(name = TYPE, type = IndexType.ASCENDING)}, 
+//			unique=true),
+//	@SmofIndex(fields = {@SmofIndexField(name = NAME, type = IndexType.TEXT)}),
+//})
+@Indexes({
+	@Index(fields = {
+			@Field(value = NAME, type = IndexType.ASC),
+			@Field(value = TYPE, type = IndexType.ASC),
+			@Field(value = ISNI, type = IndexType.ASC)
+	}, options = @IndexOptions(unique = true)),
+	@Index(fields = @Field(value = NAME, type = IndexType.TEXT))
 })
-@ForceInspection({MusicianImpl.class, GroupArtistImpl.class})
+//TODO is it possible to turn this into Artist.class.getName() somehow??
+@Entity(value="Artist")
 public interface Artist extends Genreable, Playable, Comparable<Artist>, ArtistSetter<Void> {
-	
+
 	/**
 	 * String representation of an unknown artist. This constant may be used only
 	 * when the artist of a track or album is required but unknown.
 	 */
 	String UNKNOWN_ARTISTS = "Unknown Artists";
-	
+
 	public TypeArtist getType();
-	
+
 	/**
 	 * Returns the artist name
 	 * 
 	 * @return artist name as a string.
 	 */
 	public String getName();
-	
+
 	/**
 	 * Returns the set of artists related to this artist
 	 * 
 	 * @return set of artists related to this artist
 	 */
 	public Iterable<Artist> getRelatedArtists();
-	
+
 	/**
 	 * Returns the origin of this artist (location where the artist came from)
 	 * 
 	 * @return the artist's origin
 	 */
 	public String getOrigin();
-	
+
 	public Collection<String> getAliases();
 
 	public LocalDate getBeginDate();
-	
+
 	public LocalDate getEndDate();
-	
+
 	public String getIPI();
-	
+
 	public String getISNI();
-	
-	public SmofGridRef getPicture();
+
+	public BiStream getPicture();
 }

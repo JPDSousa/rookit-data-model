@@ -21,23 +21,16 @@
  ******************************************************************************/
 package org.rookit.dm.track;
 
-import static org.rookit.dm.track.DatabaseFields.*;
-
 import java.util.Collection;
 import java.util.Set;
 
+import org.mongodb.morphia.annotations.Embedded;
+import org.mongodb.morphia.annotations.Reference;
 import org.rookit.dm.artist.Artist;
 import org.rookit.dm.genre.AbstractGenreable;
 import org.rookit.dm.track.audio.TrackKey;
 import org.rookit.dm.track.audio.TrackMode;
-import org.smof.annnotations.SmofArray;
-import org.smof.annnotations.SmofBoolean;
-import org.smof.annnotations.SmofNumber;
-import org.smof.annnotations.SmofObject;
-import org.smof.annnotations.SmofString;
-import org.smof.gridfs.SmofGridRef;
-import org.smof.gridfs.SmofGridRefFactory;
-import org.smof.parsers.SmofType;
+import org.rookit.dm.utils.bistream.BiStream;
 
 import com.google.common.collect.Sets;
 
@@ -45,60 +38,49 @@ abstract class AbstractTrack extends AbstractGenreable implements Track {
 	
 	private static final short UNINITIALIZED = -1;
 	
-	@SmofString(name = TYPE)
 	private final TypeTrack type;
 	
-	@SmofObject(name = PATH, required = true, preInsert = false)
-	private final SmofGridRef path;
+	@Embedded
+	private final BiStream path;
 	
-	@SmofString(name = LYRICS)
 	private String lyrics;
 
-	@SmofString(name = HIDDEN_TRACK)
 	private String hiddenTrack;
 	
-	@SmofArray(name = FEATURES, type = SmofType.OBJECT)
+	@Reference(idOnly = true)
 	private Set<Artist> features;
 	
-	@SmofArray(name = PRODUCERS, type = SmofType.OBJECT)
+	@Reference(idOnly = true)
 	private Set<Artist> producers;
 	
-	@SmofBoolean(name = EXPLICIT)
 	private Boolean explicit;
 	
 	// Audio features
-	@SmofNumber(name = BPM)
 	private short bpm;
 	
-	@SmofString(name = KEY)
 	private TrackKey trackKey;
 	
-	@SmofString(name = MODE)
 	private TrackMode trackMode;
 	
-	@SmofBoolean(name = INSTRUMENTAL)
 	private Boolean isInstrumental;
 	
-	@SmofBoolean(name = LIVE)
 	private Boolean isLive;
 	
-	@SmofBoolean(name = ACOUSTIC)
 	private Boolean isAcoustic;
 	
-	@SmofNumber(name = DANCEABILITY)
 	private double danceability;
 	
-	@SmofNumber(name = ENERGY)
 	private double energy;
 	
-	@SmofNumber(name = VALENCE)
 	private double valence;
 		
 	protected AbstractTrack(TypeTrack type){
 		super();
 		producers = Sets.newLinkedHashSetWithExpectedSize(3);
 		features = Sets.newLinkedHashSetWithExpectedSize(3);
-		path = SmofGridRefFactory.newEmptyRef();
+		path = TrackFactory.getDefault()
+				.getBiStreamFactory()
+				.createEmpty();
 		hiddenTrack = "";
 		this.type = type;
 		// Audio features
@@ -239,7 +221,7 @@ abstract class AbstractTrack extends AbstractGenreable implements Track {
 	}
 
 	@Override
-	public SmofGridRef getPath() {
+	public BiStream getPath() {
 		return path;
 	}
 

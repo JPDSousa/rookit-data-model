@@ -21,22 +21,18 @@
  ******************************************************************************/
 package org.rookit.dm.parser;
 
-import org.smof.annnotations.SmofBuilder;
-import org.smof.annnotations.SmofIndex;
-import org.smof.annnotations.SmofIndexField;
-import org.smof.annnotations.SmofIndexes;
-import org.smof.annnotations.SmofNumber;
-import org.smof.annnotations.SmofParam;
-import org.smof.annnotations.SmofString;
-import org.smof.element.AbstractElement;
-import org.smof.element.Element;
-import org.smof.index.IndexType;
+import org.mongodb.morphia.annotations.Entity;
+import org.mongodb.morphia.annotations.IndexOptions;
+import org.mongodb.morphia.annotations.Indexed;
+import org.rookit.dm.AbstractRookitModel;
+import org.rookit.dm.RookitModel;
 
 @SuppressWarnings("javadoc")
-@SmofIndexes({
-	@SmofIndex(fields = {@SmofIndexField(name = "value", type = IndexType.ASCENDING)}, unique = true)
-})
-public class IgnoreField extends AbstractElement implements Element {
+//@SmofIndexes({
+//	@SmofIndex(fields = {@SmofIndexField(name = "value", type = IndexType.ASCENDING)}, unique = true)
+//})
+@Entity
+public class IgnoreField extends AbstractRookitModel implements RookitModel {
 
 	public static final String VALUE = "value";
 	public static final String OCCURRENCES = "occurrences";
@@ -45,14 +41,12 @@ public class IgnoreField extends AbstractElement implements Element {
 		return new IgnoreField(value.toLowerCase(), 1);
 	}
 
-	@SmofString(name=VALUE)
+	@Indexed(options = @IndexOptions(unique = true))
 	private final String value;
-	@SmofNumber(name=OCCURRENCES)
+	
 	private final int occurrences;
 
-	@SmofBuilder
-	private IgnoreField(@SmofParam(name=VALUE) String value, 
-			@SmofParam(name=OCCURRENCES) Integer occurrences) {
+	private IgnoreField(String value, Integer occurrences) {
 		this.value = value;
 		this.occurrences = occurrences;
 	}

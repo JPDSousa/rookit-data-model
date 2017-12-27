@@ -10,13 +10,13 @@ import java.util.Objects;
 
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.text.similarity.LevenshteinDistance;
-import org.rookit.dm.RookitModel;
+import org.rookit.dm.MetadataHolder;
 import org.rookit.dm.utils.DataModelValidator;
 
 import com.google.common.collect.Maps;
 
 @SuppressWarnings("javadoc")
-public abstract class AbstractSimilarityDistance<T extends RookitModel> implements Comparator<T> {
+public abstract class AbstractSimilarityDistance<T extends MetadataHolder> implements Comparator<T> {
 
 	protected static final int DEFAULT_THESHOLD = 100;
 	

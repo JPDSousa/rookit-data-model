@@ -24,14 +24,17 @@ package org.rookit.dm.album;
 import static org.rookit.dm.album.DatabaseFields.*;
 
 import java.io.Serializable;
+import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.lang3.tuple.Pair;
 import org.rookit.dm.artist.Artist;
 import org.rookit.dm.artist.ArtistFactory;
 import org.rookit.dm.utils.DataModelValidator;
-import org.smof.annnotations.SmofBuilder;
-import org.smof.annnotations.SmofParam;
+import org.rookit.dm.utils.bistream.BiStream;
+import org.rookit.dm.utils.bistream.BiStreamFoF;
+import org.rookit.dm.utils.bistream.BufferBiStreamFactory;
+import org.rookit.dm.utils.factory.RookitFactory;
 
 import com.mpatric.mp3agic.ID3v1;
 import com.mpatric.mp3agic.ID3v2;
@@ -43,7 +46,7 @@ import com.mpatric.mp3agic.ID3v2;
  * @author Joao
  *
  */
-public class AlbumFactory implements Serializable {
+public class AlbumFactory implements Serializable, BiStreamFoF, RookitFactory<Album> {
 
 	private static final long serialVersionUID = 1L;
 	private static final DataModelValidator VALIDATOR = DataModelValidator.getDefault();
@@ -62,9 +65,11 @@ public class AlbumFactory implements Serializable {
 	}
 
 	private TypeRelease defaultTypeRelease;
+	private RookitFactory<BiStream> biStreamFactory;
 
 	private AlbumFactory(){
 		defaultTypeRelease = TypeRelease.STUDIO;
+		biStreamFactory = new BufferBiStreamFactory();
 	}
 
 	/**
@@ -122,12 +127,7 @@ public class AlbumFactory implements Serializable {
 	 * @param artists album artists (only the creators).
 	 * @return a newly created Album object, with the parameters passed by parameter.
 	 */
-	@SmofBuilder
-	public Album createAlbum(
-			@SmofParam(name = TYPE) TypeAlbum albumType, 
-			@SmofParam(name = TITLE) String title, 
-			@SmofParam(name = RELEASE_TYPE) TypeRelease type, 
-			@SmofParam(name = ARTISTS) Set<Artist> artists) {
+	public Album createAlbum(TypeAlbum albumType, String title, TypeRelease type, Set<Artist> artists) {
 		Album album = null;
 
 		switch(albumType){
@@ -174,6 +174,39 @@ public class AlbumFactory implements Serializable {
 	public void setDefaultTypeRelease(TypeRelease defaultTypeRelease) {
 		VALIDATOR.checkArgumentNotNull(defaultTypeRelease, "The type release cannot be null");
 		this.defaultTypeRelease = defaultTypeRelease;
+	}
+
+	@Override
+	public RookitFactory<BiStream> getBiStreamFactory() {
+		return biStreamFactory;
+	}
+
+	@Override
+	public void setBiStreamFactory(RookitFactory<BiStream> factory) {
+		this.biStreamFactory = factory;
+	}
+
+	@Override
+	public Album createEmpty() {
+		throw new UnsupportedOperationException("Cannot create an empty album");
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public Album create(Map<String, Object> data) {
+		final Object albumType = data.get(TYPE);
+		final Object title = data.get(TITLE);
+		final Object type = data.get(RELEASE_TYPE);
+		final Object artists = data.get(ARTISTS);
+		
+		if(albumType != null && albumType instanceof TypeAlbum
+				&& title != null && title instanceof String
+				&& type != null && type instanceof TypeRelease
+				&& artists != null && artists instanceof Set) {
+			return createAlbum((TypeAlbum) albumType, (String) title, 
+					(TypeRelease) type, (Set<Artist>) artists);
+		}
+		throw new RuntimeException("Invalid arguments: " + data);
 	}
 
 }

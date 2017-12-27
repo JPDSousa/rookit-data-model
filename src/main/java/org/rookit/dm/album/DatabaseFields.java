@@ -27,7 +27,7 @@ package org.rookit.dm.album;
  *
  */
 public interface DatabaseFields {
-		
+	
 	/**
 	 * Database field name for the album type
 	 */
@@ -41,7 +41,7 @@ public interface DatabaseFields {
 	/**
 	 * Database name for the release type
 	 */
-	String RELEASE_TYPE = "release_type";
+	String RELEASE_TYPE = "releaseType";
 
 	/**
 	 * Database name for the album artists
@@ -51,7 +51,7 @@ public interface DatabaseFields {
 	/**
 	 * Database name for the release date
 	 */
-	String RELEASE_DATE = "release_date";
+	String RELEASE_DATE = "releaseDate";
 
 	/**
 	 * Database name for the album cover

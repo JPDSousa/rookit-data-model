@@ -142,7 +142,7 @@ public class ArtistFieldTest {
 		assertNotNull(guineaPig.getPicture());
 		guineaPig.setPicture(picture);
 		final byte[] actual = new byte[picture.length];
-		guineaPig.getPicture().getAttachedByteArray().read(actual);
+		guineaPig.getPicture().toInput().read(actual);
 		assertArrayEquals(picture, actual);
 	}
 	

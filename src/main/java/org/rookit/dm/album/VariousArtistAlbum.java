@@ -24,12 +24,18 @@ package org.rookit.dm.album;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.mongodb.morphia.annotations.Entity;
 import org.rookit.dm.artist.Artist;
-import org.rookit.dm.track.Track;
 
+// TODO is it possible to turn this into Album.class.getName() somehow??
+@Entity(value="Album")
 class VariousArtistAlbum extends AbstractAlbum {
 
-	public VariousArtistAlbum(String title, TypeRelease type) {
+	private VariousArtistAlbum() {
+		super(null, null, null, null);
+	}
+	
+	VariousArtistAlbum(String title, TypeRelease type) {
 		super(TypeAlbum.VA, title, type, null);
 	}
 

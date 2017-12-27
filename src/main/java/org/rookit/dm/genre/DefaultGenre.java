@@ -21,20 +21,27 @@
  ******************************************************************************/
 package org.rookit.dm.genre;
 
-import static org.rookit.dm.genre.DatabaseFields.*;
-
+import org.mongodb.morphia.annotations.Entity;
+import org.mongodb.morphia.annotations.IndexOptions;
+import org.mongodb.morphia.annotations.Indexed;
 import org.rookit.dm.play.AbstractPlayable;
 import org.rookit.dm.utils.DataModelValidator;
-import org.smof.annnotations.SmofString;
 
+@Entity("Genre")
 class DefaultGenre extends AbstractPlayable implements Genre {
 
 	private static final DataModelValidator VALIDATOR = DataModelValidator.getDefault();
 	
-	@SmofString(name = NAME)
+	@Indexed(options = @IndexOptions(unique = true))
 	private final String name;
-	@SmofString(name = DESCRIPTION)
+	
 	private String description;
+	
+	@SuppressWarnings("unused")
+	private DefaultGenre() {
+		super();
+		this.name = null;
+	}
 
 	DefaultGenre(String name) {
 		this.name = name;

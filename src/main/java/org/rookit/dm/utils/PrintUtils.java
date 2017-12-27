@@ -21,6 +21,7 @@
  ******************************************************************************/
 package org.rookit.dm.utils;
 
+import java.io.IOException;
 import java.time.Duration;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
@@ -32,8 +33,8 @@ import org.rookit.dm.album.TrackSlot;
 import org.rookit.dm.artist.Artist;
 import org.rookit.dm.track.Track;
 import org.rookit.dm.track.VersionTrack;
+import org.rookit.dm.utils.bistream.BiStream;
 import org.rookit.utils.print.TypeFormat;
-import org.smof.gridfs.SmofGridRef;
 
 import com.google.common.collect.Iterables;
 
@@ -88,11 +89,13 @@ public final class PrintUtils {
 
 	public static String track(Track track){
 		final ExtStringBuilder builder = ExtStringBuilder.create();
-		final SmofGridRef path = track.getPath();
-		if(path != null && path.getId() != null) {
-			builder.append("Content: ")
-			.append(path.getId())
-			.append("\n");
+		final BiStream path = track.getPath();
+		try {
+			if(path != null && path.toInput().available() > 0) {
+				builder.append("Content: Yes\n");
+			}
+		} catch (IOException e) {
+			throw new RuntimeException(e);
 		}
 		builder.append("Type: ").append(track.getType()).breakLine()
 		.appendIf(track.getIdAsString() != null, "Id: " + track.getIdAsString() + "\n")

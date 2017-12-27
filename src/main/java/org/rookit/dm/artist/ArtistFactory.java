@@ -27,21 +27,24 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
 import org.rookit.dm.utils.DataModelValidator;
 import org.rookit.dm.utils.PrintUtils;
+import org.rookit.dm.utils.bistream.BiStream;
+import org.rookit.dm.utils.bistream.BiStreamFoF;
+import org.rookit.dm.utils.bistream.BufferBiStreamFactory;
+import org.rookit.dm.utils.factory.RookitFactory;
 import org.rookit.utils.print.TypeFormat;
-import org.smof.annnotations.SmofBuilder;
-import org.smof.annnotations.SmofParam;
+import org.rookit.utils.resource.Resources;
 
 import com.google.common.collect.Sets;
 
@@ -52,7 +55,7 @@ import com.google.common.collect.Sets;
  * @author Joao
  *
  */
-public class ArtistFactory implements Serializable {
+public class ArtistFactory implements RookitFactory<Artist>, Serializable, BiStreamFoF {
 
 	private static final long serialVersionUID = 1L;
 	
@@ -60,7 +63,9 @@ public class ArtistFactory implements Serializable {
 
 	private static final DataModelValidator VALIDATOR = DataModelValidator.getDefault();
 	
-	private static final Path SPECIAL_PATH = Paths.get("src", "main", "resources", "artist", "special.txt");
+	private static final Path SPECIAL_PATH = Resources.RESOURCES_MAIN
+			.resolve("artist")
+			.resolve("special.txt");
 
 	private static ArtistFactory factory;
 	
@@ -77,11 +82,13 @@ public class ArtistFactory implements Serializable {
 	}
 	
 	private final Set<String> exceptionsSplit;
+	private RookitFactory<BiStream> biStreamFactory;
 	
 	private ArtistFactory(Path exceptionsSplitPath){
 		try {
 			exceptionsSplit = Files.lines(exceptionsSplitPath)
 					.collect(Collectors.toSet());
+			biStreamFactory = new BufferBiStreamFactory();
 		} catch (IOException e) {
 			VALIDATOR.handleIOException(e);
 			throw new RuntimeException("dead code");
@@ -89,15 +96,15 @@ public class ArtistFactory implements Serializable {
 	}
 	
 	/**
-	 * Creates a new artist with the specified name. 
+	 * Creates a new artist with the specified name.
+	 * 
+	 * @param type artist type
 	 * @param artistName artist name
 	 * @return a new artist with the name passed as parameter
 	 */
-	@SmofBuilder
-	public Artist createArtist(
-			@SmofParam(name = TYPE) TypeArtist type,
-			@SmofParam(name = NAME) String artistName) {
+	public Artist createArtist(TypeArtist type, String artistName) {
 		final String errMsg = String.valueOf(type) + " is not a valid artist type";
+		VALIDATOR.checkArgumentStringNotEmpty(artistName, "Must specify an artist name");
 		VALIDATOR.checkArgumentNotNull(type, errMsg);
 		switch(type) {
 		case GROUP:
@@ -201,5 +208,31 @@ public class ArtistFactory implements Serializable {
 		}
 
 		return artists.toArray(new String[artists.size()]);
+	}
+
+	@Override
+	public RookitFactory<BiStream> getBiStreamFactory() {
+		return biStreamFactory;
+	}
+
+	@Override
+	public void setBiStreamFactory(RookitFactory<BiStream> factory) {
+		this.biStreamFactory = factory;
+	}
+
+	@Override
+	public Artist createEmpty() {
+		throw new UnsupportedOperationException("Cannot create an empty artist");
+	}
+
+	@Override
+	public Artist create(Map<String, Object> data) {
+		final Object type = data.get(TYPE);
+		final Object name = data.get(NAME);
+		if(type != null && type instanceof TypeArtist 
+				&& name != null && name instanceof String) {
+			return createArtist((TypeArtist) type, (String) name);
+		}
+		throw new RuntimeException("Invalid arguments: " + data);
 	}
 }
