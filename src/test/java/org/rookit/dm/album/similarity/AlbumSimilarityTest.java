@@ -36,6 +36,7 @@ public class AlbumSimilarityTest {
 		final Set<Artist> artists = randomFactory.getRandomSetOfArtists();
 		final Album a1 = factory.createAlbum(TypeAlbum.ARTIST, title, type, artists);
 		final Album a2 = factory.createAlbum(TypeAlbum.VA, title, type, artists);
+		assertNotEquals(a1, a2);
 		assertNotEquals(0, comparator.compare(a1, a2));
 		assertEquals(0, comparator.compare(a1, a1));
 		assertEquals(0, comparator.compare(a2, a2));
