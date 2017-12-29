@@ -24,7 +24,7 @@ package org.rookit.dm.genre;
 import org.mongodb.morphia.annotations.Entity;
 import org.mongodb.morphia.annotations.IndexOptions;
 import org.mongodb.morphia.annotations.Indexed;
-import org.rookit.dm.play.AbstractPlayable;
+import org.rookit.dm.play.able.AbstractPlayable;
 import org.rookit.dm.utils.DataModelValidator;
 
 @Entity("Genre")

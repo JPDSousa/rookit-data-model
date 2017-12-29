@@ -33,7 +33,7 @@ import org.mongodb.morphia.annotations.Indexes;
 import org.mongodb.morphia.utils.IndexType;
 import org.rookit.dm.artist.Artist;
 import org.rookit.dm.genre.Genreable;
-import org.rookit.dm.play.Playable;
+import org.rookit.dm.play.able.Playable;
 import org.rookit.dm.track.audio.AudioFeature;
 import org.rookit.dm.utils.bistream.BiStream;
 

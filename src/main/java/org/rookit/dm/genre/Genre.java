@@ -22,7 +22,7 @@
 package org.rookit.dm.genre;
 
 import org.mongodb.morphia.annotations.Entity;
-import org.rookit.dm.play.Playable;
+import org.rookit.dm.play.able.Playable;
 
 @SuppressWarnings("javadoc")
 //@SmofIndexes({

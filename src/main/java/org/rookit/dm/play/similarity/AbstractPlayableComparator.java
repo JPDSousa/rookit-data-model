@@ -2,7 +2,7 @@ package org.rookit.dm.play.similarity;
 
 import java.util.Map;
 
-import org.rookit.dm.play.Playable;
+import org.rookit.dm.play.able.Playable;
 import org.rookit.dm.similarity.AbstractSimilarityDistance;
 
 @SuppressWarnings("javadoc")

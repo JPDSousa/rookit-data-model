@@ -19,7 +19,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  ******************************************************************************/
-package org.rookit.dm.play;
+package org.rookit.dm.play.able;
 
 import java.time.Duration;
 import java.time.LocalDate;
