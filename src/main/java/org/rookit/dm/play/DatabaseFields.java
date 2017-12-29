@@ -8,6 +8,8 @@ public interface DatabaseFields {
 	 */
 	String NAME = "name";
 	
+	String TYPE = "type";
+	
 	/**
 	 * List of tracks
 	 */

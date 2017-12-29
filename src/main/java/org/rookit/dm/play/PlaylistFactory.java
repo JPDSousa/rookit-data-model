@@ -55,7 +55,8 @@ public class PlaylistFactory implements Serializable, BiStreamFoF, RookitFactory
 		biStreamFactory = new BufferBiStreamFactory();
 	}
 
-	public StaticPlaylist createPlaylist(String name) {
+	public StaticPlaylist createPlaylist(TypePlaylist type, String name) {
+		VALIDATOR.checkArgumentNotNull(type, "Playlist type cannot be null");
 		VALIDATOR.checkArgumentStringNotEmpty(name, "A playlist must have a non-null non-empty name");
 		return new StaticPlaylistImpl(name);
 	}
@@ -78,8 +79,10 @@ public class PlaylistFactory implements Serializable, BiStreamFoF, RookitFactory
 	@Override
 	public Playlist create(Map<String, Object> data) {
 		final Object name = data.get(NAME);
-		if(name != null && name instanceof String) {
-			return createPlaylist((String) name);
+		final Object type = data.get(TYPE);
+		if(name != null && name instanceof String
+				&& type != null && type instanceof TypePlaylist) {
+			return createPlaylist((TypePlaylist) type, (String) name);
 		}
 		throw new RuntimeException("Invalid arguments: " + data);
 	}

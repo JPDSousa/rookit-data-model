@@ -6,6 +6,7 @@ import java.util.StringJoiner;
 
 import org.apache.commons.collections4.CollectionUtils;
 import org.mongodb.morphia.annotations.Embedded;
+import org.rookit.dm.play.able.AbstractPlayable;
 import org.rookit.dm.track.Track;
 import org.rookit.dm.utils.bistream.BiStream;
 
@@ -15,15 +16,25 @@ abstract class AbstractPlaylist extends AbstractPlayable implements Playlist {
 
 	private final String name;
 	
+	private final TypePlaylist type;
+	
 	@Embedded
 	private final BiStream image;
 	
-	protected AbstractPlaylist(String name) {
+	protected AbstractPlaylist(TypePlaylist type, String name) {
+		this.type = type;
 		this.name = name;
 		image = PlaylistFactory.getDefault()
 				.getBiStreamFactory()
 				.createEmpty();
 	}
+	
+	@Override
+	public TypePlaylist getType() {
+		return type;
+	}
+
+
 
 	@Override
 	public String getName() {

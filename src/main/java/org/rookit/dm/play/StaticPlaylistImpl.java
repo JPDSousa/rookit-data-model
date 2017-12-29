@@ -21,6 +21,8 @@
  ******************************************************************************/
 package org.rookit.dm.play;
 
+import static org.rookit.dm.play.TypePlaylist.STATIC;
+
 import java.util.Collection;
 import java.util.Set;
 import java.util.stream.Stream;
@@ -36,7 +38,7 @@ class StaticPlaylistImpl extends AbstractPlaylist implements StaticPlaylist {
 	private final Set<Track> tracks;
 	
 	StaticPlaylistImpl(String name) {
-		super(name);
+		super(STATIC, name);
 		this.tracks = Sets.newLinkedHashSet();
 	}
 

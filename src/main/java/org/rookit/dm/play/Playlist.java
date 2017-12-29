@@ -3,6 +3,7 @@ package org.rookit.dm.play;
 import java.util.stream.Stream;
 
 import org.mongodb.morphia.annotations.Entity;
+import org.rookit.dm.play.able.Playable;
 import org.rookit.dm.track.Track;
 import org.rookit.dm.utils.bistream.BiStream;
 
@@ -24,5 +25,7 @@ public interface Playlist extends Playable, PlaylistSetter<Void> {
 	Playlist intersectWith(Playlist other);
 	
 	Playlist joinWith(Playlist other);
+	
+	TypePlaylist getType();
 
 }
