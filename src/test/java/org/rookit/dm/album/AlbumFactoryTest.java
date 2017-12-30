@@ -32,7 +32,7 @@ import org.rookit.dm.album.AlbumFactory;
 import org.rookit.dm.album.TypeAlbum;
 import org.rookit.dm.album.TypeRelease;
 import org.rookit.dm.artist.Artist;
-import org.rookit.dm.test.DMTestFactory;
+import org.rookit.dm.utils.DMTestFactory;
 import org.rookit.dm.utils.PrintUtils;
 import org.rookit.utils.print.TypeFormat;
 

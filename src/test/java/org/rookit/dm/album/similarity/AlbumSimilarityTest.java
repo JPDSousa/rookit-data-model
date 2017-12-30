@@ -13,7 +13,7 @@ import org.rookit.dm.album.TypeAlbum;
 import org.rookit.dm.album.TypeRelease;
 import org.rookit.dm.album.similarity.AlbumComparator;
 import org.rookit.dm.artist.Artist;
-import org.rookit.dm.test.DMTestFactory;
+import org.rookit.dm.utils.DMTestFactory;
 
 @SuppressWarnings("javadoc")
 public class AlbumSimilarityTest {

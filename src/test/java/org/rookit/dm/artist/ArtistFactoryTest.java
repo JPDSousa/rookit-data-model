@@ -31,7 +31,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.rookit.dm.artist.Artist;
 import org.rookit.dm.artist.ArtistFactory;
-import org.rookit.dm.test.DMTestFactory;
+import org.rookit.dm.utils.DMTestFactory;
 import org.rookit.dm.utils.PrintUtils;
 import org.rookit.utils.print.TypeFormat;
 

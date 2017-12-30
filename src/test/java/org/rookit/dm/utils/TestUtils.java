@@ -29,7 +29,6 @@ import static org.junit.Assert.*;
 import org.rookit.dm.genre.Genre;
 import org.rookit.dm.genre.Genreable;
 import org.rookit.dm.play.able.Playable;
-import org.rookit.dm.test.DMTestFactory;
 
 import com.google.common.collect.Sets;
 
