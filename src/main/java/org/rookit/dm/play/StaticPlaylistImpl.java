@@ -27,15 +27,22 @@ import java.util.Collection;
 import java.util.Set;
 import java.util.stream.Stream;
 
+import org.mongodb.morphia.annotations.Entity;
 import org.mongodb.morphia.annotations.Reference;
 import org.rookit.dm.track.Track;
 
 import com.google.common.collect.Sets;
 
+@Entity("Playlist")
 class StaticPlaylistImpl extends AbstractPlaylist implements StaticPlaylist {
 	
 	@Reference(lazy = true, idOnly = true)
 	private final Set<Track> tracks;
+	
+	@SuppressWarnings("unused")
+	private StaticPlaylistImpl() {
+		this(null);
+	}
 	
 	StaticPlaylistImpl(String name) {
 		super(STATIC, name);
@@ -91,5 +98,15 @@ class StaticPlaylistImpl extends AbstractPlaylist implements StaticPlaylist {
 	public Collection<Track> getTracks() {
 		return tracks;
 	}
+	
+	@Override
+	public boolean equals(Object other) {
+		return super.equals(other);
+	}
 
+	@Override
+	public int hashCode() {
+		return super.hashCode();
+	}
+	
 }

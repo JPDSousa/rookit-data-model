@@ -10,7 +10,7 @@ import org.rookit.dm.utils.bistream.BiStream;
 //@SmofIndexes({
 //	@SmofIndex(fields = {@SmofIndexField(name = DatabaseFields.NAME, type = IndexType.ASCENDING)}),
 //})
-@Entity
+@Entity("Playlist")
 @SuppressWarnings("javadoc")
 public interface Playlist extends Playable, PlaylistSetter<Void> {
 
