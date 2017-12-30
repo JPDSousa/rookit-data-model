@@ -9,4 +9,6 @@ public interface BiStream {
 	InputStream toInput();
 	
 	OutputStream toOutput();
+	
+	boolean isEmpty();
 }

@@ -77,6 +77,11 @@ public class BufferBiStreamFactory implements RookitFactory<BiStream> {
 			buffer.put(oldWrappedBuffer);
 		}
 
+		@Override
+		public boolean isEmpty() {
+			return buffer.position() == 0;
+		}
+
 	}
 	
 	private class ByteBufferReader extends InputStream {
