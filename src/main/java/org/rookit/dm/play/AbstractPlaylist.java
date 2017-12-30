@@ -6,10 +6,12 @@ import java.util.StringJoiner;
 
 import org.apache.commons.collections4.CollectionUtils;
 import org.mongodb.morphia.annotations.Embedded;
+import org.mongodb.morphia.annotations.Entity;
 import org.rookit.dm.play.able.AbstractPlayable;
 import org.rookit.dm.track.Track;
 import org.rookit.dm.utils.bistream.BiStream;
 
+@Entity("Playlist")
 abstract class AbstractPlaylist extends AbstractPlayable implements Playlist {
 
 	private static final int DEFAULT_FREEZE_LIMIT = 200;
@@ -96,5 +98,41 @@ abstract class AbstractPlaylist extends AbstractPlayable implements Playlist {
 				.add(other.getName())
 				.toString();
 	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = super.hashCode();
+		result = prime * result + ((name == null) ? 0 : name.hashCode());
+		result = prime * result + ((type == null) ? 0 : type.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) {
+			return true;
+		}
+		if (!super.equals(obj)) {
+			return false;
+		}
+		if (getClass() != obj.getClass()) {
+			return false;
+		}
+		AbstractPlaylist other = (AbstractPlaylist) obj;
+		if (name == null) {
+			if (other.name != null) {
+				return false;
+			}
+		} else if (!name.equals(other.name)) {
+			return false;
+		}
+		if (type != other.type) {
+			return false;
+		}
+		return true;
+	}
+	
+	
 	
 }
