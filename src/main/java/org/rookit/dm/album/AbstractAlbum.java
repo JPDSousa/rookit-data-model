@@ -439,7 +439,7 @@ public abstract class AbstractAlbum extends AbstractGenreable implements Album {
 		 * <p>Key - track number
 		 * <p>Value - track object
 		 */
-		@Reference
+		@Reference(idOnly = true)
 		private final Map<Integer, Track> tracks;
 		
 		private Disc(){
