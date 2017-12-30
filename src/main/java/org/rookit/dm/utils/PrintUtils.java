@@ -21,7 +21,6 @@
  ******************************************************************************/
 package org.rookit.dm.utils;
 
-import java.io.IOException;
 import java.time.Duration;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
@@ -90,12 +89,8 @@ public final class PrintUtils {
 	public static String track(Track track){
 		final ExtStringBuilder builder = ExtStringBuilder.create();
 		final BiStream path = track.getPath();
-		try {
-			if(path != null && path.toInput().available() > 0) {
-				builder.append("Content: Yes\n");
-			}
-		} catch (IOException e) {
-			throw new RuntimeException(e);
+		if(path != null && path.isEmpty()) {
+			builder.append("Content: Yes\n");
 		}
 		builder.append("Type: ").append(track.getType()).breakLine()
 		.appendIf(track.getIdAsString() != null, "Id: " + track.getIdAsString() + "\n")
@@ -120,9 +115,9 @@ public final class PrintUtils {
 	public static String duration(Duration duration) {
 		if(duration.minus(ONE_HOUR).isNegative()) {
 			return new StringBuilder(5)
-					.append(duration.toMinutes())
+					.append(normalizeUnit(duration.toMinutes()))
 					.append(':')
-					.append(duration.getSeconds() % 60)
+					.append(normalizeUnit(duration.getSeconds() % 60))
 					.toString();
 		}
 		return durationHMS(duration);
@@ -130,12 +125,19 @@ public final class PrintUtils {
 	
 	private static String durationHMS(Duration duration) {
 		return new StringBuilder(10)
-				.append(duration.toHours())
+				.append(normalizeUnit(duration.toHours()))
 				.append(':')
-				.append(duration.toMinutes() % 60)
+				.append(normalizeUnit(duration.toMinutes() % 60))
 				.append(':')
-				.append(duration.getSeconds() % 60)
+				.append(normalizeUnit(duration.getSeconds() % 60))
 				.toString();
+	}
+	
+	private static String normalizeUnit(long unit) {
+		if(unit < 10) {
+			return "0" + unit;
+		}
+		return String.valueOf(unit);
 	}
 	
 	public static String artist(Artist artist) {
