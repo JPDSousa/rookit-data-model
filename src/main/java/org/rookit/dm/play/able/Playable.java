@@ -30,9 +30,9 @@ import org.rookit.dm.MetadataHolder;
 public interface Playable extends PlayableSetter<Void>, MetadataHolder {
 	
 	String PLAYS = "plays";
-	String LAST_PLAYED = "last_played";
+	String LAST_PLAYED = "lastPlayed";
 	String SKIPPED = "skipped";
-	String LAST_SKIPPED = "last_skipped";
+	String LAST_SKIPPED = "lastSkipped";
 	String DURATION = "duration";
 
 	long getPlays();
