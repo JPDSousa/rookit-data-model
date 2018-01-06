@@ -11,11 +11,13 @@ import org.rookit.dm.track.VersionTrack;
 
 @SuppressWarnings("javadoc")
 public class TrackComparator extends AbstractGenreableComparator<Track> {
+
+	private static final short BPM_THRESHOLD = 20;
 	
 	public TrackComparator() {
 		this(DEFAULT_THESHOLD);
 	}
-
+	
 	public TrackComparator(int threshold) {
 		this(threshold, Collections.emptyMap());
 	}
@@ -29,15 +31,18 @@ public class TrackComparator extends AbstractGenreableComparator<Track> {
 	}
 
 	@Override
-	protected Map<String, Integer> createTopMap(Track element1, Track element2) {
-		final Map<String, Integer> scores = super.createTopMap(element1, element2);
+	protected Map<String, Double> createTopMap(Track element1, Track element2) {
+		final Map<String, Double> scores = super.createTopMap(element1, element2);
+		final double isTypeEquals = compareFromEquals(element1.getType(), element2.getType());
+		if(isTypeEquals == 1) {
+			return Collections.singletonMap(TYPE, isTypeEquals);
+		}
 		scores.put(BPM, compareBPM(element1.getBPM(), element2.getBPM()));
 		scores.put(MAIN_ARTISTS, reverseIntersect(element1.getMainArtists(), element2.getMainArtists()));
 		scores.put(FEATURES, reverseIntersect(element1.getFeatures(), element2.getFeatures()));
 		scores.put(PRODUCERS, reverseIntersect(element1.getProducers(), element2.getProducers()));
 		scores.put(TITLE, compareStringIgnoreCase(element1.getTitle().toString(), element2.getTitle().toString()));
 		scores.put(HIDDEN_TRACK, compareStringIgnoreCase(element1.getHiddenTrack(), element2.getHiddenTrack()));
-		scores.put(TYPE, compareFromEquals(element1.getType(), element2.getType()));
 		if(element1.isVersionTrack() && element2.isVersionTrack()) {
 			final VersionTrack version1 = element1.getAsVersionTrack();
 			final VersionTrack version2 = element2.getAsVersionTrack();
@@ -49,13 +54,12 @@ public class TrackComparator extends AbstractGenreableComparator<Track> {
 		return scores;
 	}
 
-	private Integer compareBPM(short bpm, short bpm2) {
-		final short maxBPM = 20;
+	private double compareBPM(short bpm, short bpm2) {
 		final int diff = Math.abs(bpm-bpm2);
-		if(diff > maxBPM) {
+		if(diff > BPM_THRESHOLD) {
 			return threshold;
 		}
-		return diff*threshold/maxBPM;
+		return diff*threshold/(double) BPM_THRESHOLD;
 	}
 
 }

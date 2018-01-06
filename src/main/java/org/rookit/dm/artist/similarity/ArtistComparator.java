@@ -30,8 +30,8 @@ public class ArtistComparator extends AbstractGenreableComparator<Artist> {
 	}
 
 	@Override
-	protected Map<String, Integer> createTopMap(Artist element1, Artist element2) {
-		final Map<String, Integer> scores = super.createTopMap(element1, element2);
+	protected Map<String, Double> createTopMap(Artist element1, Artist element2) {
+		final Map<String, Double> scores = super.createTopMap(element1, element2);
 		scores.put(ALIASES, reverseIntersect(element1.getAliases(), element2.getAliases()));
 		scores.put(BEGIN_DATE, compareDate(element1.getBeginDate(), element2.getBeginDate()));
 		scores.put(END_DATE, compareDate(element1.getEndDate(), element2.getEndDate()));
@@ -43,14 +43,14 @@ public class ArtistComparator extends AbstractGenreableComparator<Artist> {
 		return scores;
 	}
 
-	private Integer compareDate(LocalDate beginDate, LocalDate beginDate2) {
+	private double compareDate(LocalDate beginDate, LocalDate beginDate2) {
 		final Period period = Period.between(beginDate, beginDate2);
 		final long totalMonths = Math.abs(period.toTotalMonths());
 		final int maxMonths = 12;
 		if(totalMonths > maxMonths) {
 			return threshold;
 		}
-		return (int) (totalMonths*threshold/maxMonths);
+		return totalMonths*threshold/(double) maxMonths;
 	}
 
 }

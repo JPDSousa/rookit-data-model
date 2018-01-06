@@ -1,7 +1,7 @@
 package org.rookit.dm.album.similarity;
 
 import static org.junit.Assert.*;
-import static org.hamcrest.number.OrderingComparison.*;
+import static org.hamcrest.Matchers.*;
 
 import java.util.Set;
 
@@ -37,9 +37,9 @@ public class AlbumSimilarityTest {
 		final Album a1 = factory.createAlbum(TypeAlbum.ARTIST, title, type, artists);
 		final Album a2 = factory.createAlbum(TypeAlbum.VA, title, type, artists);
 		assertNotEquals(a1, a2);
-		assertNotEquals(0, comparator.compare(a1, a2));
-		assertEquals(0, comparator.compare(a1, a1));
-		assertEquals(0, comparator.compare(a2, a2));
+		assertNotEquals(0, comparator.similarity(a1, a2));
+		assertEquals(0, comparator.similarity(a1, a1), 0);
+		assertEquals(0, comparator.similarity(a2, a2), 0);
 	}
 	
 	@Test
@@ -48,9 +48,9 @@ public class AlbumSimilarityTest {
 		final Set<Artist> artists = randomFactory.getRandomSetOfArtists();
 		final Album a1 = factory.createSingleArtistAlbum("one title", type, artists);
 		final Album a2 = factory.createSingleArtistAlbum("another title", type, artists);
-		assertNotEquals(0, comparator.compare(a1, a2));
-		assertEquals(0, comparator.compare(a1, a1));
-		assertEquals(0, comparator.compare(a2, a2));
+		assertNotEquals(0, comparator.similarity(a1, a2));
+		assertEquals(0, comparator.similarity(a1, a1), 0);
+		assertEquals(0, comparator.similarity(a2, a2), 0);
 	}
 	
 	@Test
@@ -60,12 +60,12 @@ public class AlbumSimilarityTest {
 		final Album a1 = factory.createSingleArtistAlbum("one title", type, artists);
 		final Album a2 = factory.createSingleArtistAlbum("similar title", type, artists);
 		final Album a3 = factory.createSingleArtistAlbum("completely different thing", type, artists);
-		final int a1a2 = Math.abs(comparator.compare(a1, a2));
-		final int a1a3 = Math.abs(comparator.compare(a1, a3));
+		final double a1a2 = Math.abs(comparator.similarity(a1, a2));
+		final double a1a3 = Math.abs(comparator.similarity(a1, a3));
 		assertThat(a1a2, lessThan(a1a3));
-		assertEquals(0, comparator.compare(a1, a1));
-		assertEquals(0, comparator.compare(a2, a2));
-		assertEquals(0, comparator.compare(a3, a3));
+		assertEquals(0, comparator.similarity(a1, a1), 0);
+		assertEquals(0, comparator.similarity(a2, a2), 0);
+		assertEquals(0, comparator.similarity(a3, a3), 0);
 	}
 	
 	
