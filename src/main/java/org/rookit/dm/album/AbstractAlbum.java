@@ -21,31 +21,23 @@
  ******************************************************************************/
 package org.rookit.dm.album;
 
-import static org.rookit.dm.album.DatabaseFields.*;
-
-import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.util.Collection;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.mongodb.morphia.annotations.Embedded;
+import org.mongodb.morphia.annotations.Reference;
 import org.rookit.dm.artist.Artist;
 import org.rookit.dm.genre.AbstractGenreable;
 import org.rookit.dm.genre.Genre;
 import org.rookit.dm.track.Track;
 import org.rookit.dm.utils.DataModelValidator;
+import org.rookit.dm.utils.bistream.BiStream;
 import org.rookit.utils.exception.InvalidOperationException;
-import org.smof.annnotations.SmofArray;
-import org.smof.annnotations.SmofBuilder;
-import org.smof.annnotations.SmofDate;
-import org.smof.annnotations.SmofObject;
-import org.smof.annnotations.SmofString;
-import org.smof.gridfs.SmofGridRef;
-import org.smof.gridfs.SmofGridRefFactory;
-import org.smof.parsers.SmofType;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
@@ -59,41 +51,39 @@ public abstract class AbstractAlbum extends AbstractGenreable implements Album {
 
 	private static final DataModelValidator VALIDATOR = DataModelValidator.getDefault();
 
-	/** Title of the album */
-	@SmofString(name = TITLE, required = true)
+	/** 
+	 * Title of the album
+	 */
 	private String title;
 
-	@SmofString(name = TYPE, required = true)
 	private final TypeAlbum type;
 
 	/** Set of authors of the album */
-	@SmofArray(name = ARTISTS, required = true, type = SmofType.OBJECT)
+	@Reference(idOnly = true)
 	private Set<Artist> artists;
 	/** 
 	 * Map of discs, containing the discs of the album
 	 * Key ({@link String}) - name of the disc
 	 * Value ({@link Disc}}Disc) - disc object
 	 */
-	@SmofObject(name = DISCS)
+	@Embedded
 	private Map<String, Disc> discs;
 	private int tracks;
 
 	/**
 	 * Release of the album
 	 */
-	@SmofDate(name = RELEASE_DATE)
 	private LocalDate releaseDate;
 	/**
 	 * Type of release
 	 */
-	@SmofString(name = RELEASE_TYPE)
 	private final TypeRelease releaseType;
 
 	/**
 	 * Smof GridFS Reference containing the image of the album
 	 */
-	@SmofObject(name = COVER, preInsert = false)
-	private final SmofGridRef cover;
+	@Embedded
+	private final BiStream cover;
 
 	/**
 	 * Default constructor for the object. All subclasses should use this constructor in order to create a
@@ -109,8 +99,10 @@ public abstract class AbstractAlbum extends AbstractGenreable implements Album {
 		this.type = type;
 		this.artists = artists;
 		this.tracks = 0;
-		discs = new LinkedHashMap<>();
-		cover = SmofGridRefFactory.newEmptyRef();
+		discs = Maps.newLinkedHashMap();
+		cover = AlbumFactory.getDefault()
+				.getBiStreamFactory()
+				.createEmpty();
 	}
 
 	@Override
@@ -352,12 +344,16 @@ public abstract class AbstractAlbum extends AbstractGenreable implements Album {
 	@Override
 	public final Void setCover(byte[] image) {
 		VALIDATOR.checkArgumentNotNull(image, "The image must contain data");
-		cover.attachByteArray(new ByteArrayInputStream(image));
+		try {
+			this.cover.toOutput().write(image);
+		} catch (IOException e) {
+			VALIDATOR.handleIOException(e);
+		}
 		return null;
 	}
 
 	@Override
-	public SmofGridRef getCover() {
+	public BiStream getCover() {
 		return cover;
 	}
 
@@ -432,6 +428,7 @@ public abstract class AbstractAlbum extends AbstractGenreable implements Album {
 	 * @author Joao
 	 *
 	 */
+	@Embedded
 	public static class Disc {
 
 		/**
@@ -442,10 +439,9 @@ public abstract class AbstractAlbum extends AbstractGenreable implements Album {
 		 * <p>Key - track number
 		 * <p>Value - track object
 		 */
-		@SmofObject(name="tracks", mapValueType = SmofType.OBJECT)
+		@Reference(idOnly = true)
 		private final Map<Integer, Track> tracks;
 		
-		@SmofBuilder
 		private Disc(){
 			tracks = Maps.newLinkedHashMap();
 		}

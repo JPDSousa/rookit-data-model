@@ -29,16 +29,17 @@ import java.time.LocalDate;
 import java.util.Collection;
 import java.util.Set;
 
+import org.mongodb.morphia.annotations.Entity;
+import org.mongodb.morphia.annotations.Field;
+import org.mongodb.morphia.annotations.Index;
+import org.mongodb.morphia.annotations.IndexOptions;
+import org.mongodb.morphia.annotations.Indexes;
+import org.mongodb.morphia.utils.IndexType;
 import org.rookit.dm.artist.Artist;
 import org.rookit.dm.genre.Genreable;
-import org.rookit.dm.play.Playable;
+import org.rookit.dm.play.able.Playable;
 import org.rookit.dm.track.Track;
-import org.smof.annnotations.ForceInspection;
-import org.smof.annnotations.SmofIndex;
-import org.smof.annnotations.SmofIndexField;
-import org.smof.annnotations.SmofIndexes;
-import org.smof.gridfs.SmofGridRef;
-import org.smof.index.IndexType;
+import org.rookit.dm.utils.bistream.BiStream;
 
 /**
  * Represents an album of tracks.
@@ -60,16 +61,25 @@ import org.smof.index.IndexType;
  * @since 1
  *
  */
-@SmofIndexes({
-	@SmofIndex(fields={
-			@SmofIndexField(name = TITLE, type = IndexType.ASCENDING),
-			@SmofIndexField(name = RELEASE_TYPE, type = IndexType.DESCENDING),
-			@SmofIndexField(name = ARTISTS, type = IndexType.ASCENDING)},
-			unique = true),
-	@SmofIndex(fields={@SmofIndexField(name = RELEASE_DATE, type = IndexType.DESCENDING)}),
-	@SmofIndex(fields={@SmofIndexField(name = TITLE, type = IndexType.TEXT)})
+//@SmofIndexes({
+//	@SmofIndex(fields={
+//			@SmofIndexField(name = TITLE, type = IndexType.ASCENDING),
+//			@SmofIndexField(name = RELEASE_TYPE, type = IndexType.DESCENDING),
+//			@SmofIndexField(name = ARTISTS, type = IndexType.ASCENDING)},
+//			unique = true),
+//	@SmofIndex(fields={@SmofIndexField(name = RELEASE_DATE, type = IndexType.DESCENDING)}),
+//	@SmofIndex(fields={@SmofIndexField(name = TITLE, type = IndexType.TEXT)})
+//})
+@Indexes({
+	@Index(fields = {
+			@Field(value = TITLE, type = IndexType.ASC),
+			@Field(value = RELEASE_TYPE, type = IndexType.DESC),
+			@Field(value = ARTISTS, type = IndexType.ASC),
+	}, options = @IndexOptions(unique = true)),
+	@Index(fields=@Field(value = TITLE, type = IndexType.TEXT))
 })
-@ForceInspection({SingleArtistAlbum.class, VariousArtistAlbum.class})
+// TODO is it possible to turn this into Album.class.getName() somehow??
+@Entity(value="Album")
 public interface Album extends Genreable, Playable, Comparable<Album>, AlbumSetter<Void> {
 
 	/**
@@ -200,7 +210,7 @@ public interface Album extends Genreable, Playable, Comparable<Album>, AlbumSett
 	 * 
 	 * @return a byte array representative of the cover image.
 	 */
-	SmofGridRef getCover();
+	BiStream getCover();
 
 	/**
 	 * Searches for the track passed as parameter in the album's tracks.

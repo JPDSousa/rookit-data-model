@@ -15,8 +15,8 @@ public abstract class AbstractGenreableComparator<T extends Genreable> extends A
 	}
 
 	@Override
-	protected Map<String, Integer> createTopMap(T element1, T element2) {
-		final Map<String, Integer> scores = super.createTopMap(element1, element2);
+	protected Map<String, Double> createTopMap(T element1, T element2) {
+		final Map<String, Double> scores = super.createTopMap(element1, element2);
 		scores.put(GENRES, reverseIntersect(element1.getGenres(), element2.getGenres()));
 		
 		return scores;

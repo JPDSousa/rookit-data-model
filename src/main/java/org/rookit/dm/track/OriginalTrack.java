@@ -21,24 +21,21 @@
  ******************************************************************************/
 package org.rookit.dm.track;
 
-import static org.rookit.dm.track.DatabaseFields.*;
-
 import java.util.Collection;
 import java.util.Set;
 
+import org.mongodb.morphia.annotations.Entity;
+import org.mongodb.morphia.annotations.Reference;
 import org.rookit.dm.artist.Artist;
-import org.smof.annnotations.SmofArray;
-import org.smof.annnotations.SmofString;
-import org.smof.parsers.SmofType;
 
 import com.google.common.collect.Sets;
 
+@Entity("Track")
 final class OriginalTrack extends AbstractTrack {
 
-	@SmofString(name = TITLE, required = true)
 	private String title;
 	
-	@SmofArray(name = MAIN_ARTISTS, type = SmofType.OBJECT, required = true)
+	@Reference(idOnly = true)
 	private Set<Artist> mainArtists;
 
 	OriginalTrack(String title) {

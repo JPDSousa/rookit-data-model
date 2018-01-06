@@ -21,36 +21,69 @@
  ******************************************************************************/
 package org.rookit.dm.play;
 
-import static org.rookit.dm.genre.DatabaseFields.NAME;
+import static org.rookit.dm.play.DatabaseFields.*;
 
 import java.io.Serializable;
+import java.util.Map;
 
 import org.rookit.dm.utils.DataModelValidator;
-import org.smof.annnotations.SmofBuilder;
-import org.smof.annnotations.SmofParam;
+import org.rookit.dm.utils.bistream.BiStream;
+import org.rookit.dm.utils.bistream.BiStreamFoF;
+import org.rookit.dm.utils.bistream.BufferBiStreamFactory;
+import org.rookit.dm.utils.factory.RookitFactory;
 
 @SuppressWarnings("javadoc")
-public class PlaylistFactory implements Serializable {
+public class PlaylistFactory implements Serializable, BiStreamFoF, RookitFactory<Playlist> {
 
 	private static final long serialVersionUID = 1L;
 
 	private static final DataModelValidator VALIDATOR = DataModelValidator.getDefault();
-	
+
 	private static PlaylistFactory singleton;
-	
+
 	public static PlaylistFactory getDefault() {
 		if(singleton == null) {
 			singleton = new PlaylistFactory();
 		}
-		
+
 		return singleton;
 	}
-		
-	private PlaylistFactory() {}
+
+	private RookitFactory<BiStream> biStreamFactory;
 	
-	@SmofBuilder
-	public StaticPlaylist createPlaylist(@SmofParam(name = NAME) String name) {
+	private PlaylistFactory() {
+		biStreamFactory = new BufferBiStreamFactory();
+	}
+
+	public StaticPlaylist createPlaylist(TypePlaylist type, String name) {
+		VALIDATOR.checkArgumentNotNull(type, "Playlist type cannot be null");
 		VALIDATOR.checkArgumentStringNotEmpty(name, "A playlist must have a non-null non-empty name");
 		return new StaticPlaylistImpl(name);
+	}
+
+	@Override
+	public RookitFactory<BiStream> getBiStreamFactory() {
+		return biStreamFactory;
+	}
+
+	@Override
+	public void setBiStreamFactory(RookitFactory<BiStream> factory) {
+		this.biStreamFactory = factory;
+	}
+
+	@Override
+	public Playlist createEmpty() {
+		throw new UnsupportedOperationException("Cannot create an empty playlist");
+	}
+
+	@Override
+	public Playlist create(Map<String, Object> data) {
+		final Object name = data.get(NAME);
+		final Object type = data.get(TYPE);
+		if(name != null && name instanceof String
+				&& type != null && type instanceof TypePlaylist) {
+			return createPlaylist((TypePlaylist) type, (String) name);
+		}
+		throw new RuntimeException("Invalid arguments: " + data);
 	}
 }

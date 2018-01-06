@@ -21,19 +21,21 @@
  ******************************************************************************/
 package org.rookit.dm.artist;
 
-import org.smof.annnotations.SmofString;
+import org.mongodb.morphia.annotations.Entity;
 
-import static org.rookit.dm.artist.DatabaseFields.*;
-
+//TODO is it possible to turn this into Artist.class.getName() somehow??
+@Entity(value="Artist")
 class MusicianImpl extends AbstractArtist implements Musician {
 
-	@SmofString(name = GENDER)
 	private TypeGender gender;
 	
-	@SmofString(name = FULL_NAME)
 	private String fullName;
 	
-	protected MusicianImpl(String artistName) {
+	private MusicianImpl() {
+		super(null, null);
+	}
+	
+	MusicianImpl(String artistName) {
 		super(TypeArtist.MUSICIAN, artistName);
 	}
 

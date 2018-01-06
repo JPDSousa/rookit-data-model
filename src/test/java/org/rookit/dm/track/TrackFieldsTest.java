@@ -32,12 +32,12 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.rookit.dm.artist.Artist;
 import org.rookit.dm.genre.Genre;
-import org.rookit.dm.test.DMTestFactory;
 import org.rookit.dm.track.Track;
 import org.rookit.dm.track.TrackFactory;
 import org.rookit.dm.track.TrackTitle;
 import org.rookit.dm.track.TypeTrack;
 import org.rookit.dm.track.TypeVersion;
+import org.rookit.dm.utils.DMTestFactory;
 import org.rookit.dm.utils.TestUtils;
 import org.rookit.utils.exception.InvalidOperationException;
 

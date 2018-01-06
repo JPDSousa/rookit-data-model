@@ -32,8 +32,8 @@ import org.rookit.dm.album.TrackSlot;
 import org.rookit.dm.artist.Artist;
 import org.rookit.dm.track.Track;
 import org.rookit.dm.track.VersionTrack;
+import org.rookit.dm.utils.bistream.BiStream;
 import org.rookit.utils.print.TypeFormat;
-import org.smof.gridfs.SmofGridRef;
 
 import com.google.common.collect.Iterables;
 
@@ -88,11 +88,9 @@ public final class PrintUtils {
 
 	public static String track(Track track){
 		final ExtStringBuilder builder = ExtStringBuilder.create();
-		final SmofGridRef path = track.getPath();
-		if(path != null && path.getId() != null) {
-			builder.append("Content: ")
-			.append(path.getId())
-			.append("\n");
+		final BiStream path = track.getPath();
+		if(path != null && path.isEmpty()) {
+			builder.append("Content: Yes\n");
 		}
 		builder.append("Type: ").append(track.getType()).breakLine()
 		.appendIf(track.getIdAsString() != null, "Id: " + track.getIdAsString() + "\n")
@@ -117,9 +115,9 @@ public final class PrintUtils {
 	public static String duration(Duration duration) {
 		if(duration.minus(ONE_HOUR).isNegative()) {
 			return new StringBuilder(5)
-					.append(duration.toMinutes())
+					.append(normalizeUnit(duration.toMinutes()))
 					.append(':')
-					.append(duration.getSeconds() % 60)
+					.append(normalizeUnit(duration.getSeconds() % 60))
 					.toString();
 		}
 		return durationHMS(duration);
@@ -127,12 +125,19 @@ public final class PrintUtils {
 	
 	private static String durationHMS(Duration duration) {
 		return new StringBuilder(10)
-				.append(duration.toHours())
+				.append(normalizeUnit(duration.toHours()))
 				.append(':')
-				.append(duration.toMinutes() % 60)
+				.append(normalizeUnit(duration.toMinutes() % 60))
 				.append(':')
-				.append(duration.getSeconds() % 60)
+				.append(normalizeUnit(duration.getSeconds() % 60))
 				.toString();
+	}
+	
+	private static String normalizeUnit(long unit) {
+		if(unit < 10) {
+			return "0" + unit;
+		}
+		return String.valueOf(unit);
 	}
 	
 	public static String artist(Artist artist) {

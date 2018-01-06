@@ -4,28 +4,32 @@ import static org.rookit.dm.RookitModel.*;
 
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.Map;
 import java.util.Objects;
 
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.text.similarity.LevenshteinDistance;
-import org.rookit.dm.RookitModel;
+import org.rookit.dm.MetadataHolder;
 import org.rookit.dm.utils.DataModelValidator;
 
 import com.google.common.collect.Maps;
 
 @SuppressWarnings("javadoc")
-public abstract class AbstractSimilarityDistance<T extends RookitModel> implements Comparator<T> {
+public abstract class AbstractSimilarity<T extends MetadataHolder> implements Similarity<T> {
 
-	protected static final int DEFAULT_THESHOLD = 100;
+	private static final int LEV_DIS_THRESHOLD = 12;
+	protected static final int DEFAULT_THESHOLD = 1;
 	
 	protected final DataModelValidator validator;
 	protected final Map<String, Float> percentages;
 	private final LevenshteinDistance distance;
 	protected final int threshold;
 	
-	protected AbstractSimilarityDistance(int threshold, Map<String, Float> percentages) {
+	protected AbstractSimilarity(Map<String, Float> percentages) {
+		this(DEFAULT_THESHOLD, percentages);
+	}
+	
+	protected AbstractSimilarity(int threshold, Map<String, Float> percentages) {
 		super();
 		validator = DataModelValidator.getDefault();
 		distance = LevenshteinDistance.getDefaultInstance();
@@ -37,25 +41,28 @@ public abstract class AbstractSimilarityDistance<T extends RookitModel> implemen
 		this.percentages = percentagesImmutable;
 	}
 	
-	protected final int applyPercentages(Map<String, Integer> scores) {
+	protected final double applyPercentages(Map<String, Double> scores) {
 		if(percentages.isEmpty()) {
-			return (int) Math.round(scores.values().stream().mapToInt(Integer::intValue).average().orElse(1));
+			return scores.values().stream()
+					.mapToDouble(Double::doubleValue)
+					.average()
+					.orElse(1);
 		}
-		float score = 0;
+		double score = 0;
 		for(String key : scores.keySet()) {
 			score += percentages.get(key)*scores.get(key);
 		}
-		return Math.round(score);
+		return score;
 	}
 	
-	protected final <E> int reverseIntersect(Collection<E> col1, Collection<E> col2) {
+	protected final <E> double reverseIntersect(Collection<E> col1, Collection<E> col2) {
 		final int maxSize = Math.max(col1.size(), col2.size());
 		final int result = maxSize - CollectionUtils.intersection(col1, col2).size();
 		return Math.min(result, threshold);
 	}
 	
-	protected Map<String, Integer> createTopMap(T element1, T element2) {
-		final Map<String, Integer> scores = Maps.newLinkedHashMap();
+	protected Map<String, Double> createTopMap(T element1, T element2) {
+		final Map<String, Double> scores = Maps.newLinkedHashMap();
 		scores.put(ID, compareFromEquals(element1.getId(), element2.getId()));
 		// TODO compare these fields
 		element1.getExternalMetadata();
@@ -63,25 +70,25 @@ public abstract class AbstractSimilarityDistance<T extends RookitModel> implemen
 		return scores;
 	}
 	
-	protected final <O> int compareFromEquals(O t1, O t2) {
-		return Objects.equals(t1, t2) ? 0 : 1;
+	protected final <O> double compareFromEquals(O t1, O t2) {
+		return Objects.equals(t1, t2) ? 0 : threshold;
 	}
 
-	protected final int apply(String str1, String str2) {
-		final int distance = this.distance.apply(str1, str2);
-		return Math.min(distance*10, threshold);
+	private double apply(String str1, String str2) {
+		final int distance = Math.min(this.distance.apply(str1, str2), LEV_DIS_THRESHOLD);
+		return Math.min(distance/ (double) LEV_DIS_THRESHOLD, threshold);
 	}
 	
-	protected final int compareString(String str1, String str2) {
-		return distance.apply(str1, str2);
+	protected final double compareString(String str1, String str2) {
+		return apply(str1, str2);
 	}
 	
-	protected final int compareStringIgnoreCase(String str1, String str2) {
+	protected final double compareStringIgnoreCase(String str1, String str2) {
 		return apply(str1.toLowerCase(), str2.toLowerCase());
 	}
 
 	@Override
-	public int compare(T o1, T o2) {
+	public double similarity(T o1, T o2) {
 		return applyPercentages(createTopMap(o1, o2));
 	}
 

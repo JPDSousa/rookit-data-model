@@ -29,23 +29,23 @@ package org.rookit.dm.track;
  */
 public interface DatabaseFields {
 	
-	String HIDDEN_TRACK = "hidden_track";
-	String TYPE = "track_type";
+	String HIDDEN_TRACK = "hiddenTrack";
+	String TYPE = "type";
 	String PATH = "path";
 	String TITLE = "title";
-	String MAIN_ARTISTS = "main_artists";
+	String MAIN_ARTISTS = "mainArtists";
 	String FEATURES = "features";
 	String PRODUCERS = "producers";
-	String VERSION_ARTISTS = "version_artists";
-	String VERSION_TOKEN = "version_token";
+	String VERSION_ARTISTS = "versionArtists";
+	String VERSION_TOKEN = "versionToken";
 	String LYRICS = "lyrics";
 	String ORIGINAL = "original";
-	String VERSION_TYPE = "version_type";
+	String VERSION_TYPE = "versionType";
 	String EXPLICIT = "explicit";
 	// Audio features
 	String BPM = "bpm";
-	String KEY = "key";
-	String MODE = "mode";
+	String KEY = "trackKey";
+	String MODE = "trackMode";
 	String INSTRUMENTAL = "instrumental";
 	String LIVE = "live";
 	String ACOUSTIC = "acoustic";

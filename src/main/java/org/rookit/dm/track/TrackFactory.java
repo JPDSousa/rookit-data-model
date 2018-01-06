@@ -24,12 +24,15 @@ package org.rookit.dm.track;
 import static org.rookit.dm.track.DatabaseFields.*;
 
 import java.io.Serializable;
+import java.util.Map;
 
-import org.smof.annnotations.SmofBuilder;
-import org.smof.annnotations.SmofParam;
+import org.rookit.dm.utils.bistream.BiStream;
+import org.rookit.dm.utils.bistream.BiStreamFoF;
+import org.rookit.dm.utils.bistream.BufferBiStreamFactory;
+import org.rookit.dm.utils.factory.RookitFactory;
 
 @SuppressWarnings("javadoc")
-public class TrackFactory implements Serializable {
+public class TrackFactory implements Serializable, BiStreamFoF, RookitFactory<Track> {
 
 	private static final long serialVersionUID = 1L;
 	
@@ -42,7 +45,11 @@ public class TrackFactory implements Serializable {
 		return singleton;
 	}
 
-	private TrackFactory(){}
+	private RookitFactory<BiStream> biStreamFactory;
+	
+	private TrackFactory(){
+		this.biStreamFactory = new BufferBiStreamFactory();
+	}
 
 	public final OriginalTrack createOriginalTrack(String title) {
 		return new OriginalTrack(title);
@@ -52,14 +59,51 @@ public class TrackFactory implements Serializable {
 		return new VersionTrack(original, versionType);
 	}
 
-	@SmofBuilder
-	public final Track createTrack(@SmofParam(name = TYPE) TypeTrack type, 
-			@SmofParam(name = TITLE) String title,
-			@SmofParam(name = ORIGINAL) Track original,
-			@SmofParam(name = VERSION_TYPE) TypeVersion versionType) {
+	public final Track createTrack(TypeTrack type, String title, Track original, TypeVersion versionType) {
 		if(type == TypeTrack.VERSION) {
 			return new VersionTrack(original, versionType);
 		}
 		return new OriginalTrack(title);
+	}
+
+	@Override
+	public RookitFactory<BiStream> getBiStreamFactory() {
+		return biStreamFactory;
+	}
+
+	@Override
+	public void setBiStreamFactory(RookitFactory<BiStream> factory) {
+		this.biStreamFactory = factory;
+	}
+
+	@Override
+	public Track createEmpty() {
+		throw new UnsupportedOperationException("Cannot create an empty track");
+	}
+
+	@Override
+	public Track create(Map<String, Object> data) {
+		final Object type = data.get(TYPE);
+		if(type != null && type instanceof TypeTrack) {
+			switch((TypeTrack) type) {
+			case ORIGINAL:
+				final Object title = data.get(TITLE);
+				if(title != null && title instanceof String) {
+					return createOriginalTrack((String) title);
+				}
+				break;
+			case VERSION:
+				final Object original = data.get(ORIGINAL);
+				final Object versionType = data.get(VERSION_TYPE);
+				if(original != null && original instanceof Track
+						&& versionType != null && versionType instanceof TypeVersion) {
+					return createVersionTrack((TypeVersion) versionType, (Track) original);
+				}
+				break;
+			default:
+				break;
+			}
+		}
+		throw new RuntimeException("Invalid arguments: " + data);
 	}
 }

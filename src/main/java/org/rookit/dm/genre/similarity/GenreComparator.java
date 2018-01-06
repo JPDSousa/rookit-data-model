@@ -28,8 +28,8 @@ public class GenreComparator extends AbstractPlayableComparator<Genre> {
 	}
 
 	@Override
-	protected Map<String, Integer> createTopMap(Genre element1, Genre element2) {
-		final Map<String, Integer> scores = super.createTopMap(element1, element2);
+	protected Map<String, Double> createTopMap(Genre element1, Genre element2) {
+		final Map<String, Double> scores = super.createTopMap(element1, element2);
 		scores.put(NAME, compareStringIgnoreCase(element1.getName(), element2.getName()));
 		return scores;
 	}

@@ -1,31 +1,42 @@
 package org.rookit.dm.play;
 
-import static org.rookit.dm.play.DatabaseFields.IMAGE;
-import static org.rookit.dm.play.DatabaseFields.NAME;
-
-import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.util.Collection;
 import java.util.StringJoiner;
 
 import org.apache.commons.collections4.CollectionUtils;
-import org.smof.annnotations.SmofObject;
-import org.smof.annnotations.SmofString;
-import org.smof.gridfs.SmofGridRef;
-import org.smof.gridfs.SmofGridRefFactory;
+import org.mongodb.morphia.annotations.Embedded;
+import org.mongodb.morphia.annotations.Entity;
+import org.rookit.dm.play.able.AbstractPlayable;
+import org.rookit.dm.track.Track;
+import org.rookit.dm.utils.bistream.BiStream;
 
+@Entity("Playlist")
 abstract class AbstractPlaylist extends AbstractPlayable implements Playlist {
 
 	private static final int DEFAULT_FREEZE_LIMIT = 200;
 
-	@SmofString(name = NAME)
 	private final String name;
 	
-	@SmofObject(name = IMAGE, bucketName = IMAGE_BUCKET, preInsert = false)
-	private final SmofGridRef image;
+	private final TypePlaylist type;
 	
-	protected AbstractPlaylist(String name) {
+	@Embedded
+	private final BiStream image;
+	
+	protected AbstractPlaylist(TypePlaylist type, String name) {
+		this.type = type;
 		this.name = name;
-		image = SmofGridRefFactory.newEmptyRef();
+		image = PlaylistFactory.getDefault()
+				.getBiStreamFactory()
+				.createEmpty();
 	}
+	
+	@Override
+	public TypePlaylist getType() {
+		return type;
+	}
+
+
 
 	@Override
 	public String getName() {
@@ -33,13 +44,17 @@ abstract class AbstractPlaylist extends AbstractPlayable implements Playlist {
 	}
 
 	@Override
-	public SmofGridRef getImage() {
+	public BiStream getImage() {
 		return image;
 	}
 
 	@Override
 	public Void setImage(byte[] image) {
-		this.image.attachByteArray(new ByteArrayInputStream(image));
+		try {
+			this.image.toOutput().write(image);
+		} catch (IOException e) {
+			VALIDATOR.handleIOException(e);
+		}
 		return null;
 	}
 	
@@ -60,7 +75,10 @@ abstract class AbstractPlaylist extends AbstractPlayable implements Playlist {
 		final StaticPlaylist thisAsStatic = freezeIfNecessary(this);
 		final StaticPlaylist otherAsStatic = freezeIfNecessary(other);
 		final String name = jointName(other);
-		return StaticPlaylist.fromCollection(name, CollectionUtils.intersection(thisAsStatic, otherAsStatic));
+		final Collection<Track> intersection = CollectionUtils.intersection(
+				thisAsStatic.getTracks(), 
+				otherAsStatic.getTracks());
+		return StaticPlaylist.fromCollection(name, intersection);
 	}
 
 	@Override
@@ -68,7 +86,10 @@ abstract class AbstractPlaylist extends AbstractPlayable implements Playlist {
 		final StaticPlaylist thisAsStatic = freezeIfNecessary(this);
 		final StaticPlaylist otherAsStatic = freezeIfNecessary(other);
 		final String name = jointName(other);
-		return StaticPlaylist.fromCollection(name, CollectionUtils.union(thisAsStatic, otherAsStatic));
+		final Collection<Track> union = CollectionUtils.union(
+				thisAsStatic.getTracks(), 
+				otherAsStatic.getTracks());
+		return StaticPlaylist.fromCollection(name, union);
 	}
 	
 	private String jointName(Playlist other) {
@@ -77,5 +98,41 @@ abstract class AbstractPlaylist extends AbstractPlayable implements Playlist {
 				.add(other.getName())
 				.toString();
 	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = super.hashCode();
+		result = prime * result + ((name == null) ? 0 : name.hashCode());
+		result = prime * result + ((type == null) ? 0 : type.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) {
+			return true;
+		}
+		if (!super.equals(obj)) {
+			return false;
+		}
+		if (getClass() != obj.getClass()) {
+			return false;
+		}
+		AbstractPlaylist other = (AbstractPlaylist) obj;
+		if (name == null) {
+			if (other.name != null) {
+				return false;
+			}
+		} else if (!name.equals(other.name)) {
+			return false;
+		}
+		if (type != other.type) {
+			return false;
+		}
+		return true;
+	}
+	
+	
 	
 }

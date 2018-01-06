@@ -23,7 +23,7 @@ package org.rookit.dm.genre;
 
 import java.util.Collection;
 
-import org.rookit.dm.play.Playable;
+import org.rookit.dm.play.able.Playable;
 
 @SuppressWarnings("javadoc")
 public interface Genreable extends Playable, GenreableSetter<Void>{

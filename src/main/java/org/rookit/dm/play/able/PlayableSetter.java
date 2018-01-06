@@ -1,4 +1,4 @@
-package org.rookit.dm.play;
+package org.rookit.dm.play.able;
 
 import java.time.Duration;
 import java.time.LocalDate;

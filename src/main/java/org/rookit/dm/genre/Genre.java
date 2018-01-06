@@ -21,20 +21,14 @@
  ******************************************************************************/
 package org.rookit.dm.genre;
 
-import static org.rookit.dm.genre.DatabaseFields.*;
-
-import org.rookit.dm.play.Playable;
-import org.smof.annnotations.ForceInspection;
-import org.smof.annnotations.SmofIndex;
-import org.smof.annnotations.SmofIndexField;
-import org.smof.annnotations.SmofIndexes;
-import org.smof.index.IndexType;
+import org.mongodb.morphia.annotations.Entity;
+import org.rookit.dm.play.able.Playable;
 
 @SuppressWarnings("javadoc")
-@SmofIndexes({
-	@SmofIndex(fields = {@SmofIndexField(name = NAME, type = IndexType.TEXT)}, unique=true)
-})
-@ForceInspection({DefaultGenre.class})
+//@SmofIndexes({
+//	@SmofIndex(fields = {@SmofIndexField(name = NAME, type = IndexType.TEXT)}, unique=true)
+//})
+@Entity
 public interface Genre extends Playable, Comparable<Genre>, GenreSetter<Void> {
 	
 	public String getName();

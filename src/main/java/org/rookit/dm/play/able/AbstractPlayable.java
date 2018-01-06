@@ -19,34 +19,27 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  ******************************************************************************/
-package org.rookit.dm.play;
+package org.rookit.dm.play.able;
 
 import java.time.Duration;
 import java.time.LocalDate;
 
-import org.rookit.dm.AbstractRookitModel;
+import org.rookit.dm.AbstractMetadataHolder;
 import org.rookit.dm.utils.DataModelValidator;
-import org.smof.annnotations.SmofDate;
-import org.smof.annnotations.SmofNumber;
 
 @SuppressWarnings("javadoc")
-public abstract class AbstractPlayable extends AbstractRookitModel implements Playable {
+public abstract class AbstractPlayable extends AbstractMetadataHolder implements Playable {
 
 	protected static final DataModelValidator VALIDATOR = DataModelValidator.getDefault();
 	
-	@SmofNumber(name = PLAYS)
 	private long plays;
 	
-	@SmofNumber(name = SKIPPED)
 	private long skipped;
 	
-	@SmofDate(name = LAST_SKIPPED)
 	private LocalDate lastSkipped;
 	
-	@SmofDate(name = LAST_PLAYED)
 	private LocalDate lastPlayed;
 	
-	@SmofNumber(name = DURATION)
 	private Duration duration;
 	
 	protected AbstractPlayable() {

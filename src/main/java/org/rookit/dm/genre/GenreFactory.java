@@ -24,13 +24,13 @@ package org.rookit.dm.genre;
 import static org.rookit.dm.genre.DatabaseFields.*;
 
 import java.io.Serializable;
+import java.util.Map;
 
 import org.rookit.dm.utils.DataModelValidator;
-import org.smof.annnotations.SmofBuilder;
-import org.smof.annnotations.SmofParam;
+import org.rookit.dm.utils.factory.RookitFactory;
 
 @SuppressWarnings("javadoc")
-public class GenreFactory implements Serializable {
+public class GenreFactory implements Serializable, RookitFactory<Genre> {
 
 	private static final long serialVersionUID = 1L;
 	
@@ -48,9 +48,22 @@ public class GenreFactory implements Serializable {
 		
 	private GenreFactory() {}
 	
-	@SmofBuilder
-	public Genre createGenre(@SmofParam(name = NAME) String name) {
+	public Genre createGenre(String name) {
 		VALIDATOR.checkArgumentStringNotEmpty(name, "A genre must have a non-null non-empty name");
 		return new DefaultGenre(name);
+	}
+
+	@Override
+	public Genre createEmpty() {
+		throw new UnsupportedOperationException("Cannot create an empty genre");
+	}
+
+	@Override
+	public Genre create(Map<String, Object> data) {
+		final Object name = data.get(NAME);
+		if(name != null && name instanceof String) {
+			return createGenre((String) name);
+		}
+		throw new RuntimeException("Invalid arguments: " + data);
 	}
 }

@@ -21,67 +21,74 @@
  ******************************************************************************/
 package org.rookit.dm.track;
 
-import static org.rookit.dm.track.DatabaseFields.*;
-
 import java.util.Collection;
-import java.util.LinkedHashSet;
 import java.util.Set;
 
+import org.mongodb.morphia.annotations.Entity;
+import org.mongodb.morphia.annotations.Reference;
 import org.rookit.dm.artist.Artist;
 import org.rookit.dm.utils.PrintUtils;
 import org.rookit.utils.print.TypeFormat;
-import org.smof.annnotations.SmofArray;
-import org.smof.annnotations.SmofObject;
-import org.smof.annnotations.SmofString;
-import org.smof.parsers.SmofType;
 
+import com.google.common.collect.Sets;
+
+@Entity("Track")
 @SuppressWarnings("javadoc")
 public final class VersionTrack extends AbstractTrack {
-	
-	@SmofArray(name = VERSION_ARTISTS, type = SmofType.OBJECT)
-	private final Set<Artist> extraArtists;
-	
-	@SmofString(name = VERSION_TOKEN)
+
+	@Reference(idOnly = true)
+	private final Set<Artist> versionArtists;
+
 	private String versionToken;//e.g. club remix
-	
-	@SmofObject(name = ORIGINAL)
+
+	@Reference(idOnly = true)
 	private final Track original;
+
+	private final TypeVersion versionType;
 	
-	@SmofString(name = VERSION_TYPE)
-	private final TypeVersion versionType;	
-	
+	private VersionTrack() {
+		super(TypeTrack.VERSION);
+		this.versionArtists = null;
+		this.original = null;
+		this.versionType = null;
+	}
+
 	VersionTrack(Track original, TypeVersion versionType) {
 		super(TypeTrack.VERSION);
-		extraArtists = new LinkedHashSet<>();
+		versionArtists = Sets.newLinkedHashSet();
 		this.original = original;
 		this.versionType = versionType;
 		setVersionToken("");
 	}
 	
+	public Track getOriginal() {
+		return original;
+	}
+
 	public TypeVersion getVersionType() {
 		return versionType;
 	}
 
 	public Collection<Artist> getVersionArtists() {
-		return extraArtists;
+		return versionArtists;
 	}
 
 	public void addVersionArtist(Artist extraArtist){
 		VALIDATOR.checkArgumentNotNull(extraArtist, "Cannot add a null artist");
-		extraArtists.add(extraArtist);
+		versionArtists.add(extraArtist);
 	}
-	
+
 	public void setVersionArtists(Set<Artist> artists) {
 		VALIDATOR.checkArgumentNotNull(artists, "Artist set cannot be null");
-		extraArtists.clear();
-		extraArtists.addAll(artists);
+		versionArtists.clear();
+		versionArtists.addAll(artists);
 	}
 
 	public void setVersionToken(String versionToken){
 		VALIDATOR.checkArgumentNotNull(versionToken, "The version token cannot be null");
 		this.versionToken = versionToken;
 	}
-	
+
 	public String getVersionToken(){
 		return versionToken;
 	}
@@ -90,9 +97,9 @@ public final class VersionTrack extends AbstractTrack {
 	public TrackTitle getFullTitle() {
 		return original.getFullTitle().appendExtras(getExtras());
 	}
-	
+
 	private String getExtras() {
-		final StringBuilder builder = new StringBuilder(PrintUtils.getIterableAsString(extraArtists, TypeFormat.TITLE, Artist.UNKNOWN_ARTISTS));
+		final StringBuilder builder = new StringBuilder(PrintUtils.getIterableAsString(versionArtists, TypeFormat.TITLE, Artist.UNKNOWN_ARTISTS));
 		builder.append(" ").append(getVersionType().getName());
 		return builder.toString();
 	}
@@ -161,7 +168,7 @@ public final class VersionTrack extends AbstractTrack {
 	public int hashCode() {
 		final int prime = 31;
 		int result = super.hashCode();
-		result = prime * result + extraArtists.hashCode();
+		result = prime * result + versionArtists.hashCode();
 		result = prime * result + original.hashCode();
 		result = prime * result + versionToken.hashCode();
 		result = prime * result + versionType.hashCode();
@@ -180,7 +187,7 @@ public final class VersionTrack extends AbstractTrack {
 			return false;
 		}
 		VersionTrack other = (VersionTrack) obj;
-		if (!extraArtists.equals(other.extraArtists)) {
+		if (!versionArtists.equals(other.versionArtists)) {
 			return false;
 		}
 		if (!original.equals(other.original)) {
@@ -194,7 +201,7 @@ public final class VersionTrack extends AbstractTrack {
 		}
 		return true;
 	}
-	
-	
-	
+
+
+
 }

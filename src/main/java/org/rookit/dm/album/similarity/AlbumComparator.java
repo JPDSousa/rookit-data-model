@@ -31,7 +31,7 @@ public class AlbumComparator extends AbstractGenreableComparator<Album> {
 		super(threshold, percentages);
 	}
 	
-	private int compareDates(LocalDate d1, LocalDate d2) {
+	private double compareDates(LocalDate d1, LocalDate d2) {
 		if(Objects.equals(d1, d2)) {
 			return 0;
 		}
@@ -39,14 +39,14 @@ public class AlbumComparator extends AbstractGenreableComparator<Album> {
 		final Period period = Period.between(d1, d2);
 		final long totalMonths = Math.abs(period.toTotalMonths());
 		if(totalMonths <= maxMonths) {
-			return (int) (totalMonths*threshold/maxMonths);
+			return totalMonths*threshold/ (double) maxMonths;
 		}
 		return threshold;
 	}
 
 	@Override
-	protected Map<String, Integer> createTopMap(Album element1, Album element2) {
-		final Map<String, Integer> scores = super.createTopMap(element1, element2);
+	protected Map<String, Double> createTopMap(Album element1, Album element2) {
+		final Map<String, Double> scores = super.createTopMap(element1, element2);
 		scores.put(TITLE, compareStringIgnoreCase(element1.getTitle(), element2.getTitle()));
 		scores.put(TYPE, compareFromEquals(element1.getAlbumType(), element2.getAlbumType()));
 		scores.put(RELEASE_DATE, compareDates(element1.getReleaseDate(), element2.getReleaseDate()));

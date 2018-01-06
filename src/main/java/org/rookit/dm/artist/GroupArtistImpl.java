@@ -23,23 +23,25 @@ package org.rookit.dm.artist;
 
 import java.util.Set;
 
-import org.smof.annnotations.SmofArray;
-import org.smof.annnotations.SmofString;
-import org.smof.parsers.SmofType;
+import org.mongodb.morphia.annotations.Entity;
+import org.mongodb.morphia.annotations.Reference;
 
 import com.google.common.collect.Sets;
 
-import static org.rookit.dm.artist.DatabaseFields.*;
-
+//TODO is it possible to turn this into Artist.class.getName() somehow??
+@Entity(value="Artist")
 class GroupArtistImpl extends AbstractArtist implements GroupArtist {
 
-	@SmofArray(name = MEMBERS, type = SmofType.OBJECT)
+	@Reference(idOnly = true)
 	private Set<Musician> members;
 	
-	@SmofString(name = GROUP_TYPE)
 	private TypeGroup groupType;
 	
-	protected GroupArtistImpl(String artistName) {
+	private GroupArtistImpl() {
+		super(null, null);
+	}
+	
+	GroupArtistImpl(String artistName) {
 		super(TypeArtist.GROUP, artistName);
 		groupType = TypeGroup.DEFAULT;
 		members = Sets.newLinkedHashSet();

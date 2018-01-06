@@ -21,23 +21,18 @@
  ******************************************************************************/
 package org.rookit.dm.artist;
 
-import static org.rookit.dm.artist.DatabaseFields.*;
-
-import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.time.LocalDate;
 import java.util.Collection;
 import java.util.Set;
 
+import org.mongodb.morphia.annotations.Embedded;
+import org.mongodb.morphia.annotations.Reference;
 import org.rookit.dm.genre.AbstractGenreable;
 import org.rookit.dm.genre.Genre;
 import org.rookit.dm.utils.DataModelValidator;
-import org.smof.annnotations.SmofArray;
-import org.smof.annnotations.SmofDate;
-import org.smof.annnotations.SmofObject;
-import org.smof.annnotations.SmofString;
-import org.smof.gridfs.SmofGridRef;
-import org.smof.gridfs.SmofGridRefFactory;
-import org.smof.parsers.SmofType;
+import org.rookit.dm.utils.bistream.BiStream;
+import org.rookit.dm.utils.factory.RookitFactory;
 
 import com.google.common.collect.Sets;
 
@@ -52,41 +47,34 @@ public abstract class AbstractArtist extends AbstractGenreable implements Artist
 	/**
 	 * Artist Name
 	 */
-	@SmofString(name = NAME)
-	private final String artistName;
+	private final String name;
 
 	/**
 	 * Set of Related artists
 	 */
-	@SmofArray(name = RELATED, type = SmofType.OBJECT)
+	@Reference(idOnly = true)
 	private final Set<Artist> related;
 
 	/**
 	 * Artist origin (location)
 	 */
-	@SmofString(name = ORIGIN)
 	private String origin;
 	
-	@SmofArray(name = ALIASES, type = SmofType.STRING)
+	@Embedded
 	private Set<String> aliases;
 	
-	@SmofDate(name = BEGIN_DATE)
 	private LocalDate beginDate;
 	
-	@SmofDate(name = END_DATE)
 	private LocalDate endDate;
 	
-	@SmofString(name = IPI)
 	private String ipi;
 	
-	@SmofString(name = ISNI)
 	private String isni;
 	
-	@SmofString(name = TYPE)
 	private final TypeArtist type;
 	
-	@SmofObject(name = PICTURE, preInsert = false)
-	private final SmofGridRef picture;
+	@Embedded
+	private final BiStream picture;
 		
 	/**
 	 * Abstract constructor. Use this constructor to
@@ -95,15 +83,16 @@ public abstract class AbstractArtist extends AbstractGenreable implements Artist
 	 * @param artistName artist name
 	 */
 	protected AbstractArtist(TypeArtist type, String artistName) {
-		VALIDATOR.checkArgumentStringNotEmpty(artistName, "Must specify an artist name");
-		this.artistName = artistName;
+		final RookitFactory<BiStream> factory = ArtistFactory.getDefault()
+				.getBiStreamFactory();
+		this.name = artistName;
 		this.related = Sets.newLinkedHashSet();
 		this.origin = "";
 		this.aliases = Sets.newLinkedHashSetWithExpectedSize(5);
 		this.type = type;
 		this.isni = "";
 		this.ipi = "";
-		this.picture = SmofGridRefFactory.newEmptyRef();
+		this.picture = factory.createEmpty();
 	}
 
 	@Override
@@ -113,7 +102,7 @@ public abstract class AbstractArtist extends AbstractGenreable implements Artist
 	
 	@Override
 	public final String getName() {
-		return artistName;
+		return name;
 	}
 
 	@Override
@@ -144,7 +133,7 @@ public abstract class AbstractArtist extends AbstractGenreable implements Artist
 	public int hashCode() {
 		final int prime = 31;
 		int result = super.hashCode();
-		result = prime * result + artistName.hashCode();
+		result = prime * result + name.hashCode();
 		result = prime * result + isni.hashCode();
 		result = prime * result + type.hashCode();
 		return result;
@@ -162,7 +151,7 @@ public abstract class AbstractArtist extends AbstractGenreable implements Artist
 			return false;
 		}
 		AbstractArtist other = (AbstractArtist) obj;
-		if (!artistName.equalsIgnoreCase(other.artistName)) {
+		if (!name.equalsIgnoreCase(other.name)) {
 			return false;
 		}
 		if (!isni.equals(other.isni)) {
@@ -256,13 +245,17 @@ public abstract class AbstractArtist extends AbstractGenreable implements Artist
 	}
 
 	@Override
-	public SmofGridRef getPicture() {
+	public BiStream getPicture() {
 		return picture;
 	}
 
 	@Override
 	public Void setPicture(byte[] picture) {
-		this.picture.attachByteArray(new ByteArrayInputStream(picture));
+		try {
+			this.picture.toOutput().write(picture);
+		} catch (IOException e) {
+			VALIDATOR.handleIOException(e);
+		}
 		return null;
 	}
 	

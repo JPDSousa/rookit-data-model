@@ -24,6 +24,8 @@ package org.rookit.dm.album;
 import static org.junit.Assert.*;
 
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -44,9 +46,10 @@ import org.rookit.dm.album.AlbumFactory;
 import org.rookit.dm.album.TypeRelease;
 import org.rookit.dm.artist.Artist;
 import org.rookit.dm.genre.Genre;
-import org.rookit.dm.test.DMTestFactory;
 import org.rookit.dm.track.Track;
+import org.rookit.dm.utils.DMTestFactory;
 import org.rookit.dm.utils.TestUtils;
+import org.rookit.utils.resource.Resources;
 
 import com.google.common.collect.Sets;
 
@@ -417,12 +420,11 @@ public class AlbumFieldTest {
 
 	@Test
 	public final void testCover() throws IOException {
-		Random random = new Random();
-		byte[] cover = new byte[2048];
-		byte[] actual = new byte[2048];
-		random.nextBytes(cover);
+		final Path birds = Resources.RESOURCES_TEST.resolve("birds.jpg"); 
+		byte[] cover = Files.readAllBytes(birds);
+		byte[] actual = new byte[cover.length];
 		guineaPig.setCover(cover);
-		guineaPig.getCover().getAttachedByteArray().read(actual);
+		guineaPig.getCover().toInput().read(actual);
 		assertArrayEquals("Cover not being properly set!", cover, actual);
 	}
 	
