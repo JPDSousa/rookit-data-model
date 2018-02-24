@@ -1,42 +1,41 @@
 package org.rookit.dm.play;
 
-import java.io.IOException;
-import java.util.Collection;
-import java.util.StringJoiner;
+import static org.rookit.api.dm.play.PlaylistFields.*;
 
-import org.apache.commons.collections4.CollectionUtils;
+import java.io.IOException;
+
 import org.mongodb.morphia.annotations.Embedded;
 import org.mongodb.morphia.annotations.Entity;
+import org.mongodb.morphia.annotations.Property;
+import org.rookit.api.bistream.BiStream;
+import org.rookit.api.dm.play.Playlist;
+import org.rookit.api.dm.play.TypePlaylist;
 import org.rookit.dm.play.able.AbstractPlayable;
-import org.rookit.dm.track.Track;
-import org.rookit.dm.utils.bistream.BiStream;
+import java.util.Objects;
+import javax.annotation.Generated;
 
 @Entity("Playlist")
 abstract class AbstractPlaylist extends AbstractPlayable implements Playlist {
 
-	private static final int DEFAULT_FREEZE_LIMIT = 200;
-
+	@Property(NAME)
 	private final String name;
 	
+	@Property(TYPE)
 	private final TypePlaylist type;
 	
-	@Embedded
+	@Embedded(IMAGE)
 	private final BiStream image;
 	
-	protected AbstractPlaylist(TypePlaylist type, String name) {
+	protected AbstractPlaylist(TypePlaylist type, String name, BiStream image) {
 		this.type = type;
 		this.name = name;
-		image = PlaylistFactory.getDefault()
-				.getBiStreamFactory()
-				.createEmpty();
+		this.image = image;
 	}
 	
 	@Override
 	public TypePlaylist getType() {
 		return type;
 	}
-
-
 
 	@Override
 	public String getName() {
@@ -57,80 +56,23 @@ abstract class AbstractPlaylist extends AbstractPlayable implements Playlist {
 		}
 		return null;
 	}
-	
-	private StaticPlaylist freezeIfNecessary(Playlist playlist) {
-		if(playlist instanceof StaticPlaylist) {
-			return (StaticPlaylist) playlist;
-		}
-		else if(playlist instanceof DynamicPlaylist) {
-			return ((DynamicPlaylist) playlist).freeze(DEFAULT_FREEZE_LIMIT);
-		}
-		else {
-			throw new RuntimeException("Illegal playlist type: " + playlist.getClass());
-		}
-	}
 
 	@Override
-	public Playlist intersectWith(Playlist other) {
-		final StaticPlaylist thisAsStatic = freezeIfNecessary(this);
-		final StaticPlaylist otherAsStatic = freezeIfNecessary(other);
-		final String name = jointName(other);
-		final Collection<Track> intersection = CollectionUtils.intersection(
-				thisAsStatic.getTracks(), 
-				otherAsStatic.getTracks());
-		return StaticPlaylist.fromCollection(name, intersection);
-	}
-
-	@Override
-	public Playlist joinWith(Playlist other) {
-		final StaticPlaylist thisAsStatic = freezeIfNecessary(this);
-		final StaticPlaylist otherAsStatic = freezeIfNecessary(other);
-		final String name = jointName(other);
-		final Collection<Track> union = CollectionUtils.union(
-				thisAsStatic.getTracks(), 
-				otherAsStatic.getTracks());
-		return StaticPlaylist.fromCollection(name, union);
-	}
-	
-	private String jointName(Playlist other) {
-		return new StringJoiner("_")
-				.add(getName())
-				.add(other.getName())
-				.toString();
-	}
-
-	@Override
+	@Generated(value = "GuavaEclipsePlugin")
 	public int hashCode() {
-		final int prime = 31;
-		int result = super.hashCode();
-		result = prime * result + ((name == null) ? 0 : name.hashCode());
-		result = prime * result + ((type == null) ? 0 : type.hashCode());
-		return result;
+		return Objects.hash(super.hashCode(), name, type);
 	}
 
 	@Override
-	public boolean equals(Object obj) {
-		if (this == obj) {
-			return true;
-		}
-		if (!super.equals(obj)) {
-			return false;
-		}
-		if (getClass() != obj.getClass()) {
-			return false;
-		}
-		AbstractPlaylist other = (AbstractPlaylist) obj;
-		if (name == null) {
-			if (other.name != null) {
+	@Generated(value = "GuavaEclipsePlugin")
+	public boolean equals(Object object) {
+		if (object instanceof AbstractPlaylist) {
+			if (!super.equals(object))
 				return false;
-			}
-		} else if (!name.equals(other.name)) {
-			return false;
+			AbstractPlaylist that = (AbstractPlaylist) object;
+			return Objects.equals(this.name, that.name) && Objects.equals(this.type, that.type);
 		}
-		if (type != other.type) {
-			return false;
-		}
-		return true;
+		return false;
 	}
 	
 	

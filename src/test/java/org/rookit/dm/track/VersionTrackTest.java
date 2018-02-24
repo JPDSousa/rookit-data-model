@@ -30,29 +30,33 @@ import org.bson.types.ObjectId;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.rookit.dm.artist.Artist;
-import org.rookit.dm.track.Track;
-import org.rookit.dm.track.TrackFactory;
-import org.rookit.dm.track.TrackTitle;
-import org.rookit.dm.track.TypeTrack;
-import org.rookit.dm.track.TypeVersion;
-import org.rookit.dm.track.VersionTrack;
-import org.rookit.dm.utils.DMTestFactory;
+import org.rookit.api.dm.artist.Artist;
+import org.rookit.api.dm.track.Track;
+import org.rookit.api.dm.track.TrackTitle;
+import org.rookit.api.dm.track.TypeTrack;
+import org.rookit.api.dm.track.TypeVersion;
+import org.rookit.api.dm.track.VersionTrack;
+import org.rookit.api.dm.track.factory.TrackFactory;
+import org.rookit.dm.test.DMTestFactory;
+import org.rookit.dm.utils.TestUtils;
+
+import com.google.inject.Injector;
 
 @SuppressWarnings("javadoc")
 public class VersionTrackTest {
 
-	private static DMTestFactory factory;
 	private static TrackFactory trackFactory;
+	private static DMTestFactory factory;
 	
 	private VersionTrack guineaPig;
 	private Track original;
 	private TypeVersion version;
-
+	
 	@BeforeClass
-	public static void initialize() {
-		factory = DMTestFactory.getDefault();
-		trackFactory = TrackFactory.getDefault();
+	public static final void setUpBeforeClass() {
+		final Injector injector = TestUtils.getInjector();
+		trackFactory = injector.getInstance(TrackFactory.class);
+		factory = injector.getInstance(DMTestFactory.class);
 	}
 
 	@Before

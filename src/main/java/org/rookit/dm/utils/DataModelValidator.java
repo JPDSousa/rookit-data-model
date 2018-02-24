@@ -25,8 +25,8 @@ import java.util.Collection;
 
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.logging.log4j.Logger;
+import org.rookit.api.dm.artist.Artist;
 import org.rookit.dm.album.AbstractAlbum.Disc;
-import org.rookit.dm.artist.Artist;
 import org.rookit.utils.log.Errors;
 import org.rookit.utils.log.Logs;
 import org.rookit.utils.log.Validator;

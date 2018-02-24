@@ -30,28 +30,31 @@ import java.util.Set;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.rookit.dm.artist.Artist;
-import org.rookit.dm.artist.ArtistFactory;
-import org.rookit.dm.artist.TypeArtist;
-import org.rookit.dm.utils.DMTestFactory;
+import org.rookit.api.dm.artist.Artist;
+import org.rookit.api.dm.artist.TypeArtist;
+import org.rookit.api.dm.artist.factory.ArtistFactory;
+import org.rookit.api.dm.factory.RookitFactories;
+import org.rookit.dm.test.DMTestFactory;
 import org.rookit.dm.utils.TestUtils;
 
 import com.google.common.collect.Sets;
+import com.google.inject.Injector;
 
 @SuppressWarnings("javadoc")
 public class ArtistFieldTest {
 
+	private static DMTestFactory factory;
+	private static RookitFactories factories;
+	
 	private Artist guineaPig;
 	
-	private static ArtistFactory artistFactory;
-	private static DMTestFactory factory;
-
 	@BeforeClass
-	public static void initialize(){
-		factory = DMTestFactory.getDefault();
-		artistFactory = ArtistFactory.getDefault();
+	public static final void setUpBeforeClass() {
+		final Injector injector = TestUtils.getInjector();
+		factory = injector.getInstance(DMTestFactory.class);
+		factories = injector.getInstance(RookitFactories.class);
 	}
-
+	
 	@Before
 	public void intializeTest(){
 		guineaPig = factory.getRandomArtist();
@@ -59,18 +62,18 @@ public class ArtistFieldTest {
 
 	@Test(expected = IllegalArgumentException.class)
 	public void testInvalidArtistException() {
-		guineaPig = artistFactory.createArtist(TypeArtist.GROUP, "");
+		guineaPig = factories.getArtistFactory().createArtist(TypeArtist.GROUP, "");
 	}
 	
 	@Test(expected = IllegalArgumentException.class)
 	public void testInvalidArtistExceptionTypeNull() {
-		guineaPig = artistFactory.createArtist(null, "justaregularname");
+		guineaPig = factories.getArtistFactory().createArtist(null, "justaregularname");
 	}
 
 	@Test
 	public void testName() {
 		String testName = "abc";
-		guineaPig = artistFactory.createArtist(TypeArtist.GROUP, testName);
+		guineaPig = factories.getArtistFactory().createArtist(TypeArtist.GROUP, testName);
 		assertEquals("Name is not being properly assigned!", testName, guineaPig.getName());
 	}
 
@@ -102,6 +105,7 @@ public class ArtistFieldTest {
 
 	@Test
 	public void testEqualsObject() {
+		final ArtistFactory artistFactory = factories.getArtistFactory();
 		String testName = "amithesameastheother";
 		final TypeArtist type = TypeArtist.GROUP;
 		final Artist artist1 = artistFactory.createArtist(type, testName);
@@ -112,6 +116,7 @@ public class ArtistFieldTest {
 	
 	@Test
 	public final void testHashCode() {
+		final ArtistFactory artistFactory = factories.getArtistFactory();
 		String testName = "amithesameastheother";
 		final TypeArtist type = TypeArtist.GROUP;
 		final Artist artist1 = artistFactory.createArtist(type, testName);
@@ -150,7 +155,7 @@ public class ArtistFieldTest {
 
 	@Test
 	public void testGenres() {
-		TestUtils.testGenres(guineaPig);
+		TestUtils.testGenres(factory, guineaPig);
 	}
 	
 	@Test
@@ -171,6 +176,7 @@ public class ArtistFieldTest {
 	
 	@Test
 	public void testCompareTo() {
+		final ArtistFactory artistFactory = factories.getArtistFactory();
 		testCompareTo(factory.getRandomArtist());
 		testCompareTo(artistFactory.createArtist(TypeArtist.GROUP, "someRandomArtist"));
 	}

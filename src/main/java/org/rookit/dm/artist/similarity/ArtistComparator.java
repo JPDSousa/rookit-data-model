@@ -1,13 +1,13 @@
 package org.rookit.dm.artist.similarity;
 
-import static org.rookit.dm.artist.DatabaseFields.*;
+import static org.rookit.api.dm.artist.ArtistFields.*;
 
 import java.time.LocalDate;
 import java.time.Period;
 import java.util.Collections;
 import java.util.Map;
 
-import org.rookit.dm.artist.Artist;
+import org.rookit.api.dm.artist.Artist;
 import org.rookit.dm.genre.similarity.AbstractGenreableComparator;
 
 @SuppressWarnings("javadoc")

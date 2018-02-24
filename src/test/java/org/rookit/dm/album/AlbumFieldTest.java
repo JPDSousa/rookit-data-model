@@ -41,27 +41,34 @@ import org.apache.commons.lang3.StringUtils;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.rookit.dm.album.Album;
-import org.rookit.dm.album.AlbumFactory;
-import org.rookit.dm.album.TypeRelease;
-import org.rookit.dm.artist.Artist;
-import org.rookit.dm.genre.Genre;
-import org.rookit.dm.track.Track;
-import org.rookit.dm.utils.DMTestFactory;
+import org.rookit.api.dm.album.Album;
+import org.rookit.api.dm.album.AlbumFactory;
+import org.rookit.api.dm.album.TrackSlot;
+import org.rookit.api.dm.album.TypeRelease;
+import org.rookit.api.dm.artist.Artist;
+import org.rookit.api.dm.factory.RookitFactories;
+import org.rookit.api.dm.genre.Genre;
+import org.rookit.api.dm.track.Track;
+import org.rookit.dm.test.DMTestFactory;
 import org.rookit.dm.utils.TestUtils;
 import org.rookit.utils.resource.Resources;
 
 import com.google.common.collect.Sets;
+import com.google.inject.Injector;
 
 @SuppressWarnings("javadoc")
 public class AlbumFieldTest {
 
-	private Album guineaPig;
 	private static DMTestFactory factory;
-
+	private static RookitFactories factories;
+	
+	private Album guineaPig;
+	
 	@BeforeClass
-	public static void initialize(){
-		factory = DMTestFactory.getDefault();
+	public static final void setUpBeforeClass() {
+		final Injector injector = TestUtils.getInjector();
+		factories = injector.getInstance(RookitFactories.class);
+		factory = injector.getInstance(DMTestFactory.class);
 	}
 
 	@Before
@@ -106,6 +113,11 @@ public class AlbumFieldTest {
 		artists.add(artist);
 		assertEquals("Artists are not being properly added!", artists, guineaPig.getArtists());
 	}
+	
+	@Test(expected = RuntimeException.class)
+	public final void testGetArtistsIsImmutable() {
+		guineaPig.getArtists().add(factory.getRandomArtist());
+	}
 
 	@Test(expected = IllegalArgumentException.class)
 	public final void testNullArtists() {
@@ -115,6 +127,11 @@ public class AlbumFieldTest {
 	@Test(expected = IllegalArgumentException.class)
 	public final void testEmptyArtist() {
 		guineaPig.setArtists(Sets.newLinkedHashSet());
+	}
+	
+	@Test(expected = RuntimeException.class)
+	public final void testGetTracksIsIummtable() {
+		guineaPig.getTracks().add(new TrackSlotImpl("disc", 2, factory.getRandomOriginalTrack()));
 	}
 
 	@Test
@@ -216,7 +233,7 @@ public class AlbumFieldTest {
 		final String discName = "disc";
 		final Integer number = 8;
 		guineaPig.addTrack(track, number, discName);
-		final TrackSlot expected = TrackSlot.create(discName, number, track);
+		final TrackSlot expected = new TrackSlotImpl(discName, number, track);
 		assertEquals("Get/add track is not working", expected, guineaPig.getTrack(discName, number));
 	}
 	
@@ -281,7 +298,7 @@ public class AlbumFieldTest {
 		final String nextDiscName = "cd2";
 		guineaPig.addTrack(track, previousNumber, previousDiscName);
 		guineaPig.relocate(previousDiscName, previousNumber, nextDiscName, nextNumber);
-		final TrackSlot expected = TrackSlot.create(nextDiscName, nextNumber, track);
+		final TrackSlot expected = new TrackSlotImpl(nextDiscName, nextNumber, track);
 		assertEquals("Tracks are not being properly relocated", expected, guineaPig.getTrack(nextDiscName, nextNumber));
 	}
 
@@ -359,7 +376,7 @@ public class AlbumFieldTest {
 	public final void testAllGenres() {
 		final Set<Genre> genres = Sets.newLinkedHashSet(guineaPig.getGenres());
 
-		for(Track track : factory.getRandomSetOfTracks()){
+		for(final Track track : factory.getRandomSetOfTracks()){
 			final Set<Genre> trackGenres = factory.getRandomSetOfGenres();
 			track.setGenres(trackGenres);
 			genres.addAll(trackGenres);
@@ -370,7 +387,7 @@ public class AlbumFieldTest {
 
 	@Test
 	public final void testGenres() {
-		TestUtils.testGenres(guineaPig);
+		TestUtils.testGenres(factory, guineaPig);
 	}
 	
 	@Test
@@ -390,13 +407,14 @@ public class AlbumFieldTest {
 
 	@Test
 	public final void testType() {
-		guineaPig = AlbumFactory.getDefault().createSingleArtistAlbum("Album", TypeRelease.BESTOF, factory.getRandomSetOfArtists());
+		guineaPig = factories.getAlbumFactory()
+				.createSingleArtistAlbum("Album", TypeRelease.BESTOF, factory.getRandomSetOfArtists());
 		assertEquals("Type is not being properly assigned!", TypeRelease.BESTOF, guineaPig.getReleaseType());
 	}
 
 	@Test
 	public final void testEqualsObject() {
-		final AlbumFactory albumFactory = AlbumFactory.getDefault();
+		final AlbumFactory albumFactory = factories.getAlbumFactory();
 		final String title = "album";
 		final TypeRelease release = TypeRelease.DELUXE;
 		final Set<Artist> artists = factory.getRandomSetOfArtists();
@@ -430,7 +448,7 @@ public class AlbumFieldTest {
 	
 	@Test
 	public final void testCompareTo() {
-		final AlbumFactory factory = AlbumFactory.getDefault();
+		final AlbumFactory factory = factories.getAlbumFactory();
 		testCompareTo(AlbumFieldTest.factory.getRandomAlbum());
 		testCompareTo(factory.createVAAlbum("someRandomTitle", TypeRelease.BESTOF));
 	}

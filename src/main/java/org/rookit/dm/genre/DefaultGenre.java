@@ -24,8 +24,17 @@ package org.rookit.dm.genre;
 import org.mongodb.morphia.annotations.Entity;
 import org.mongodb.morphia.annotations.IndexOptions;
 import org.mongodb.morphia.annotations.Indexed;
+import org.rookit.api.dm.genre.Genre;
+import org.rookit.api.dm.play.StaticPlaylist;
+import org.rookit.api.storage.DBManager;
+import org.rookit.api.storage.queries.TrackQuery;
+import org.rookit.api.storage.utils.Order;
+import org.rookit.api.storage.utils.Order.TypeOrder;
 import org.rookit.dm.play.able.AbstractPlayable;
 import org.rookit.dm.utils.DataModelValidator;
+import java.util.Objects;
+import javax.annotation.Generated;
+import com.google.common.base.MoreObjects;
 
 @Entity("Genre")
 class DefaultGenre extends AbstractPlayable implements Genre {
@@ -38,6 +47,7 @@ class DefaultGenre extends AbstractPlayable implements Genre {
 	private String description;
 	
 	@SuppressWarnings("unused")
+	@Deprecated
 	private DefaultGenre() {
 		super();
 		this.name = null;
@@ -64,41 +74,44 @@ class DefaultGenre extends AbstractPlayable implements Genre {
 		this.description = description;
 		return null;
 	}
-
+	
 	@Override
+	@Generated(value = "GuavaEclipsePlugin")
 	public String toString() {
-		return name;
+		return MoreObjects.toStringHelper(this).add("super", super.toString()).add("name", name)
+				.add("description", description).toString();
 	}
 
 	@Override
+	@Generated(value = "GuavaEclipsePlugin")
 	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + ((name == null) ? 0 : name.hashCode());
-		return result;
+		return Objects.hash(super.hashCode(), name, description);
 	}
 
 	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		final DefaultGenre other = (DefaultGenre) obj;
-		if (name == null) {
-			if (other.name != null)
+	@Generated(value = "GuavaEclipsePlugin")
+	public boolean equals(Object object) {
+		if (object instanceof DefaultGenre) {
+			if (!super.equals(object))
 				return false;
-		} else if (!name.equalsIgnoreCase(other.name))
-			return false;
-		return true;
+			DefaultGenre that = (DefaultGenre) object;
+			return Objects.equals(this.name, that.name) && Objects.equals(this.description, that.description);
+		}
+		return false;
 	}
 
 	@Override
-	public int compareTo(Genre o) {
-		final int name = getName().compareTo(o.getName());
-		return name == 0 ? getIdAsString().compareTo(o.getIdAsString()) : name;
+	public StaticPlaylist freeze(DBManager db, int limit) {
+		final StaticPlaylist playlist = db.getFactories()
+				.getPlaylistFactory()
+				.createStaticPlaylist(getName());
+		final Order order = db.newOrder();
+		order.addField(PLAYS, TypeOrder.DSC);
+		final TrackQuery query = db.getTracks()
+				.withGenre(this)
+				.order(order);
+		query.stream().limit(limit).forEach(playlist::add);
+		return playlist;
 	}
 	
 }

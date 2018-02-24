@@ -1,10 +1,10 @@
 package org.rookit.dm.genre.similarity;
 
-import static org.rookit.dm.genre.Genreable.GENRES;
+import static org.rookit.api.dm.genre.Genreable.GENRES;
 
 import java.util.Map;
 
-import org.rookit.dm.genre.Genreable;
+import org.rookit.api.dm.genre.Genreable;
 import org.rookit.dm.play.similarity.AbstractPlayableComparator;
 
 @SuppressWarnings("javadoc")

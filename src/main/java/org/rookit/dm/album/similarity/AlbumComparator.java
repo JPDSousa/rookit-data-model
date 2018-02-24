@@ -1,7 +1,7 @@
 package org.rookit.dm.album.similarity;
 
-import static org.rookit.dm.album.DatabaseFields.*;
-import static org.rookit.dm.album.Album.*;
+import static org.rookit.api.dm.album.AlbumFields.*;
+import static org.rookit.api.dm.album.Album.*;
 
 import java.time.LocalDate;
 import java.time.Period;
@@ -9,7 +9,7 @@ import java.util.Collections;
 import java.util.Map;
 import java.util.Objects;
 
-import org.rookit.dm.album.Album;
+import org.rookit.api.dm.album.Album;
 import org.rookit.dm.genre.similarity.AbstractGenreableComparator;
 
 @SuppressWarnings("javadoc")

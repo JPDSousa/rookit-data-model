@@ -30,30 +30,32 @@ import org.bson.types.ObjectId;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.rookit.dm.artist.Artist;
-import org.rookit.dm.genre.Genre;
-import org.rookit.dm.track.Track;
-import org.rookit.dm.track.TrackFactory;
-import org.rookit.dm.track.TrackTitle;
-import org.rookit.dm.track.TypeTrack;
-import org.rookit.dm.track.TypeVersion;
-import org.rookit.dm.utils.DMTestFactory;
+import org.rookit.api.dm.artist.Artist;
+import org.rookit.api.dm.genre.Genre;
+import org.rookit.api.dm.track.Track;
+import org.rookit.api.dm.track.TrackTitle;
+import org.rookit.api.dm.track.TypeTrack;
+import org.rookit.api.dm.track.TypeVersion;
+import org.rookit.api.dm.track.factory.TrackFactory;
+import org.rookit.dm.test.DMTestFactory;
 import org.rookit.dm.utils.TestUtils;
-import org.rookit.utils.exception.InvalidOperationException;
 
 import com.google.common.collect.Sets;
+import com.google.inject.Injector;
 
 @SuppressWarnings("javadoc")
 public class TrackFieldsTest {
 
-	private Track guineaPig;
-	private static DMTestFactory factory;
 	private static TrackFactory trackFactory;
-
+	private static DMTestFactory factory;
+	
+	private Track guineaPig;
+	
 	@BeforeClass
-	public static void initialize() {
-		factory = DMTestFactory.getDefault();
-		trackFactory = TrackFactory.getDefault();
+	public static final void setUpBeforeClass() {
+		final Injector injector = TestUtils.getInjector();
+		trackFactory = injector.getInstance(TrackFactory.class);
+		factory = injector.getInstance(DMTestFactory.class);
 	}
 
 	@Before
@@ -63,7 +65,7 @@ public class TrackFieldsTest {
 
 	@Test
 	public final void testTitle() {
-		TrackTitle testTitle = new TrackTitle(factory.randomString());
+		final TrackTitle testTitle = new TrackTitle(factory.randomString());
 		guineaPig.setTitle(testTitle.getTitle());
 		assertEquals(testTitle, guineaPig.getTitle());
 	}
@@ -201,7 +203,7 @@ public class TrackFieldsTest {
 	
 	@Test
 	public final void testTrackType() {
-		for(TypeTrack type : TypeTrack.values()) {
+		for(final TypeTrack type : TypeTrack.values()) {
 			assertEquals(type, factory.getRandomTrack(type).getType());
 		}
 	}
@@ -278,25 +280,25 @@ public class TrackFieldsTest {
 	
 	@Test
 	public final void testGetAsVersionTrack() {
-		final Track track = TrackFactory.getDefault().createVersionTrack(TypeVersion.ALTERNATIVE, guineaPig);
+		final Track track = trackFactory.createVersionTrack(TypeVersion.ALTERNATIVE, guineaPig);
 		assertEquals(track, track.getAsVersionTrack());
 	}
 	
-	@Test(expected = InvalidOperationException.class)
+	@Test(expected = UnsupportedOperationException.class)
 	public final void testOriginalGetAsVersionTrack() {
-		final Track track = TrackFactory.getDefault().createOriginalTrack(factory.randomString());
+		final Track track = trackFactory.createOriginalTrack(factory.randomString());
 		track.getAsVersionTrack();
 	}
 	
 	@Test
 	public final void testIsVersionTrack() {
-		final Track track = TrackFactory.getDefault().createVersionTrack(TypeVersion.ALTERNATIVE, guineaPig);
+		final Track track = trackFactory.createVersionTrack(TypeVersion.ALTERNATIVE, guineaPig);
 		assertTrue(track.isVersionTrack());
 	}
 	
 	@Test
 	public final void testOriginalIsVersionTrack() {
-		final Track track = TrackFactory.getDefault().createOriginalTrack(factory.randomString());
+		final Track track = trackFactory.createOriginalTrack(factory.randomString());
 		assertFalse(track.isVersionTrack());
 	}
 	
@@ -337,7 +339,7 @@ public class TrackFieldsTest {
 	
 	@Test
 	public final void testGenres() {
-		TestUtils.testGenres(guineaPig);
+		TestUtils.testGenres(factory, guineaPig);
 	}
 	
 	@Test
@@ -379,8 +381,6 @@ public class TrackFieldsTest {
 	
 	@Test
 	public final void testEqualsByType() {
-		final TrackFactory trackFactory = TrackFactory.getDefault();
-		
 		final Track track1 = trackFactory.createOriginalTrack(factory.randomString());
 		final Track track2 = trackFactory.createVersionTrack(TypeVersion.ACOUSTIC, track1);
 		assertFalse(track1.equals(track2));
@@ -388,7 +388,6 @@ public class TrackFieldsTest {
 	
 	@Test
 	public final void testEqualsOriginalTrack() {
-		final TrackFactory trackFactory = TrackFactory.getDefault();
 		final String title = factory.randomString();
 		final Track track1 = trackFactory.createOriginalTrack(title);
 		final Track track2 = trackFactory.createOriginalTrack(title);
@@ -408,7 +407,6 @@ public class TrackFieldsTest {
 	
 	@Test
 	public final void testEqualsVersionTrack() {
-		final TrackFactory trackFactory = TrackFactory.getDefault();
 		final Track original = trackFactory.createOriginalTrack(factory.randomString());
 		final TypeVersion version = TypeVersion.LIVE;
 		final Track track1 = trackFactory.createVersionTrack(version, original);

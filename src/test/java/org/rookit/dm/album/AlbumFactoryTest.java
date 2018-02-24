@@ -27,42 +27,40 @@ import java.util.Set;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.rookit.dm.album.Album;
-import org.rookit.dm.album.AlbumFactory;
-import org.rookit.dm.album.TypeAlbum;
-import org.rookit.dm.album.TypeRelease;
-import org.rookit.dm.artist.Artist;
-import org.rookit.dm.utils.DMTestFactory;
-import org.rookit.dm.utils.PrintUtils;
+import org.rookit.api.dm.album.Album;
+import org.rookit.api.dm.album.AlbumFactory;
+import org.rookit.api.dm.album.TypeAlbum;
+import org.rookit.api.dm.album.TypeRelease;
+import org.rookit.api.dm.artist.Artist;
+import org.rookit.dm.test.DMTestFactory;
+import org.rookit.dm.utils.TestUtils;
+import org.rookit.utils.print.PrintUtils;
 import org.rookit.utils.print.TypeFormat;
 
 import com.google.common.collect.Sets;
+import com.google.inject.Injector;
 
 @SuppressWarnings("javadoc")
 public class AlbumFactoryTest {
 
+	private static AlbumFactory guineaPig;
 	private static DMTestFactory factory;
-	private static AlbumFactory albumFactory;
-
+	
 	@BeforeClass
-	public static void setUpBeforeClass() {
-		factory = DMTestFactory.getDefault();
-		albumFactory = AlbumFactory.getDefault();
+	public static final void setupBeforeClass() {
+		final Injector injector = TestUtils.getInjector();
+		guineaPig = injector.getInstance(AlbumFactory.class);
+		factory = injector.getInstance(DMTestFactory.class);
 	}
 	
-	@Test
-	public void testGetDefault() {
-		assertNotNull(AlbumFactory.getDefault());
-	}
-
 	@Test
 	public void testCreateSingleArtistAlbum() {
 		final String albumTitle = "Album Title";
 		final Set<Artist> artists = factory.getRandomSetOfArtists();
-		Album album;
 
 		for(TypeRelease release : TypeRelease.values()){
-			album = albumFactory.createSingleArtistAlbum(albumTitle, release, artists);
+			final Album album;
+			album = guineaPig.createSingleArtistAlbum(albumTitle, release, artists);
 			assertEquals("Album type should be: " + TypeAlbum.ARTIST, TypeAlbum.ARTIST, album.getAlbumType());
 			assertEquals("Album title should be: Album Title", albumTitle, album.getTitle());
 			assertEquals("Type release should be: " + release.name(), release, album.getReleaseType());
@@ -74,17 +72,17 @@ public class AlbumFactoryTest {
 
 	@Test(expected = IllegalArgumentException.class)
 	public void testCreateSingleArtistAlbumEmptyAlbumTitle(){
-		albumFactory.createSingleArtistAlbum("", factory.getRandomSetOfArtists());
+		guineaPig.createSingleArtistAlbum("", factory.getRandomSetOfArtists());
 	}
 
 	@Test(expected = IllegalArgumentException.class)
 	public void testCreateSingleArtistAlbumNullAlbumTitle() {
-		albumFactory.createSingleArtistAlbum(null, factory.getRandomSetOfArtists());
+		guineaPig.createSingleArtistAlbum(null, factory.getRandomSetOfArtists());
 	}
 
 	@Test(expected = IllegalArgumentException.class)
 	public void testCreateSingleArtistAlbumEmptyArtists() {
-		albumFactory.createSingleArtistAlbum(factory.randomString(), Sets.newLinkedHashSet());
+		guineaPig.createSingleArtistAlbum(factory.randomString(), Sets.newLinkedHashSet());
 	}
 
 	@Test
@@ -93,7 +91,7 @@ public class AlbumFactoryTest {
 		final TypeRelease release = TypeRelease.REMIXES;
 		final Set<Artist> artists = factory.getRandomSetOfArtists();
 		final String albumArtistsTag = PrintUtils.getIterableAsString(artists, TypeFormat.TAG);
-		final Album album = albumFactory.createSingleArtistAlbum(release.getFormattedName(albumTag), albumArtistsTag);
+		final Album album = guineaPig.createSingleArtistAlbum(release.getFormattedName(albumTag), albumArtistsTag);
 		
 		assertEquals(TypeAlbum.ARTIST, album.getAlbumType());
 		assertEquals(albumTag, album.getTitle());
@@ -107,7 +105,7 @@ public class AlbumFactoryTest {
 		final String title = "Album title1";
 		final TypeRelease release = TypeRelease.DELUXE;
 		final Set<Artist> artists = factory.getRandomSetOfArtists();
-		final Album album = albumFactory.createAlbum(artist, title, release, artists);
+		final Album album = guineaPig.createAlbum(artist, title, release, artists);
 		
 		assertEquals("Unexpected album type", artist, album.getAlbumType());
 		assertEquals("Unexpected album title", title, album.getTitle());
@@ -121,7 +119,7 @@ public class AlbumFactoryTest {
 		final String title = "Album title1";
 		final TypeRelease release = TypeRelease.DELUXE;
 		final Set<Artist> artists = factory.getRandomSetOfArtists();
-		final Album album = albumFactory.createAlbum(artist, title, release, artists);
+		final Album album = guineaPig.createAlbum(artist, title, release, artists);
 		
 		assertEquals("Unexpected album type", artist, album.getAlbumType());
 		assertEquals("Unexpected album title", title, album.getTitle());
@@ -133,17 +131,12 @@ public class AlbumFactoryTest {
 	public void testCreateVAAlbum() {
 		final String title = "Albumtitle1";
 		final TypeRelease release = TypeRelease.COVERS;
-		final Album album = albumFactory.createVAAlbum(title, release);
+		final Album album = guineaPig.createVAAlbum(title, release);
 		
 		assertNotNull(album);
 		assertEquals("Unexpected album title", title, album.getTitle());
 		assertEquals("Unexpeted album type", TypeAlbum.VA, album.getAlbumType());
 		assertEquals("Unexpected album release type", release, album.getReleaseType());
-	}
-	
-	@Test
-	public void testDefaultTypeRelease() {
-		assertNotNull(albumFactory.getDefaultTypeRelease());
 	}
 	
 }

@@ -5,35 +5,45 @@ import static org.hamcrest.Matchers.*;
 
 import java.util.Set;
 
-import org.junit.BeforeClass;
+import org.junit.Before;
 import org.junit.Test;
-import org.rookit.dm.album.Album;
-import org.rookit.dm.album.AlbumFactory;
-import org.rookit.dm.album.TypeAlbum;
-import org.rookit.dm.album.TypeRelease;
+import org.rookit.api.dm.album.Album;
+import org.rookit.api.dm.album.AlbumFactory;
+import org.rookit.api.dm.album.TypeAlbum;
+import org.rookit.api.dm.album.TypeRelease;
+import org.rookit.api.dm.artist.Artist;
 import org.rookit.dm.album.similarity.AlbumComparator;
-import org.rookit.dm.artist.Artist;
-import org.rookit.dm.utils.DMTestFactory;
+import org.rookit.dm.test.DMTestFactory;
+import org.rookit.dm.utils.TestUtils;
+
+import com.google.inject.Injector;
 
 @SuppressWarnings("javadoc")
 public class AlbumSimilarityTest {
 
-	private static DMTestFactory randomFactory;
-	private static AlbumFactory factory;
+	private static DMTestFactory dmFactory;
 	private static AlbumComparator comparator;
+	private static AlbumFactory factory;
 	
-	@BeforeClass
-	public static void setUpBeforeClass() {
-		randomFactory = DMTestFactory.getDefault();
-		factory = AlbumFactory.getDefault();
+	@Before
+	public void setUp() {
+		final Injector injector = TestUtils.getInjector();
+		dmFactory = injector.getInstance(DMTestFactory.class);
+		factory = injector.getInstance(AlbumFactory.class);
 		comparator = new AlbumComparator();
+	}
+	
+	@Test
+	public final void sameAlbumShouldBe0() {
+		final Album album = dmFactory.getRandomAlbum();
+		assertEquals(0, comparator.similarity(album, album), 0);
 	}
 
 	@Test
 	public final void testTypeAlbumMatters() {
-		final String title = randomFactory.randomString();
+		final String title = dmFactory.randomString();
 		final TypeRelease type = TypeRelease.BESTOF;
-		final Set<Artist> artists = randomFactory.getRandomSetOfArtists();
+		final Set<Artist> artists = dmFactory.getRandomSetOfArtists();
 		final Album a1 = factory.createAlbum(TypeAlbum.ARTIST, title, type, artists);
 		final Album a2 = factory.createAlbum(TypeAlbum.VA, title, type, artists);
 		assertNotEquals(a1, a2);
@@ -45,7 +55,7 @@ public class AlbumSimilarityTest {
 	@Test
 	public final void testTitleMatters() {
 		final TypeRelease type = TypeRelease.BESTOF;
-		final Set<Artist> artists = randomFactory.getRandomSetOfArtists();
+		final Set<Artist> artists = dmFactory.getRandomSetOfArtists();
 		final Album a1 = factory.createSingleArtistAlbum("one title", type, artists);
 		final Album a2 = factory.createSingleArtistAlbum("another title", type, artists);
 		assertNotEquals(0, comparator.similarity(a1, a2));
@@ -56,7 +66,7 @@ public class AlbumSimilarityTest {
 	@Test
 	public final void testTitleDistance() {
 		final TypeRelease type = TypeRelease.BESTOF;
-		final Set<Artist> artists = randomFactory.getRandomSetOfArtists();
+		final Set<Artist> artists = dmFactory.getRandomSetOfArtists();
 		final Album a1 = factory.createSingleArtistAlbum("one title", type, artists);
 		final Album a2 = factory.createSingleArtistAlbum("similar title", type, artists);
 		final Album a3 = factory.createSingleArtistAlbum("completely different thing", type, artists);

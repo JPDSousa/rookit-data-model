@@ -21,66 +21,87 @@
  ******************************************************************************/
 package org.rookit.dm.track;
 
+import static org.rookit.api.dm.track.TrackFields.*;
+
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Set;
 
 import org.mongodb.morphia.annotations.Embedded;
+import org.mongodb.morphia.annotations.Property;
 import org.mongodb.morphia.annotations.Reference;
-import org.rookit.dm.artist.Artist;
+import org.rookit.api.bistream.BiStream;
+import org.rookit.api.dm.artist.Artist;
+import org.rookit.api.dm.play.StaticPlaylist;
+import org.rookit.api.dm.track.Track;
+import org.rookit.api.dm.track.TypeTrack;
+import org.rookit.api.dm.track.audio.TrackKey;
+import org.rookit.api.dm.track.audio.TrackMode;
+import org.rookit.api.storage.DBManager;
 import org.rookit.dm.genre.AbstractGenreable;
-import org.rookit.dm.track.audio.TrackKey;
-import org.rookit.dm.track.audio.TrackMode;
-import org.rookit.dm.utils.bistream.BiStream;
 
 import com.google.common.collect.Sets;
+import java.util.Objects;
+import javax.annotation.Generated;
 
 abstract class AbstractTrack extends AbstractGenreable implements Track {
 	
 	private static final short UNINITIALIZED = -1;
 	
+	@Property(TYPE)
 	private final TypeTrack type;
 	
-	@Embedded
+	@Embedded(PATH)
 	private final BiStream path;
 	
+	@Property(LYRICS)
 	private String lyrics;
 
+	@Property(HIDDEN_TRACK)
 	private String hiddenTrack;
 	
-	@Reference(idOnly = true)
+	@Reference(value = FEATURES, idOnly = true)
 	private Set<Artist> features;
 	
-	@Reference(idOnly = true)
+	@Reference(value = PRODUCERS, idOnly = true)
 	private Set<Artist> producers;
 	
+	@Property(EXPLICIT)
 	private Boolean explicit;
 	
 	// Audio features
+	@Property(BPM)
 	private short bpm;
 	
+	@Property(KEY)
 	private TrackKey trackKey;
 	
+	@Property(MODE)
 	private TrackMode trackMode;
 	
+	@Property(INSTRUMENTAL)
 	private Boolean isInstrumental;
 	
+	@Property(LIVE)
 	private Boolean isLive;
 	
+	@Property(ACOUSTIC)
 	private Boolean isAcoustic;
 	
+	@Property(DANCEABILITY)
 	private double danceability;
 	
+	@Property(ENERGY)
 	private double energy;
 	
+	@Property(VALENCE)
 	private double valence;
 		
-	protected AbstractTrack(TypeTrack type){
+	protected AbstractTrack(TypeTrack type, BiStream biStream){
 		super();
 		producers = Sets.newLinkedHashSetWithExpectedSize(3);
 		features = Sets.newLinkedHashSetWithExpectedSize(3);
-		path = TrackFactory.getDefault()
-				.getBiStreamFactory()
-				.createEmpty();
+		path = biStream;
 		hiddenTrack = "";
 		this.type = type;
 		// Audio features
@@ -109,7 +130,7 @@ abstract class AbstractTrack extends AbstractGenreable implements Track {
 	
 	@Override
 	public Collection<Artist> getFeatures() {
-		return features;
+		return Collections.unmodifiableSet(features);
 	}
 
 	@Override
@@ -139,7 +160,7 @@ abstract class AbstractTrack extends AbstractGenreable implements Track {
 
 	@Override
 	public Collection<Artist> getProducers() {
-		return producers;
+		return Collections.unmodifiableSet(producers);
 	}
 
 	@Override
@@ -195,29 +216,21 @@ abstract class AbstractTrack extends AbstractGenreable implements Track {
 	}
 
 	@Override
+	@Generated(value = "GuavaEclipsePlugin")
 	public int hashCode() {
-		final int prime = 31;
-		int result = super.hashCode();
-		result = prime * result + type.hashCode();
-		return result;
+		return Objects.hash(super.hashCode(), type);
 	}
 
 	@Override
-	public boolean equals(Object obj) {
-		if (this == obj) {
-			return true;
+	@Generated(value = "GuavaEclipsePlugin")
+	public boolean equals(Object object) {
+		if (object instanceof AbstractTrack) {
+			if (!super.equals(object))
+				return false;
+			AbstractTrack that = (AbstractTrack) object;
+			return Objects.equals(this.type, that.type);
 		}
-		if (!super.equals(obj)) {
-			return false;
-		}
-		if (getClass() != obj.getClass()) {
-			return false;
-		}
-		AbstractTrack other = (AbstractTrack) obj;
-		if (type != other.type) {
-			return false;
-		}
-		return true;
+		return false;
 	}
 
 	@Override
@@ -318,7 +331,13 @@ abstract class AbstractTrack extends AbstractGenreable implements Track {
 	public double getValence() {
 		return valence;
 	}
-	
-	
+
+	@Override
+	public StaticPlaylist freeze(DBManager db, int limit) {
+		final StaticPlaylist playlist = db.getFactories().getPlaylistFactory()
+				.createStaticPlaylist(getLongFullTitle().toString());
+		playlist.add(this);
+		return playlist;
+	}
 	
 }

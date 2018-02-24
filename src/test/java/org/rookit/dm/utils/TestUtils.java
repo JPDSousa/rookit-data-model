@@ -24,21 +24,31 @@ package org.rookit.dm.utils;
 import java.time.LocalDate;
 import java.util.Set;
 
+import org.rookit.api.dm.genre.Genre;
+import org.rookit.api.dm.genre.Genreable;
+import org.rookit.api.dm.play.able.Playable;
+import org.rookit.dm.inject.DMFactoriesModule;
+import org.rookit.dm.test.DMTestFactory;
+
 import static org.junit.Assert.*;
 
-import org.rookit.dm.genre.Genre;
-import org.rookit.dm.genre.Genreable;
-import org.rookit.dm.play.able.Playable;
-
 import com.google.common.collect.Sets;
+import com.google.inject.Guice;
+import com.google.inject.Injector;
 
 @SuppressWarnings("javadoc")
 public final class TestUtils {
 	
-	private static final DMTestFactory FACTORY = DMTestFactory.getDefault();
+	private static final Injector INJECTOR = Guice.createInjector(
+			DMTestFactory.getModule(),
+			new DMFactoriesModule());
 	
-	public static final void testGenres(final Genreable g) {
-		Set<Genre> genres = FACTORY.getRandomSetOfGenres();
+	public static final Injector getInjector() {
+		return INJECTOR;
+	}
+	
+	public static final void testGenres(final DMTestFactory factory, final Genreable g) {
+		Set<Genre> genres = factory.getRandomSetOfGenres();
 		g.setGenres(Sets.newLinkedHashSet());
 		for(Genre genre : genres){
 			g.addGenre(genre);

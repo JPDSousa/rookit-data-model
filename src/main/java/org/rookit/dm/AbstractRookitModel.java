@@ -5,10 +5,14 @@ import java.time.ZoneId;
 
 import org.bson.types.ObjectId;
 import org.mongodb.morphia.annotations.Id;
+import org.rookit.api.dm.RookitModel;
+import org.rookit.dm.utils.DataModelValidator;
 
 @SuppressWarnings("javadoc")
 public abstract class AbstractRookitModel implements RookitModel {
 
+	protected static final DataModelValidator VALIDATOR = DataModelValidator.getDefault();
+	
 	@Id
 	private ObjectId _id;
 	
@@ -17,14 +21,7 @@ public abstract class AbstractRookitModel implements RookitModel {
 	}
 
 	protected AbstractRookitModel(final ObjectId initialID) {
-		this(initialID, false);
-	}
-	
-	protected AbstractRookitModel(ObjectId id, boolean allowInitialNullId) {
-		if(!allowInitialNullId && id == null) {
-			throw new IllegalArgumentException("Id cannot be null");
-		}
-		this._id = id;
+		this._id = initialID;
 	}
 
 	@Override
@@ -34,15 +31,13 @@ public abstract class AbstractRookitModel implements RookitModel {
 
 	@Override
 	public void setId(final ObjectId id) {
-		if(id == null) {
-			throw new IllegalArgumentException("Id cannot be null");
-		}
+		VALIDATOR.checkArgumentNotNull(id, "The id cannot be null");
 		this._id = id;
 	}
 
 	@Override
 	public String getIdAsString() {
-		return _id.toHexString();
+		return getId().toHexString();
 	}
 
 	@Override
@@ -59,7 +54,7 @@ public abstract class AbstractRookitModel implements RookitModel {
 
 	@Override
 	public LocalDateTime getStorageTime() {
-		return LocalDateTime.ofInstant(_id.getDate().toInstant(), ZoneId.systemDefault());
+		return LocalDateTime.ofInstant(getId().getDate().toInstant(), ZoneId.systemDefault());
 	}	
 	
 }

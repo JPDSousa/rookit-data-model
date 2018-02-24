@@ -1,11 +1,11 @@
 package org.rookit.dm.play.similarity;
 
-import static org.rookit.dm.play.DatabaseFields.*;
+import static org.rookit.api.dm.play.PlaylistFields.*;
 
 import java.util.Collections;
 import java.util.Map;
 
-import org.rookit.dm.play.StaticPlaylist;
+import org.rookit.api.dm.play.StaticPlaylist;
 
 @SuppressWarnings("javadoc")
 public class PlaylistComparator extends AbstractPlayableComparator<StaticPlaylist> {

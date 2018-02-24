@@ -1,13 +1,13 @@
 package org.rookit.dm.track.similarity;
 
-import static org.rookit.dm.track.DatabaseFields.*;
+import static org.rookit.api.dm.track.TrackFields.*;
 
 import java.util.Collections;
 import java.util.Map;
 
+import org.rookit.api.dm.track.Track;
+import org.rookit.api.dm.track.VersionTrack;
 import org.rookit.dm.genre.similarity.AbstractGenreableComparator;
-import org.rookit.dm.track.Track;
-import org.rookit.dm.track.VersionTrack;
 
 @SuppressWarnings("javadoc")
 public class TrackComparator extends AbstractGenreableComparator<Track> {

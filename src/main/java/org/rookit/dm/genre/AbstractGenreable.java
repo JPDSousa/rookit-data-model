@@ -4,6 +4,8 @@ import java.util.Collection;
 import java.util.Set;
 
 import org.mongodb.morphia.annotations.Reference;
+import org.rookit.api.dm.genre.Genre;
+import org.rookit.api.dm.genre.Genreable;
 import org.rookit.dm.play.able.AbstractPlayable;
 
 import com.google.common.collect.Sets;

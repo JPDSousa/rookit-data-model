@@ -24,13 +24,20 @@ package org.rookit.dm.play.able;
 import java.time.Duration;
 import java.time.LocalDate;
 
+import org.rookit.api.dm.play.StaticPlaylist;
+import org.rookit.api.dm.play.able.Playable;
+import org.rookit.api.storage.DBManager;
 import org.rookit.dm.AbstractMetadataHolder;
-import org.rookit.dm.utils.DataModelValidator;
+import org.rookit.utils.VoidUtils;
+
+import com.google.common.base.Optional;
 
 @SuppressWarnings("javadoc")
 public abstract class AbstractPlayable extends AbstractMetadataHolder implements Playable {
 
-	protected static final DataModelValidator VALIDATOR = DataModelValidator.getDefault();
+	protected static final int LIMIT = 50;
+	protected static final long INITIAL_PLAYS = 0;
+	protected static final long INITIAL_SKIPS = 0;
 	
 	private long plays;
 	
@@ -43,7 +50,8 @@ public abstract class AbstractPlayable extends AbstractMetadataHolder implements
 	private Duration duration;
 	
 	protected AbstractPlayable() {
-		duration = Duration.ZERO;
+		plays = INITIAL_PLAYS;
+		skipped = INITIAL_SKIPS;
 	}
 
 	@Override
@@ -58,32 +66,34 @@ public abstract class AbstractPlayable extends AbstractMetadataHolder implements
 	}
 
 	@Override
-	public Void setPlays(long plays) {
+	public Void setPlays(final long plays) {
 		VALIDATOR.checkArgumentPositive(plays, "Plays cannot be negative");
 		this.plays = plays;
-		return null;
+		return VoidUtils.returnVoid();
 	}
 	
 	@Override
-	public Void setDuration(Duration duration) {
+	public Void setDuration(final Duration duration) {
+		VALIDATOR.checkArgumentNotNull(duration, "Duration cannot be null");
 		this.duration = duration;
-		return null;
+		return VoidUtils.returnVoid();
 	}
 
 	@Override
-	public Duration getDuration() {
-		return duration;
+	public Optional<Duration> getDuration() {
+		return Optional.fromNullable(duration);
 	}
 	
 	@Override
-	public LocalDate getLastPlayed() {
-		return lastPlayed;
+	public Optional<LocalDate> getLastPlayed() {
+		return Optional.fromNullable(lastPlayed);
 	}
 
 	@Override
-	public Void setLastPlayed(LocalDate lastPlayed) {
+	public Void setLastPlayed(final LocalDate lastPlayed) {
+		VALIDATOR.checkArgumentNotNull(lastPlayed, "Last played cannot be null");
 		this.lastPlayed = lastPlayed;
-		return null;
+		return VoidUtils.returnVoid();
 	}
 
 	@Override
@@ -98,21 +108,29 @@ public abstract class AbstractPlayable extends AbstractMetadataHolder implements
 	}
 
 	@Override
-	public Void setSkipped(long skipped) {
+	public Void setSkipped(final long skipped) {
 		VALIDATOR.checkArgumentPositive(plays, "Skipped cannot be negative");
 		this.skipped = skipped;
-		return null;
+		return VoidUtils.returnVoid();
 	}
 
 	@Override
-	public LocalDate getLastSkipped() {
-		return lastSkipped;
+	public Optional<LocalDate> getLastSkipped() {
+		return Optional.fromNullable(lastSkipped);
 	}
 
 	@Override
-	public Void setLastSkipped(LocalDate lastSkipped) {
+	public Void setLastSkipped(final LocalDate lastSkipped) {
+		VALIDATOR.checkArgumentNotNull(lastSkipped, "Last skipped cannot be null");
 		this.lastSkipped = lastSkipped;
-		return null;
+		return VoidUtils.returnVoid();
 	}
+
+	@Override
+	public StaticPlaylist freeze(DBManager db) {
+		return freeze(db, LIMIT);
+	}
+	
+	
 
 }

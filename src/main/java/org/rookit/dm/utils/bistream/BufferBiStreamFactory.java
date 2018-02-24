@@ -7,11 +7,17 @@ import java.nio.BufferOverflowException;
 import java.nio.ByteBuffer;
 import java.util.Map;
 
-import org.rookit.dm.utils.factory.RookitFactory;
+import org.rookit.api.bistream.BiStream;
+import org.rookit.api.dm.factory.RookitFactory;
+
+import com.google.inject.Inject;
 
 @SuppressWarnings("javadoc")
 public class BufferBiStreamFactory implements RookitFactory<BiStream> {
 
+	@Inject
+	private BufferBiStreamFactory() {}
+	
 	@Override
 	public BiStream createEmpty() {
 		return new BufferBiStream(1024);

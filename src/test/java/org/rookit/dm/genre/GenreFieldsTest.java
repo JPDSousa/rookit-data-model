@@ -26,20 +26,27 @@ import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.rookit.dm.genre.Genre;
-import org.rookit.dm.genre.GenreFactory;
-import org.rookit.dm.utils.DMTestFactory;
+import org.rookit.api.dm.factory.RookitFactories;
+import org.rookit.api.dm.genre.Genre;
+import org.rookit.api.dm.genre.factory.GenreFactory;
+import org.rookit.dm.test.DMTestFactory;
 import org.rookit.dm.utils.TestUtils;
+
+import com.google.inject.Injector;
 
 @SuppressWarnings("javadoc")
 public class GenreFieldsTest {
 	
 	private static DMTestFactory factory;
+	private static RookitFactories factories;
+	
 	private Genre guineaPig;
 	
 	@BeforeClass
-	public static void initialize(){
-		factory = DMTestFactory.getDefault();
+	public static final void setUpBeforeClass() {
+		final Injector injector = TestUtils.getInjector();
+		factory = injector.getInstance(DMTestFactory.class);
+		factories = injector.getInstance(RookitFactories.class);
 	}
 	
 	@Before
@@ -55,18 +62,18 @@ public class GenreFieldsTest {
 	@Test
 	public void testName() {
 		String name = "theGenre";
-		guineaPig = GenreFactory.getDefault().createGenre(name);
+		guineaPig = factories.getGenreFactory().createGenre(name);
 		assertEquals("Name is not being properly assigned!", name, guineaPig.getName());
 	}
 	
 	@Test(expected = IllegalArgumentException.class)
 	public void testInvalidGenreExceptionEmpty(){
-		guineaPig = GenreFactory.getDefault().createGenre("");
+		guineaPig = factories.getGenreFactory().createGenre("");
 	}
 	
 	@Test(expected = IllegalArgumentException.class)
 	public void testInvalidGenreExceptionNull() {
-		guineaPig = GenreFactory.getDefault().createGenre(null);
+		guineaPig = factories.getGenreFactory().createGenre(null);
 	}
 
 	@Test
@@ -79,7 +86,7 @@ public class GenreFieldsTest {
 
 	@Test
 	public void testEquals() {
-		final GenreFactory factory = GenreFactory.getDefault();
+		final GenreFactory factory = factories.getGenreFactory();
 		final String testName = "genre";
 		assertTrue(factory.createGenre(testName).equals(factory.createGenre(testName)));
 	}
@@ -88,7 +95,7 @@ public class GenreFieldsTest {
 	public void testCompareTo() {
 		testCompareTo(guineaPig);
 		testCompareTo(factory.getRandomGenre());
-		testCompareTo(GenreFactory.getDefault().createGenre("someRandomGenre"));
+		testCompareTo(factories.getGenreFactory().createGenre("someRandomGenre"));
 	}
 	
 	private void testCompareTo(Genre genre) {

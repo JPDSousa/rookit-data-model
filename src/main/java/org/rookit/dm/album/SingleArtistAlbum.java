@@ -21,10 +21,14 @@
  ******************************************************************************/
 package org.rookit.dm.album;
 
+import java.util.Collections;
 import java.util.Set;
 
 import org.mongodb.morphia.annotations.Entity;
-import org.rookit.dm.artist.Artist;
+import org.rookit.api.bistream.BiStream;
+import org.rookit.api.dm.album.TypeAlbum;
+import org.rookit.api.dm.album.TypeRelease;
+import org.rookit.api.dm.artist.Artist;
 
 /**
  * This class represents a single artist album, which represents an album
@@ -36,15 +40,17 @@ import org.rookit.dm.artist.Artist;
 // TODO is it possible to turn this into Album.class.getName() somehow??
 @Entity(value="Album")
 class SingleArtistAlbum extends AbstractAlbum {
-
+	
+	@SuppressWarnings("unused")
+	@Deprecated
 	private SingleArtistAlbum() {
-		super(null, null, null, null);
+		this(null, null, Collections.emptySet(), null);
 	}
 	
 	/**
 	 * The constructor has a package-view in order to forbid object creation through
 	 * objects on other packages. In order to create a new object of this type, use the
-	 * dedicated methods on the {@link AlbumFactory} class.
+	 * dedicated methods on the {@link AlbumFactoryImpl} class.
 	 * 
 	 * <p><b>Attention:</b> all the arguments must be previously validated through the {@link AlbumValidator}
 	 * class. Non validated parameters are allowed, but it is highly inadvisable.
@@ -53,8 +59,12 @@ class SingleArtistAlbum extends AbstractAlbum {
 	 * @param type type of release
 	 * @param artists album authors
 	 */
-	SingleArtistAlbum(final String name, final TypeRelease type, final Set<Artist> artists) {
-		super(TypeAlbum.ARTIST, name, type, artists);
+	SingleArtistAlbum(
+			final String name, 
+			final TypeRelease type, 
+			final Set<Artist> artists,
+			final BiStream stream) {
+		super(TypeAlbum.ARTIST, name, type, artists, stream);
 	}
 
 	@Override

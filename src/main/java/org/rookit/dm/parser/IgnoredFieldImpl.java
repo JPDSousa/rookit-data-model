@@ -19,50 +19,42 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  ******************************************************************************/
-package org.rookit.dm.album;
-
-import java.util.Collections;
-import java.util.Set;
+package org.rookit.dm.parser;
 
 import org.mongodb.morphia.annotations.Entity;
-import org.rookit.api.bistream.BiStream;
-import org.rookit.api.dm.album.TrackSlot;
-import org.rookit.api.dm.album.TypeAlbum;
-import org.rookit.api.dm.album.TypeRelease;
-import org.rookit.api.dm.artist.Artist;
+import org.mongodb.morphia.annotations.IndexOptions;
+import org.mongodb.morphia.annotations.Indexed;
+import org.rookit.api.dm.parser.IgnoredField;
+import org.rookit.dm.AbstractRookitModel;
 
-import com.google.common.collect.Sets;
+@SuppressWarnings("javadoc")
+@Entity("IgnoredField")
+public class IgnoredFieldImpl extends AbstractRookitModel implements IgnoredField {
 
-// TODO is it possible to turn this into Album.class.getName() somehow??
-@Entity(value="Album")
-class VariousArtistAlbum extends AbstractAlbum {
-	
-	@SuppressWarnings("unused")
-	@Deprecated
-	private VariousArtistAlbum() {
-		this(null, null, null);
+	public static final String VALUE = "value";
+	public static final String OCCURRENCES = "occurrences";
+
+	public static IgnoredFieldImpl create(String value) {
+		return new IgnoredFieldImpl(value.toLowerCase(), 1);
 	}
+
+	@Indexed(options = @IndexOptions(unique = true))
+	private final String value;
 	
-	VariousArtistAlbum(String title, TypeRelease type, BiStream cover) {
-		super(TypeAlbum.VA, title, type, Collections.emptySet(), cover);
+	private final int occurrences;
+
+	private IgnoredFieldImpl(String value, Integer occurrences) {
+		this.value = value;
+		this.occurrences = occurrences;
 	}
 
 	@Override
-	public Set<Artist> getArtists() {
-		final Set<Artist> artists = Sets.newHashSet();
-		
-		for(final TrackSlot track : getTracks()){
-			track.getTrack().getMainArtists().forEach(a -> artists.add(a));
-		}
-		
-		return Collections.unmodifiableSet(artists);
+	public int getOccurrences() {
+		return occurrences;
 	}
 
 	@Override
-	public String toString() {
-		return getFullTitle();
+	public String getValue() {
+		return value;
 	}
-
-	
-
 }

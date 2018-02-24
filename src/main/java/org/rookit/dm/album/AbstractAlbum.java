@@ -21,27 +21,42 @@
  ******************************************************************************/
 package org.rookit.dm.album;
 
+import static org.rookit.api.dm.album.AlbumFields.*;
+
 import java.io.IOException;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import org.mongodb.morphia.annotations.Embedded;
+import org.mongodb.morphia.annotations.Property;
 import org.mongodb.morphia.annotations.Reference;
-import org.rookit.dm.artist.Artist;
+import org.rookit.api.bistream.BiStream;
+import org.rookit.api.dm.album.Album;
+import org.rookit.api.dm.album.TrackSlot;
+import org.rookit.api.dm.album.TypeAlbum;
+import org.rookit.api.dm.album.TypeRelease;
+import org.rookit.api.dm.artist.Artist;
+import org.rookit.api.dm.play.StaticPlaylist;
+import org.rookit.api.dm.track.Track;
+import org.rookit.api.storage.DBManager;
 import org.rookit.dm.genre.AbstractGenreable;
-import org.rookit.dm.genre.Genre;
-import org.rookit.dm.track.Track;
 import org.rookit.dm.utils.DataModelValidator;
-import org.rookit.dm.utils.bistream.BiStream;
-import org.rookit.utils.exception.InvalidOperationException;
+import org.rookit.utils.DurationUtils;
+import org.rookit.utils.SupplierUtils;
+import org.rookit.utils.VoidUtils;
 
+import com.google.common.base.Optional;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-import com.google.common.collect.Sets;
+import java.util.Objects;
+import javax.annotation.Generated;
 
 /**
  * Abstract implementation of the {@link Album} interface. Extend this class in
@@ -54,35 +69,43 @@ public abstract class AbstractAlbum extends AbstractGenreable implements Album {
 	/** 
 	 * Title of the album
 	 */
+	@Property(TITLE)
 	private String title;
 
+	@Property(TYPE)
 	private final TypeAlbum type;
 
 	/** Set of authors of the album */
-	@Reference(idOnly = true)
+	@Reference(value = ARTISTS, idOnly = true)
 	private Set<Artist> artists;
+
 	/** 
 	 * Map of discs, containing the discs of the album
 	 * Key ({@link String}) - name of the disc
 	 * Value ({@link Disc}}Disc) - disc object
 	 */
-	@Embedded
+	@Embedded(value = DISCS)
 	private Map<String, Disc> discs;
+
+	@Property(TRACKS)
 	private int tracks;
 
 	/**
 	 * Release of the album
 	 */
+	@Property(RELEASE_DATE)
 	private LocalDate releaseDate;
+
 	/**
 	 * Type of release
 	 */
+	@Property(RELEASE_TYPE)
 	private final TypeRelease releaseType;
 
 	/**
 	 * Smof GridFS Reference containing the image of the album
 	 */
-	@Embedded
+	@Embedded(COVER)
 	private final BiStream cover;
 
 	/**
@@ -93,21 +116,18 @@ public abstract class AbstractAlbum extends AbstractGenreable implements Album {
 	 * @param type type of release
 	 * @param artists artists responsible for album release. Can be an empty set which will be filled later, although cannot be null
 	 */
-	protected AbstractAlbum(TypeAlbum type, String name, TypeRelease releaseType, Set<Artist> artists){
+	protected AbstractAlbum(
+			final TypeAlbum type, String name, 
+			final TypeRelease releaseType, 
+			final Set<Artist> artists,
+			final BiStream cover){
 		this.title = name;
 		this.releaseType = releaseType;
 		this.type = type;
 		this.artists = artists;
 		this.tracks = 0;
 		discs = Maps.newLinkedHashMap();
-		cover = AlbumFactory.getDefault()
-				.getBiStreamFactory()
-				.createEmpty();
-	}
-
-	@Override
-	public String getFullTitle() {
-		return releaseType.getFormattedName(title);
+		this.cover = cover;
 	}
 
 	@Override
@@ -116,66 +136,67 @@ public abstract class AbstractAlbum extends AbstractGenreable implements Album {
 	}
 
 	@Override
-	public Void setTitle(String title) {
+	public Void setTitle(final String title) {
 		VALIDATOR.checkArgumentStringNotEmpty(title, "A title must be specified");
 		this.title = title;
-		return null;
+		return VoidUtils.returnVoid();
 	}
 
 	@Override
 	public Collection<Artist> getArtists() {
-		return artists;
+		return Collections.unmodifiableSet(artists);
 	}
 
 	@Override
-	public Void addArtist(Artist artist) {
+	public Void addArtist(final Artist artist) {
 		VALIDATOR.checkArgumentNotNull(artist, "Cannot add a null artist");
 		artists.add(artist);
-		return null;
+		return VoidUtils.returnVoid();
 	}
 
 	@Override
-	public Void setArtists(Set<Artist> artists) {
+	public Void setArtists(final Set<Artist> artists) {
 		VALIDATOR.checkArgumentNonEmptyCollection(artists, "Albums cannot have an empty artist set");
 		this.artists = artists;
-		return null;
+		return VoidUtils.returnVoid();
 	}
 
 	@Override
 	public final List<TrackSlot> getTracks() {
 		final List<TrackSlot> tracks = Lists.newArrayListWithCapacity(getTracksCount());
 		for(String disc : getDiscs()) {
-			tracks.addAll(discs.get(disc).getTracksAsSlot(disc));
+			tracks.addAll(discs.get(disc).getTracksWithSlots(disc));
 		}
-		return tracks;
+		return Collections.unmodifiableList(tracks);
 	}
 
 	@Override
-	public final Collection<TrackSlot> getTracks(String discName){
+	public final Collection<TrackSlot> getTracks(final String discName){
 		final Disc disc = getDisc(discName, false);
-		return disc.getTracksAsSlot(discName);
+		return Collections.unmodifiableCollection(disc.getTracksWithSlots(discName));
 	}
 
 	@Override
-	public Collection<Integer> getTrackNumbers(String discName) {
+	public Collection<Integer> getTrackNumbers(final String discName) {
 		final Disc disc = getDisc(discName, false);
-		return disc.tracks.keySet();
+		return Collections.unmodifiableSet(disc.tracks.keySet());
 	}
 
 	@Override
-	public final TrackSlot getTrack(String discName, Integer number) {
+	public final TrackSlot getTrack(final String discName, final Integer number) {
 		final Disc disc = getDisc(discName, false);
-		return TrackSlot.create(discName, number, disc.getTrack(number));
+		return new TrackSlotImpl(discName, number, disc.getTrack(number));
 	}
 
-	private Disc getDisc(String discName, boolean create) {
+	private Disc getDisc(final String discName, final boolean create) {
 		VALIDATOR.checkArgumentStringNotEmpty(discName, "The disc name is not valid");
+		
 		Disc disc = discs.get(discName);
 		if(!create) {
 			final String errorMsg = "The disc " + discName + " was not found in album " + getTitle();
 			VALIDATOR.checkArgumentNotNull(disc, errorMsg);
 		}
-		else if(disc == null) {
+		else if(Objects.isNull(disc)) {
 			disc = new Disc();
 			discs.put(discName, disc);
 		}
@@ -183,38 +204,13 @@ public abstract class AbstractAlbum extends AbstractGenreable implements Album {
 	}
 
 	@Override
-	public final Void addTrack(Track track, Integer number) {
-		VALIDATOR.checkArgumentPositive(number, "The track number cannot be null or negative");
-		final Disc disc = getDefaultDisc();
-		addTrack(track, number, disc);
-		return null;
-	}
-
-	private Disc getDefaultDisc() {
-		final String errMsg = getFullTitle() + " has more than one disc, thus one must be explicitly specified";
-		discs.putIfAbsent(DEFAULT_DISC, new Disc());
-		VALIDATOR.checkSingleEntryMap(discs, errMsg);
-		return discs.get(DEFAULT_DISC);
-	}
-
-	@Override
-	public Void addTrack(Track track, Integer number, String discName) {
+	public Void addTrack(final Track track, final Integer number, final String discName) {
 		final Disc disc = getDisc(discName, true);
 		addTrack(track, number, disc);
-		return null;
+		return VoidUtils.returnVoid();
 	}
 
-	@Override
-	public final Void addTrack(TrackSlot track) {
-		return addTrack(track.getTrack(), track.getNumber(), track.getDisc());
-	}
-
-	@Override
-	public boolean contains(TrackSlot slot) {
-		return contains(slot.getDisc(), slot.getNumber());
-	}
-
-	private synchronized void addTrack(Track track, Integer number, Disc disc) {
+	private synchronized void addTrack(final Track track, final Integer number, final Disc disc) {
 		VALIDATOR.checkArgumentNotNull(number, "The number cannot be null");
 		if(number.equals(NUMBERLESS)) {
 			addTrackLast(track, disc);
@@ -227,20 +223,13 @@ public abstract class AbstractAlbum extends AbstractGenreable implements Album {
 	}
 
 	@Override
-	public final Void addTrackLast(Track track) {
-		final Disc disc = getDefaultDisc();
-		addTrackLast(track, disc);
-		return null;
-	}
-
-	@Override
-	public final Void addTrackLast(Track track, String discName) {
+	public final Void addTrackLast(final Track track, final String discName) {
 		final Disc disc = getDisc(discName, true);
 		addTrackLast(track, disc);
-		return null;
+		return VoidUtils.returnVoid();
 	}
 
-	private void addTrackLast(Track track, Disc disc) {
+	private void addTrackLast(final Track track, final Disc disc) {
 		synchronized(disc) {
 			final Integer number = disc.getNextEmpty();
 			addTrack(track, number, disc);
@@ -248,7 +237,7 @@ public abstract class AbstractAlbum extends AbstractGenreable implements Album {
 	}
 
 	@Override
-	public final void relocate(String discName, Integer number, String newDiscName, Integer newNumber) {
+	public final void relocate(final String discName, final Integer number, final String newDiscName, final Integer newNumber) {
 		//discName and newDiscName are validated by getDisc()
 		VALIDATOR.checkArgumentNotNull(number, "Must specify a non-null track number to relocate");
 		VALIDATOR.checkArgumentNotNull(newNumber, "Must specify a non-null track number to relocate");
@@ -269,7 +258,7 @@ public abstract class AbstractAlbum extends AbstractGenreable implements Album {
 	}
 
 	@Override
-	public final int getTracksCount(String discName) {
+	public final int getTracksCount(final String discName) {
 		final Disc disc = getDisc(discName, false);
 		return disc.getTrackCount();
 	}
@@ -280,60 +269,34 @@ public abstract class AbstractAlbum extends AbstractGenreable implements Album {
 	}
 
 	@Override
-	public final Void setReleaseDate(LocalDate year) {
+	public final Void setReleaseDate(final LocalDate year) {
 		VALIDATOR.checkArgumentNotNull(year, "The year cannot be null");
 		this.releaseDate = year;
-		return null;
+		return VoidUtils.returnVoid();
 	}
 
 	@Override
-	public final Void setDuration(Duration duration) {
-		throw new InvalidOperationException("Cannot set duration for albums");
+	public final Void setDuration(final Duration duration) {
+		return VALIDATOR.invalidOperation("Cannot set duration for albums");
+	}
+	
+	@Override
+	public Optional<Duration> getDuration() {
+		return Album.super.getDuration();
 	}
 
 	@Override
-	public final Duration getDuration() {
-		final Duration total = Duration.ZERO;
-
-		for(String disc : discs.keySet()) {
-			for(Track track : discs.get(disc).tracks.values()) {
-				total.plus(track.getDuration());
-			}
-		}
-
-		return total;
-	}
-
-	@Override
-	public final Duration getDuration(String discName){
-		final Duration total = Duration.ZERO;
-
-		for(Track track : discs.get(discName).tracks.values()) {
-			total.plus(track.getDuration());
-		}
-
-		return total;
-	}
-
-	@Override
-	public final Collection<Genre> getAllGenres() {
-		final Set<Genre> genres = Sets.newLinkedHashSet();
-		for(String disc : discs.keySet()) {
-			for(Track track : discs.get(disc).tracks.values()) {
-				genres.addAll(track.getGenres());
-			}
-		}
-		return genres;
-	}
-
-	@Override
-	public final int getDiscCount() {
-		return getDiscs().size();
+	public final Duration getDuration(final String discName){
+		return getDisc(discName, false).getTracks().stream()
+				.map(Track::getDuration)
+				.filter(Optional::isPresent)
+				.map(Optional::get)
+				.reduce(Duration.ZERO, DurationUtils::plus);
 	}
 
 	@Override
 	public final Set<String> getDiscs() {
-		return discs.keySet();
+		return Collections.unmodifiableSet(discs.keySet());
 	}
 
 	@Override
@@ -344,12 +307,13 @@ public abstract class AbstractAlbum extends AbstractGenreable implements Album {
 	@Override
 	public final Void setCover(byte[] image) {
 		VALIDATOR.checkArgumentNotNull(image, "The image must contain data");
+
 		try {
 			this.cover.toOutput().write(image);
 		} catch (IOException e) {
 			VALIDATOR.handleIOException(e);
 		}
-		return null;
+		return VoidUtils.returnVoid();
 	}
 
 	@Override
@@ -358,61 +322,31 @@ public abstract class AbstractAlbum extends AbstractGenreable implements Album {
 	}
 
 	@Override
+	@Generated(value = "GuavaEclipsePlugin")
 	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + ((artists == null) ? 0 : artists.hashCode());
-		result = prime * result + ((title == null) ? 0 : title.hashCode());
-		result = prime * result + ((releaseType == null) ? 0 : releaseType.hashCode());
-		return result;
+		return Objects.hash(super.hashCode(), title, type, artists, releaseType);
 	}
 
 	@Override
-	public boolean equals(Object obj) {
-		if (this == obj) {
-			return true;
-		}
-		if (obj == null) {
-			return false;
-		}
-		if (getClass() != obj.getClass()) {
-			return false;
-		}
-		AbstractAlbum other = (AbstractAlbum) obj;
-		if (artists == null) {
-			if (other.artists != null) {
+	@Generated(value = "GuavaEclipsePlugin")
+	public boolean equals(Object object) {
+		if (object instanceof AbstractAlbum) {
+			if (!super.equals(object))
 				return false;
-			}
-		} else if (!artists.equals(other.artists)) {
-			return false;
+			AbstractAlbum that = (AbstractAlbum) object;
+			return Objects.equals(this.title, that.title) 
+					&& Objects.equals(this.type, that.type)
+					&& Objects.equals(this.artists, that.artists) 
+					&& Objects.equals(this.releaseType, that.releaseType);
 		}
-		if (title == null) {
-			if (other.title != null) {
-				return false;
-			}
-		} else if (!title.equalsIgnoreCase(other.title)) {
-			return false;
-		}
-		if (releaseType != other.releaseType) {
-			return false;
-		}
-		return true;
+		return false;
 	}
 
 	@Override
-	public final boolean contains(Track track) {
-		VALIDATOR.checkArgumentNotNull(track, "The track to test must not be null");
-		return discs.values().stream()
-				.flatMap(d -> d.getTracks().stream())
-				.filter(t -> t.equals(track))
-				.findFirst()
-				.isPresent();
-	}
-
-	@Override
-	public boolean contains(String disc, Integer track) {
+	public boolean contains(final String disc, final Integer track) {
 		VALIDATOR.checkArgumentStringNotEmpty(disc, "Disc name is not valid");
 		VALIDATOR.checkArgumentNotNull(track, "Must specify a non-null track number");
+
 		return discs.containsKey(disc) && discs.get(disc).tracks.containsKey(track);
 	}
 
@@ -421,19 +355,28 @@ public abstract class AbstractAlbum extends AbstractGenreable implements Album {
 		return type;
 	}
 
+	@Override
+	public StaticPlaylist freeze(final DBManager db, final int limit) {
+		final StaticPlaylist playlist = db.getFactories()
+				.getPlaylistFactory()
+				.createStaticPlaylist(getFullTitle());
+		getTracks().stream()
+		.map(TrackSlot::getTrack)
+		.forEach(playlist::add);
+
+		return playlist;
+	}
+
 	/**
 	 * <h1>Disc class.</h1> This class is private and its only use is to
 	 * create an abstraction level that eases the process of manage discs
 	 * inside albums.
-	 * @author Joao
-	 *
+	 * 
+	 * @author Joao Sousa (jpd.sousa@campus.fct.unl.pt)
 	 */
 	@Embedded
 	public static class Disc {
 
-		/**
-		 * 
-		 */
 		/**
 		 * Map that contains the tracks.
 		 * <p>Key - track number
@@ -441,28 +384,26 @@ public abstract class AbstractAlbum extends AbstractGenreable implements Album {
 		 */
 		@Reference(idOnly = true)
 		private final Map<Integer, Track> tracks;
-		
+
 		private Disc(){
 			tracks = Maps.newLinkedHashMap();
 		}
 
-		private Collection<TrackSlot> getTracksAsSlot(String thisDiscName) {
-			final List<TrackSlot> tracks = Lists.newArrayListWithCapacity(getTrackCount());
-			for(Integer number : this.tracks.keySet()) {
-				tracks.add(TrackSlot.create(thisDiscName, number, this.tracks.get(number)));
-			}
-			return tracks;
+		private Collection<TrackSlot> getTracksWithSlots(final String thisDiscName) {
+			return this.tracks.keySet().stream()
+					.map(number -> new TrackSlotImpl(thisDiscName, number, this.tracks.get(number)))
+					.collect(Collectors.toList());
 		}
 
-		private Track getTrack(Integer number) {
+		private Track getTrack(final Integer number) {
 			return tracks.get(number);
 		}
 
-		private Track remove(Integer trackNumber) {
+		private Track remove(final Integer trackNumber) {
 			return tracks.remove(trackNumber);
 		}
 
-		private void add(Track track, Integer number) {
+		private void add(final Track track, final Integer number) {
 			if(tracks.containsKey(number)) {
 				final String errorMsg = number + " already contains a track";
 				VALIDATOR.handleException(new RuntimeException(errorMsg));
@@ -471,58 +412,20 @@ public abstract class AbstractAlbum extends AbstractGenreable implements Album {
 		}
 
 		private Integer getNextEmpty() {
-			Integer emptyIndex = 1;
-			while(tracks.containsKey(emptyIndex)){
-				emptyIndex++;
-			}
-			return emptyIndex;
+			return IntStream.generate(SupplierUtils.incrementalSupplier(1))
+					.filter(index -> !tracks.containsKey(index))
+					.boxed()
+					.findFirst()
+					.orElseThrow(() -> new RuntimeException("Cannot find an empty slot"));
 		}
 
-		private List<Track> getTracks(){
-			return Lists.newArrayList(tracks.values());
+		private Collection<Track> getTracks(){
+			return Collections.unmodifiableCollection(tracks.values());
 		}
 
 		private int getTrackCount(){
 			return tracks.size();
 		}
 	}
-
-	@Override
-	public Integer getTrackNumber(Track track) {
-		final TrackSlot slot = getTrackMetadata(track);
-		if(slot != null) {
-			return slot.getNumber();
-		}
-		return null;
-	}
-
-	@Override
-	public String getTrackDisc(Track track) {
-		final TrackSlot slot = getTrackMetadata(track);
-		if(slot != null) {
-			return slot.getDisc();
-		}
-		return null;
-	}
-
-	private TrackSlot getTrackMetadata(Track track) {
-		for(String discName : getDiscs()) {
-			for(Integer number : getTrackNumbers(discName)) {
-				final TrackSlot currentTrack = getTrack(discName, number);
-				if(track.equals(currentTrack.getTrack())) {
-					return currentTrack;
-				}
-			}
-		}
-		return null;
-	}
-
-	@Override
-	public int compareTo(Album o) {
-		final int title = getTitle().compareTo(o.getTitle());
-		return title == 0 ? getIdAsString().compareTo(o.getIdAsString()) : title;
-	}
-
-
 
 }

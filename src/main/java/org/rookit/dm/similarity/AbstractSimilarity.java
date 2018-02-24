@@ -1,7 +1,5 @@
 package org.rookit.dm.similarity;
 
-import static org.rookit.dm.RookitModel.*;
-
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Map;
@@ -9,7 +7,7 @@ import java.util.Objects;
 
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.text.similarity.LevenshteinDistance;
-import org.rookit.dm.MetadataHolder;
+import org.rookit.api.dm.MetadataHolder;
 import org.rookit.dm.utils.DataModelValidator;
 
 import com.google.common.collect.Maps;
@@ -63,7 +61,7 @@ public abstract class AbstractSimilarity<T extends MetadataHolder> implements Si
 	
 	protected Map<String, Double> createTopMap(T element1, T element2) {
 		final Map<String, Double> scores = Maps.newLinkedHashMap();
-		scores.put(ID, compareFromEquals(element1.getId(), element2.getId()));
+		//scores.put(ID, compareFromEquals(element1.getId(), element2.getId()));
 		// TODO compare these fields
 		element1.getExternalMetadata();
 		element2.getExternalMetadata();
@@ -89,6 +87,9 @@ public abstract class AbstractSimilarity<T extends MetadataHolder> implements Si
 
 	@Override
 	public double similarity(T o1, T o2) {
+		if(o1 == o2) {
+			return 0;
+		}
 		return applyPercentages(createTopMap(o1, o2));
 	}
 

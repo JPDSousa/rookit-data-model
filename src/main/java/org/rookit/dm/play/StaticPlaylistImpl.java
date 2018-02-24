@@ -21,31 +21,37 @@
  ******************************************************************************/
 package org.rookit.dm.play;
 
-import static org.rookit.dm.play.TypePlaylist.STATIC;
+import static org.rookit.api.dm.play.PlaylistFields.*;
+import static org.rookit.api.dm.play.TypePlaylist.STATIC;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Set;
 import java.util.stream.Stream;
 
 import org.mongodb.morphia.annotations.Entity;
 import org.mongodb.morphia.annotations.Reference;
-import org.rookit.dm.track.Track;
+import org.rookit.api.bistream.BiStream;
+import org.rookit.api.dm.play.StaticPlaylist;
+import org.rookit.api.dm.track.Track;
+import org.rookit.api.storage.DBManager;
 
 import com.google.common.collect.Sets;
 
 @Entity("Playlist")
 class StaticPlaylistImpl extends AbstractPlaylist implements StaticPlaylist {
 	
-	@Reference(lazy = true, idOnly = true)
+	@Reference(value = TRACKS, lazy = true, idOnly = true)
 	private final Set<Track> tracks;
 	
 	@SuppressWarnings("unused")
+	@Deprecated
 	private StaticPlaylistImpl() {
-		this(null);
+		this(null, null);
 	}
 	
-	StaticPlaylistImpl(String name) {
-		super(STATIC, name);
+	StaticPlaylistImpl(String name, BiStream image) {
+		super(STATIC, name, image);
 		this.tracks = Sets.newLinkedHashSet();
 	}
 
@@ -96,7 +102,7 @@ class StaticPlaylistImpl extends AbstractPlaylist implements StaticPlaylist {
 
 	@Override
 	public Collection<Track> getTracks() {
-		return tracks;
+		return Collections.unmodifiableSet(tracks);
 	}
 	
 	@Override
@@ -107,6 +113,15 @@ class StaticPlaylistImpl extends AbstractPlaylist implements StaticPlaylist {
 	@Override
 	public int hashCode() {
 		return super.hashCode();
+	}
+
+	@Override
+	public StaticPlaylist freeze(final DBManager db, final int limit) {
+		final StaticPlaylist playlist = db.getFactories()
+				.getPlaylistFactory()
+				.createStaticPlaylist(getName());
+		streamTracks().limit(limit).forEach(playlist::add);
+		return playlist;
 	}
 	
 }

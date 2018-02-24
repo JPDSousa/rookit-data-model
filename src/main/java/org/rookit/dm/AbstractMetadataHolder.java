@@ -3,6 +3,7 @@ package org.rookit.dm;
 import java.util.Map;
 
 import org.mongodb.morphia.annotations.Embedded;
+import org.rookit.api.dm.MetadataHolder;
 
 import com.google.common.collect.Maps;
 

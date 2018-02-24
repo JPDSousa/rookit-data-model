@@ -1,11 +1,11 @@
 package org.rookit.dm.genre.similarity;
 
-import static org.rookit.dm.genre.DatabaseFields.*;
+import static org.rookit.api.dm.genre.GenreFields.*;
 
 import java.util.Collections;
 import java.util.Map;
 
-import org.rookit.dm.genre.Genre;
+import org.rookit.api.dm.genre.Genre;
 import org.rookit.dm.play.similarity.AbstractPlayableComparator;
 
 @SuppressWarnings("javadoc")

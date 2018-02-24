@@ -1,6 +1,7 @@
 package org.rookit.dm.album;
 
-import org.rookit.dm.track.Track;
+import org.rookit.api.dm.album.TrackSlot;
+import org.rookit.api.dm.track.Track;
 
 @SuppressWarnings("javadoc")
 public class TrackSlotImpl implements TrackSlot {
@@ -9,7 +10,7 @@ public class TrackSlotImpl implements TrackSlot {
 	private final int number;
 	private final Track track;
 	
-	public TrackSlotImpl(String disc, int number, Track track) {
+	TrackSlotImpl(String disc, int number, Track track) {
 		super();
 		assert disc != null && !disc.isEmpty();
 		assert number > 0;

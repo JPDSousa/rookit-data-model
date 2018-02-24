@@ -25,6 +25,11 @@ import java.util.Set;
 
 import org.mongodb.morphia.annotations.Entity;
 import org.mongodb.morphia.annotations.Reference;
+import org.rookit.api.bistream.BiStream;
+import org.rookit.api.dm.artist.GroupArtist;
+import org.rookit.api.dm.artist.Musician;
+import org.rookit.api.dm.artist.TypeArtist;
+import org.rookit.api.dm.artist.TypeGroup;
 
 import com.google.common.collect.Sets;
 
@@ -37,12 +42,13 @@ class GroupArtistImpl extends AbstractArtist implements GroupArtist {
 	
 	private TypeGroup groupType;
 	
+	@SuppressWarnings("unused")
 	private GroupArtistImpl() {
-		super(null, null);
+		this(null, null);
 	}
 	
-	GroupArtistImpl(String artistName) {
-		super(TypeArtist.GROUP, artistName);
+	GroupArtistImpl(String artistName, BiStream picture) {
+		super(TypeArtist.GROUP, artistName, picture);
 		groupType = TypeGroup.DEFAULT;
 		members = Sets.newLinkedHashSet();
 	}

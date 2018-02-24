@@ -22,6 +22,10 @@
 package org.rookit.dm.artist;
 
 import org.mongodb.morphia.annotations.Entity;
+import org.rookit.api.bistream.BiStream;
+import org.rookit.api.dm.artist.Musician;
+import org.rookit.api.dm.artist.TypeArtist;
+import org.rookit.api.dm.artist.TypeGender;
 
 //TODO is it possible to turn this into Artist.class.getName() somehow??
 @Entity(value="Artist")
@@ -31,12 +35,14 @@ class MusicianImpl extends AbstractArtist implements Musician {
 	
 	private String fullName;
 	
+	@SuppressWarnings("unused")
+	@Deprecated
 	private MusicianImpl() {
-		super(null, null);
+		this(null, null);
 	}
 	
-	MusicianImpl(String artistName) {
-		super(TypeArtist.MUSICIAN, artistName);
+	MusicianImpl(String artistName, BiStream biStream) {
+		super(TypeArtist.MUSICIAN, artistName, biStream);
 	}
 
 	@Override

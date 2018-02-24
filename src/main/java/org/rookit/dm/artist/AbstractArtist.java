@@ -28,11 +28,15 @@ import java.util.Set;
 
 import org.mongodb.morphia.annotations.Embedded;
 import org.mongodb.morphia.annotations.Reference;
+import org.rookit.api.bistream.BiStream;
+import org.rookit.api.dm.artist.Artist;
+import org.rookit.api.dm.artist.TypeArtist;
+import org.rookit.api.dm.genre.Genre;
+import org.rookit.api.dm.play.StaticPlaylist;
+import org.rookit.api.storage.DBManager;
+import org.rookit.api.storage.queries.TrackQuery;
 import org.rookit.dm.genre.AbstractGenreable;
-import org.rookit.dm.genre.Genre;
 import org.rookit.dm.utils.DataModelValidator;
-import org.rookit.dm.utils.bistream.BiStream;
-import org.rookit.dm.utils.factory.RookitFactory;
 
 import com.google.common.collect.Sets;
 
@@ -82,9 +86,7 @@ public abstract class AbstractArtist extends AbstractGenreable implements Artist
 	 * 
 	 * @param artistName artist name
 	 */
-	protected AbstractArtist(TypeArtist type, String artistName) {
-		final RookitFactory<BiStream> factory = ArtistFactory.getDefault()
-				.getBiStreamFactory();
+	protected AbstractArtist(TypeArtist type, String artistName, BiStream picture) {
 		this.name = artistName;
 		this.related = Sets.newLinkedHashSet();
 		this.origin = "";
@@ -92,7 +94,7 @@ public abstract class AbstractArtist extends AbstractGenreable implements Artist
 		this.type = type;
 		this.isni = "";
 		this.ipi = "";
-		this.picture = factory.createEmpty();
+		this.picture = picture;
 	}
 
 	@Override
@@ -257,6 +259,21 @@ public abstract class AbstractArtist extends AbstractGenreable implements Artist
 			VALIDATOR.handleIOException(e);
 		}
 		return null;
+	}
+
+	@Override
+	public StaticPlaylist freeze(final DBManager db, final int limit) {
+		final StaticPlaylist playlist = db.getFactories()
+				.getPlaylistFactory()
+				.createStaticPlaylist(getName());
+		final TrackQuery query = db.getTracks();
+		query.withMainArtist(this);
+		
+		// TODO search for tracks with this artist as feature, producer, etc..
+		// TODO order by mainArtist > feature > producer > (etc..)
+		
+		query.stream().limit(limit).forEach(playlist::add);
+		return playlist;
 	}
 	
 }

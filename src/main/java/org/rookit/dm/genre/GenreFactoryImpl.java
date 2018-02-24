@@ -19,50 +19,46 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  ******************************************************************************/
-package org.rookit.dm.album;
+package org.rookit.dm.genre;
 
-import java.util.Collections;
-import java.util.Set;
+import static org.rookit.api.dm.genre.GenreFields.*;
 
-import org.mongodb.morphia.annotations.Entity;
-import org.rookit.api.bistream.BiStream;
-import org.rookit.api.dm.album.TrackSlot;
-import org.rookit.api.dm.album.TypeAlbum;
-import org.rookit.api.dm.album.TypeRelease;
-import org.rookit.api.dm.artist.Artist;
+import java.util.Map;
+import java.util.Optional;
 
-import com.google.common.collect.Sets;
+import org.rookit.api.dm.genre.Genre;
+import org.rookit.api.dm.genre.factory.GenreFactory;
+import org.rookit.dm.factory.AbstractRookitFactory;
 
-// TODO is it possible to turn this into Album.class.getName() somehow??
-@Entity(value="Album")
-class VariousArtistAlbum extends AbstractAlbum {
-	
-	@SuppressWarnings("unused")
-	@Deprecated
-	private VariousArtistAlbum() {
-		this(null, null, null);
+import com.google.inject.Inject;
+
+@SuppressWarnings("javadoc")
+public class GenreFactoryImpl extends AbstractRookitFactory<Genre> implements GenreFactory {
+
+	@Inject
+	GenreFactoryImpl() {
+		super(Optional.empty());
 	}
 	
-	VariousArtistAlbum(String title, TypeRelease type, BiStream cover) {
-		super(TypeAlbum.VA, title, type, Collections.emptySet(), cover);
+	@Override
+	public Genre createGenre(String name) {
+		VALIDATOR.checkArgumentStringNotEmpty(name, "A genre must have a non-null non-empty name");
+		return new DefaultGenre(name);
 	}
 
 	@Override
-	public Set<Artist> getArtists() {
-		final Set<Artist> artists = Sets.newHashSet();
-		
-		for(final TrackSlot track : getTracks()){
-			track.getTrack().getMainArtists().forEach(a -> artists.add(a));
+	public Genre createEmpty() {
+		VALIDATOR.invalidOperation("Cannot create an empty genre");
+		return null;
+	}
+
+	@Override
+	public Genre create(Map<String, Object> data) {
+		final Object name = data.get(NAME);
+		if(name != null && name instanceof String) {
+			return createGenre((String) name);
 		}
-		
-		return Collections.unmodifiableSet(artists);
+		VALIDATOR.runtimeException("Invalid arguments: " + data);
+		return null;
 	}
-
-	@Override
-	public String toString() {
-		return getFullTitle();
-	}
-
-	
-
 }
