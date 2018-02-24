@@ -4,7 +4,7 @@
 	<artifactId>rookit-data-model</artifactId>
 	<parent>
 		<artifactId>rookit</artifactId>
-		<version>0.0.1-SNAPSHOT</version>
+		<version>-SNAPSHOT</version>
 		<groupId>com.github.JPDSousa</groupId>
 	</parent>
 	<dependencies>
@@ -13,16 +13,8 @@
 			<artifactId>ExtendedStringBuilder</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>com.google.guava</groupId>
-			<artifactId>guava</artifactId>
-		</dependency>
-		<dependency>
 			<groupId>com.mpatric</groupId>
 			<artifactId>mp3agic</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.commons</groupId>
-			<artifactId>commons-text</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.mongodb.morphia</groupId>
@@ -31,6 +23,14 @@
 		<dependency>
 			<groupId>${rookit.group}</groupId>
 			<artifactId>rookit-utils</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>${rookit.group}</groupId>
+			<artifactId>rookit-api</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>${rookit.group}</groupId>
+			<artifactId>rookit-data-model-test</artifactId>
 		</dependency>
 	</dependencies>
 	<dependencyManagement>
@@ -41,19 +41,9 @@
 				<version>-SNAPSHOT</version>
 			</dependency>
 			<dependency>
-				<groupId>com.google.guava</groupId>
-				<artifactId>guava</artifactId>
-				<version>23.0</version>
-			</dependency>
-			<dependency>
 				<groupId>com.mpatric</groupId>
 				<artifactId>mp3agic</artifactId>
 				<version>0.9.0</version>
-			</dependency>
-			<dependency>
-				<groupId>org.apache.commons</groupId>
-				<artifactId>commons-text</artifactId>
-				<version>1.1</version>
 			</dependency>
 			<dependency>
 				<groupId>org.mongodb.morphia</groupId>
@@ -65,6 +55,22 @@
 				<artifactId>rookit-utils</artifactId>
 				<version>${rookit.version}</version>
 			</dependency>
+			<dependency>
+				<groupId>${rookit.group}</groupId>
+				<artifactId>rookit-api</artifactId>
+				<version>${rookit.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>${rookit.group}</groupId>
+				<artifactId>rookit-data-model-test</artifactId>
+				<version>${rookit.version}</version>
+			</dependency>
 		</dependencies>
 	</dependencyManagement>
+	<repositories>
+		<repository>
+		    <id>jitpack.io</id>
+		    <url>https://jitpack.io</url>
+		</repository>
+	</repositories>
 </project>
