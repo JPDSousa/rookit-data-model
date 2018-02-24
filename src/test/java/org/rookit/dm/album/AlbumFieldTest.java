@@ -136,10 +136,11 @@ public class AlbumFieldTest {
 
 	@Test
 	public final void testTracksNoArguments() {
-		List<Track> tracks = new ArrayList<>(factory.getRandomSetOfTracks());
+		final List<Track> tracks = new ArrayList<>(factory.getRandomSetOfTracks());
+		final String disc = "disc";
 
-		for(Track track : tracks){
-			guineaPig.addTrackLast(track);
+		for (final Track track : tracks){
+			guineaPig.addTrackLast(track, disc);
 		}
 		final Collection<Track> actual = guineaPig.getTracks()
 				.stream()
@@ -254,10 +255,11 @@ public class AlbumFieldTest {
 
 	@Test
 	public final void testAddNumberlessTrack() {
-		List<Track> tracks = new ArrayList<>(factory.getRandomSetOfTracks());
+		final List<Track> tracks = new ArrayList<>(factory.getRandomSetOfTracks());
+		final String disc = "disc";
 
-		for(Track track : tracks) {
-			guineaPig.addTrack(track, 0);
+		for (final Track track : tracks) {
+			guineaPig.addTrack(track, 0, disc);
 		}
 		final Collection<Track> actual = guineaPig.getTracks()
 				.stream()
@@ -269,9 +271,10 @@ public class AlbumFieldTest {
 	@Test
 	public final void testAddTrackLast() {
 		final List<Track> tracks = new ArrayList<>(factory.getRandomSetOfTracks());
+		final String disc = "disc";
 
 		for(Track track : tracks) {
-			guineaPig.addTrackLast(track);
+			guineaPig.addTrackLast(track, disc);
 		}
 		final Collection<Track> actual = guineaPig.getTracks()
 				.stream()
@@ -286,7 +289,7 @@ public class AlbumFieldTest {
 		guineaPig.addTrackLast(factory.getRandomOriginalTrack(), "cd2");
 		//this should throw an exception, as it is ambiguous to which of
 		//the discs the track is to be added
-		guineaPig.addTrackLast(factory.getRandomOriginalTrack());
+		guineaPig.addTrackLast(factory.getRandomOriginalTrack(), "disc");
 	}
 	
 	@Test
@@ -367,7 +370,7 @@ public class AlbumFieldTest {
 			final Duration randomDuration = Duration.ofMillis(random.nextLong());
 			track.setDuration(randomDuration);
 			totalDuration.plus(randomDuration);
-			guineaPig.addTrackLast(track);
+			guineaPig.addTrackLast(track, "disc");
 		}
 		assertEquals(totalDuration, guineaPig.getDuration());
 	}
@@ -380,7 +383,7 @@ public class AlbumFieldTest {
 			final Set<Genre> trackGenres = factory.getRandomSetOfGenres();
 			track.setGenres(trackGenres);
 			genres.addAll(trackGenres);
-			guineaPig.addTrackLast(track);
+			guineaPig.addTrackLast(track, "disc");
 		}
 		assertEquals("All Genres not properly being extracted!", genres, guineaPig.getAllGenres());
 	}
