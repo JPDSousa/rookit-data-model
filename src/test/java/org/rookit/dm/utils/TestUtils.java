@@ -21,6 +21,8 @@
  ******************************************************************************/
 package org.rookit.dm.utils;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import java.time.LocalDate;
 import java.util.Set;
 
@@ -30,7 +32,6 @@ import org.rookit.api.dm.play.able.Playable;
 import org.rookit.dm.inject.DMFactoriesModule;
 import org.rookit.dm.test.DMTestFactory;
 
-import static org.junit.Assert.*;
 
 import com.google.common.collect.Sets;
 import com.google.inject.Guice;
@@ -53,7 +54,9 @@ public final class TestUtils {
 		for(Genre genre : genres){
 			g.addGenre(genre);
 		}
-		assertEquals(genres, g.getGenres());
+		
+		assertThat(g.getGenres())
+		.containsExactlyInAnyOrderElementsOf(genres);
 	}
 	
 	public static final void testPlayable(final Playable p) {
@@ -67,15 +70,27 @@ public final class TestUtils {
 		final int testSkips = 5;
 		final long testSetSkips = 230293020;
 		p.setLastSkipped(lastSkipped);
-		assertEquals(lastSkipped, p.getLastSkipped());
-		assertTrue(initialSkips >= 0);
+		
+		assertThat(initialSkips)
+		.isGreaterThanOrEqualTo(0);
+		assertThat(p.getLastSkipped().toJavaUtil())
+		.contains(lastSkipped);
+		
 		for(int i = 0; i < testSkips; i++) {
 			p.skip();
 		}
-		assertNotEquals(lastSkipped, p.getLastSkipped());
-		assertEquals(initialSkips+testSkips, p.getSkipped());
+		
+		assertThat(p.getLastSkipped().toJavaUtil())
+		.isNotEmpty()
+		.get()
+		.isNotEqualTo(lastSkipped);
+		
+		assertThat(p.getSkipped())
+		.isEqualTo(initialSkips+testSkips);
+		
 		p.setSkipped(testSetSkips);
-		assertEquals(testSetSkips, p.getSkipped());
+		assertThat(p.getSkipped())
+		.isEqualTo(testSetSkips);
 	}
 
 	private static final void assertPlays(final Playable p) {
@@ -84,15 +99,27 @@ public final class TestUtils {
 		final int testPlays = 5;
 		final long testSetPlays = 230293020;
 		p.setLastPlayed(lastPlayed);
-		assertEquals(lastPlayed, p.getLastPlayed());
-		assertTrue(initialPlays >= 0);
+		
+		assertThat(initialPlays)
+		.isGreaterThanOrEqualTo(0);
+		assertThat(p.getLastPlayed().toJavaUtil())
+		.contains(lastPlayed);
+		
 		for(int i = 0; i < testPlays; i++) {
 			p.play();
 		}
-		assertNotEquals(lastPlayed, p.getLastPlayed());
-		assertEquals(initialPlays+testPlays, p.getPlays());
-		p.setPlays(testSetPlays);
-		assertEquals(testSetPlays, p.getPlays());
+		
+		assertThat(p.getLastPlayed().toJavaUtil())
+		.isNotEmpty()
+		.get()
+		.isNotEqualTo(lastPlayed);
+		
+		assertThat(p.getPlays())
+		.isEqualTo(initialPlays+testPlays);
+		
+		p.setSkipped(testSetPlays);
+		assertThat(p.getSkipped())
+		.isEqualTo(testSetPlays);
 	}
 
 }

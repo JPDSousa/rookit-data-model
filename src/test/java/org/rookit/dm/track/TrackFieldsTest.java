@@ -21,7 +21,7 @@
  ******************************************************************************/
 package org.rookit.dm.track;
 
-import static org.junit.Assert.*;
+import static org.assertj.core.api.Assertions.*;
 
 import java.util.Set;
 
@@ -67,14 +67,14 @@ public class TrackFieldsTest {
 	public final void testTitle() {
 		final TrackTitle testTitle = new TrackTitle(factory.randomString());
 		guineaPig.setTitle(testTitle.getTitle());
-		assertEquals(testTitle, guineaPig.getTitle());
+		assertThat(guineaPig.getTitle()).isEqualTo(testTitle);
 	}
 	
 	@Test
 	public final void testTrackTitle() {
 		TrackTitle testTitle = new TrackTitle(factory.randomString());
 		guineaPig.setTitle(testTitle);
-		assertEquals(testTitle, guineaPig.getTitle());
+		assertThat(guineaPig.getTitle()).isEqualTo(testTitle);
 	}
 
 	@Test(expected = IllegalArgumentException.class)
@@ -94,19 +94,19 @@ public class TrackFieldsTest {
 
 	@Test
 	public final void testLongFullTitle() {
-		assertNotNull(guineaPig.getLongFullTitle());
+		assertThat(guineaPig.getLongFullTitle()).isNotNull();
 	}
 	
 	@Test
 	public final void testFullTitle() {
-		assertNotNull(guineaPig.getFullTitle());
+		assertThat(guineaPig.getFullTitle()).isNotNull();
 	}
 	
 	@Test
 	public final void testMainArtists() {
 		Set<Artist> artists = factory.getRandomSetOfArtists();
 		guineaPig.setMainArtists(artists);
-		assertEquals("Main artists are not being assigned!", artists, guineaPig.getMainArtists());
+		assertThat(guineaPig.getMainArtists()).as("Main artists are not being assigned!").isEqualTo(artists);
 	}
 	
 	@Test(expected = IllegalArgumentException.class)
@@ -123,7 +123,7 @@ public class TrackFieldsTest {
 	public final void testAddMainArtist() {
 		final Artist artist = factory.getRandomArtist();
 		guineaPig.addMainArtist(artist);
-		assertTrue(IterableUtils.contains(guineaPig.getMainArtists(), artist));
+		assertThat(IterableUtils.contains(guineaPig.getMainArtists(), artist)).isTrue();
 	}
 	
 	@Test(expected = IllegalArgumentException.class)
@@ -149,7 +149,7 @@ public class TrackFieldsTest {
 	public final void testFeatures() {
 		Set<Artist> artists = factory.getRandomSetOfArtists();
 		guineaPig.setFeatures(artists);
-		assertEquals(artists, guineaPig.getFeatures());
+		assertThat(guineaPig.getFeatures()).isEqualTo(artists);
 	}
 	
 	@Test(expected = IllegalArgumentException.class)
@@ -161,7 +161,7 @@ public class TrackFieldsTest {
 	public final void testAddFeature() {
 		final Artist artist = factory.getRandomArtist();
 		guineaPig.addFeature(artist);
-		assertTrue(IterableUtils.contains(guineaPig.getFeatures(), artist));
+		assertThat(IterableUtils.contains(guineaPig.getFeatures(), artist)).isTrue();
 	}
 	
 	@Test(expected = IllegalArgumentException.class)
@@ -191,9 +191,9 @@ public class TrackFieldsTest {
 	@Test
 	public final void testExplicit() {
 		guineaPig.setExplicit(true);
-		assertTrue(guineaPig.isExplicit());
+		assertThat(guineaPig.isExplicit()).isTrue();
 		guineaPig.setExplicit(false);
-		assertFalse(guineaPig.isExplicit());
+		assertThat(guineaPig.isExplicit()).isFalse();
 	}
 	
 	@Test(expected = IllegalArgumentException.class)
@@ -204,25 +204,25 @@ public class TrackFieldsTest {
 	@Test
 	public final void testTrackType() {
 		for(final TypeTrack type : TypeTrack.values()) {
-			assertEquals(type, factory.getRandomTrack(type).getType());
+			assertThat(factory.getRandomTrack(type).getType()).isEqualTo(type);
 		}
 	}
 	
 	@Test
 	public final void testToString() {
-		assertEquals(guineaPig.getLongFullTitle().toString(), guineaPig.toString());
+		assertThat(guineaPig.toString()).isEqualTo(guineaPig.getLongFullTitle().toString());
 	}
 	
 	@Test
 	public final void testGetPath() {
-		assertNotNull(guineaPig.getPath());
+		assertThat(guineaPig.getPath()).isNotNull();
 	}
 
 	@Test
 	public final void testSetHiddenTrack() {
 		final String hiddenTrack = factory.randomString();
 		guineaPig.setHiddenTrack(hiddenTrack);
-		assertEquals(hiddenTrack, guineaPig.getHiddenTrack());
+		assertThat(guineaPig.getHiddenTrack()).isEqualTo(hiddenTrack);
 	}
 	
 	@Test(expected = IllegalArgumentException.class)
@@ -237,14 +237,14 @@ public class TrackFieldsTest {
 	
 	@Test
 	public final void testGetHiddenTrackNotNull() {
-		assertNotNull(guineaPig.getHiddenTrack());
+		assertThat(guineaPig.getHiddenTrack()).isNotNull();
 	}
 
 	@Test
 	public final void testProducers() {
 		Set<Artist> artists = factory.getRandomSetOfArtists();
 		guineaPig.setProducers(artists);
-		assertEquals(artists, guineaPig.getProducers());
+		assertThat(guineaPig.getProducers()).isEqualTo(artists);
 	}
 	
 	@Test(expected = IllegalArgumentException.class)
@@ -256,7 +256,7 @@ public class TrackFieldsTest {
 	public final void testAddProducer() {
 		final Artist artist = factory.getRandomArtist();
 		guineaPig.addProducer(artist);
-		assertTrue(IterableUtils.contains(guineaPig.getProducers(), artist));
+		assertThat(IterableUtils.contains(guineaPig.getProducers(), artist)).isTrue();
 	}
 	
 	@Test(expected = IllegalArgumentException.class)
@@ -281,7 +281,7 @@ public class TrackFieldsTest {
 	@Test
 	public final void testGetAsVersionTrack() {
 		final Track track = trackFactory.createVersionTrack(TypeVersion.ALTERNATIVE, guineaPig);
-		assertEquals(track, track.getAsVersionTrack());
+		assertThat(track.getAsVersionTrack()).isEqualTo(track);
 	}
 	
 	@Test(expected = UnsupportedOperationException.class)
@@ -293,20 +293,20 @@ public class TrackFieldsTest {
 	@Test
 	public final void testIsVersionTrack() {
 		final Track track = trackFactory.createVersionTrack(TypeVersion.ALTERNATIVE, guineaPig);
-		assertTrue(track.isVersionTrack());
+		assertThat(track.isVersionTrack()).isTrue();
 	}
 	
 	@Test
 	public final void testOriginalIsVersionTrack() {
 		final Track track = trackFactory.createOriginalTrack(factory.randomString());
-		assertFalse(track.isVersionTrack());
+		assertThat(track.isVersionTrack()).isFalse();
 	}
 	
 	@Test
 	public final void testBpm() {
 		final short bpm = 140;
 		guineaPig.setBPM(bpm);
-		assertEquals(bpm, guineaPig.getBPM());
+		assertThat(guineaPig.getBPM()).isEqualTo(bpm);
 	}
 	
 	@Test(expected = IllegalArgumentException.class)
@@ -324,7 +324,7 @@ public class TrackFieldsTest {
 	public final void testLyrics() {
 		final String lyrics = factory.randomString();
 		guineaPig.setLyrics(lyrics);
-		assertEquals(lyrics, guineaPig.getLyrics());
+		assertThat(guineaPig.getLyrics()).isEqualTo(lyrics);
 	}
 	
 	@Test(expected = IllegalArgumentException.class)
@@ -346,16 +346,18 @@ public class TrackFieldsTest {
 	public final void testAllGenres() {
 		final Set<Genre> genres = factory.getRandomSetOfGenres();
 		guineaPig.setGenres(genres);
-		assertEquals(genres, guineaPig.getAllGenres());
+		assertThat(guineaPig.getAllGenres()).isEqualTo(genres);
 	}
 	
 	@Test
 	public final void testEquals() {
 		final Track track1 = factory.getRandomTrack(TypeTrack.ORIGINAL);
 		final Track track2 = factory.getRandomTrack(TypeTrack.VERSION);
-		assertEquals(track1, track1);
-		assertNotEquals(track1, factory.getRandomArtist());
-		assertNotEquals(track1, track2);
+		
+		assertThat(track1)
+		.isEqualTo(track1)
+		.isNotEqualTo(factory.getRandomArtist())
+		.isNotEqualTo(track2);
 	}
 
 	@Test
@@ -376,14 +378,14 @@ public class TrackFieldsTest {
 		
 		track1.setId(id);
 		track2.setId(id);
-		assertEquals(track1, track2);
+		assertThat(track2).isEqualTo(track1);
 	}
 	
 	@Test
 	public final void testEqualsByType() {
 		final Track track1 = trackFactory.createOriginalTrack(factory.randomString());
 		final Track track2 = trackFactory.createVersionTrack(TypeVersion.ACOUSTIC, track1);
-		assertFalse(track1.equals(track2));
+		assertThat(track1.equals(track2)).isFalse();
 	}	
 	
 	@Test
@@ -394,15 +396,24 @@ public class TrackFieldsTest {
 		final Set<Artist> mainArtists = factory.getRandomSetOfArtists();
 		
 		track2.setId(track1.getId());
-		assertEquals(track1, track2);
+		assertThat(track2)
+		.isEqualTo(track1);
+		
 		track1.setMainArtists(mainArtists);
-		assertNotEquals(track1, track2);
+		assertThat(track1)
+		.isNotEqualTo(track2);
+		
 		track2.setMainArtists(mainArtists);
-		assertEquals(track1, track2);
+		assertThat(track2)
+		.isEqualTo(track1);
+		
 		track1.setFeatures(factory.getRandomSetOfArtists());
-		assertEquals(track1, track2);
+		assertThat(track2)
+		.isEqualTo(track1);
+		
 		track2.setFeatures(factory.getRandomSetOfArtists());
-		assertEquals(track1, track2);
+		assertThat(track2)
+		.isEqualTo(track1);
 	}
 	
 	@Test
@@ -412,7 +423,7 @@ public class TrackFieldsTest {
 		final Track track1 = trackFactory.createVersionTrack(version, original);
 		final Track track2 = trackFactory.createVersionTrack(version, original);
 		track1.setId(track2.getId());
-		assertEquals(track1, track2);
+		assertThat(track2).isEqualTo(track1);
 	}
 	
 	@Test
@@ -423,6 +434,6 @@ public class TrackFieldsTest {
 	}
 	
 	private void testCompareTo(Track track) {
-		assertEquals(guineaPig.getTitle().toString().compareTo(track.getTitle().toString()), guineaPig.compareTo(track));
+		assertThat(guineaPig.compareTo(track)).isEqualTo(guineaPig.getTitle().toString().compareTo(track.getTitle().toString()));
 	}
 }

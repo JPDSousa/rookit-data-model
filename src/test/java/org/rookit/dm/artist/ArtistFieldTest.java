@@ -21,7 +21,9 @@
  ******************************************************************************/
 package org.rookit.dm.artist;
 
-import static org.junit.Assert.*;
+import static org.junit.Assume.assumeThat;
+import static org.hamcrest.Matchers.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.io.IOException;
 import java.util.HashSet;
@@ -74,28 +76,28 @@ public class ArtistFieldTest {
 	public void testName() {
 		String testName = "abc";
 		guineaPig = factories.getArtistFactory().createArtist(TypeArtist.GROUP, testName);
-		assertEquals("Name is not being properly assigned!", testName, guineaPig.getName());
+		assertThat(guineaPig.getName()).as("Name is not being properly assigned!").isEqualTo(testName);
 	}
 
 	@Test
 	public void testRelatedArtist() {
 		Set<Artist> related = factory.getRandomSetOfArtists();
-		assertEquals("Related artists are not being properly initialized", new HashSet<>(), guineaPig.getRelatedArtists());
+		assertThat(guineaPig.getRelatedArtists()).as("Related artists are not being properly initialized").isEqualTo(new HashSet<>());
 		for(Artist art : related){
 			guineaPig.addRelatedArtist(art);
 		}
-		assertEquals("Related artists are not being properly assigned!", related, guineaPig.getRelatedArtists());
+		assertThat(guineaPig.getRelatedArtists()).as("Related artists are not being properly assigned!").isEqualTo(related);
 		for(Artist art : related){
 			guineaPig.addRelatedArtist(art);
 		}
-		assertEquals("Related artists are accepting duplicates!", related, guineaPig.getRelatedArtists());
+		assertThat(guineaPig.getRelatedArtists()).as("Related artists are accepting duplicates!").isEqualTo(related);
 	}
 
 	@Test
 	public void testOrigin() {
 		String testOrigin = "Russia";
 		guineaPig.setOrigin(testOrigin);
-		assertEquals("Origin is not being properly assigned", testOrigin, guineaPig.getOrigin());
+		assertThat(guineaPig.getOrigin()).as("Origin is not being properly assigned").isEqualTo(testOrigin);
 	}
 	
 	@Test
@@ -111,7 +113,7 @@ public class ArtistFieldTest {
 		final Artist artist1 = artistFactory.createArtist(type, testName);
 		final Artist artist2 = artistFactory.createArtist(type, testName);
 		artist2.setId(artist1.getId());
-		assertEquals(artist1, artist2);
+		assertThat(artist2).isEqualTo(artist1);
 	}
 	
 	@Test
@@ -122,33 +124,35 @@ public class ArtistFieldTest {
 		final Artist artist1 = artistFactory.createArtist(type, testName);
 		final Artist artist2 = artistFactory.createArtist(type, testName);
 		artist2.setId(artist1.getId());
-		assertEquals(artist1.hashCode(), artist2.hashCode());
+		assertThat(artist2.hashCode()).isEqualTo(artist1.hashCode());
 	}
 	
 	@Test
 	public final void testIPI() {
 		final String ipi = factory.randomString();
-		assertNotEquals(ipi, guineaPig.getIPI());
+		
+		assumeThat(guineaPig.getIPI(), is(not(equalTo(ipi))));
 		guineaPig.setIPI(ipi);
-		assertEquals(ipi, guineaPig.getIPI());
+		assertThat(guineaPig.getIPI()).isEqualTo(ipi);
 	}
 	
 	@Test
 	public final void testISNI() {
 		final String isni = factory.randomString();
-		assertNotEquals(isni, guineaPig.getISNI());
+		
+		assumeThat(guineaPig.getISNI(), is(not(equalTo(isni))));
 		guineaPig.setISNI(isni);
-		assertEquals(isni, guineaPig.getISNI());
+		assertThat(guineaPig.getISNI()).isEqualTo(isni);
 	}
 	
 	@Test
 	public final void testPicture() throws IOException {
 		final byte[] picture = factory.randomString().getBytes();
-		assertNotNull(guineaPig.getPicture());
+		assertThat(guineaPig.getPicture()).isNotNull();
 		guineaPig.setPicture(picture);
 		final byte[] actual = new byte[picture.length];
 		guineaPig.getPicture().toInput().read(actual);
-		assertArrayEquals(picture, actual);
+		assertThat(actual).isEqualTo(picture);
 	}
 	
 	//TODO test beginDate and endDate -> begin date cannot happen before endDate and so on
@@ -160,18 +164,18 @@ public class ArtistFieldTest {
 	
 	@Test
 	public final void testGetAllGenres() {
-		assertEquals(guineaPig.getGenres(), guineaPig.getAllGenres());
+		assertThat(guineaPig.getAllGenres()).isEqualTo(guineaPig.getGenres());
 	}
 	
 	@Test
 	public final void testAliases() {
 		final String alias = factory.randomString();
 		guineaPig.addAlias(alias);
-		assertTrue(guineaPig.getAliases().contains(alias));
+		assertThat(guineaPig.getAliases().contains(alias)).isTrue();
 		final Set<String> aliases = Sets.newLinkedHashSetWithExpectedSize(1);
 		aliases.add(alias);
 		guineaPig.setAliases(aliases);
-		assertEquals(aliases, guineaPig.getAliases());
+		assertThat(guineaPig.getAliases()).isEqualTo(aliases);
 	}
 	
 	@Test
@@ -182,7 +186,7 @@ public class ArtistFieldTest {
 	}
 	
 	private void testCompareTo(Artist artist) {
-		assertEquals(guineaPig.getName().compareTo(artist.getName()), guineaPig.compareTo(artist));
+		assertThat(guineaPig.compareTo(artist)).isEqualTo(guineaPig.getName().compareTo(artist.getName()));
 	}
 
 }

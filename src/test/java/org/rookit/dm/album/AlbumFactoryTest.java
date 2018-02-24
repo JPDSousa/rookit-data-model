@@ -21,7 +21,7 @@
  ******************************************************************************/
 package org.rookit.dm.album;
 
-import static org.junit.Assert.*;
+import static org.assertj.core.api.Assertions.*;
 
 import java.util.Set;
 
@@ -61,11 +61,20 @@ public class AlbumFactoryTest {
 		for(TypeRelease release : TypeRelease.values()){
 			final Album album;
 			album = guineaPig.createSingleArtistAlbum(albumTitle, release, artists);
-			assertEquals("Album type should be: " + TypeAlbum.ARTIST, TypeAlbum.ARTIST, album.getAlbumType());
-			assertEquals("Album title should be: Album Title", albumTitle, album.getTitle());
-			assertEquals("Type release should be: " + release.name(), release, album.getReleaseType());
-			assertEquals("Album artists should be: " + artists.toString(), artists, album.getArtists());
-			assertEquals("Album full title should be: " + release.getFormattedName(albumTitle), release.getFormattedName(albumTitle), album.getFullTitle());
+			assertThat(album.getAlbumType())
+			.isEqualTo(TypeAlbum.ARTIST);
+			
+			assertThat(album.getTitle())
+			.isEqualTo(albumTitle);
+			
+			assertThat(album.getReleaseType())
+			.isEqualTo(release);
+			
+			assertThat(album.getArtists())
+			.isEqualTo(artists);
+			
+			assertThat(album.getFullTitle())
+			.isEqualTo(release.getFormattedName(albumTitle));
 		}
 	}
 
@@ -93,10 +102,10 @@ public class AlbumFactoryTest {
 		final String albumArtistsTag = PrintUtils.getIterableAsString(artists, TypeFormat.TAG);
 		final Album album = guineaPig.createSingleArtistAlbum(release.getFormattedName(albumTag), albumArtistsTag);
 		
-		assertEquals(TypeAlbum.ARTIST, album.getAlbumType());
-		assertEquals(albumTag, album.getTitle());
-		assertEquals(album.getReleaseType(), release);
-		assertEquals(artists, album.getArtists());
+		assertThat(album.getAlbumType()).isEqualTo(TypeAlbum.ARTIST);
+		assertThat(album.getTitle()).isEqualTo(albumTag);
+		assertThat(release).isEqualTo(album.getReleaseType());
+		assertThat(album.getArtists()).isEqualTo(artists);
 	}
 	
 	@Test
@@ -107,10 +116,10 @@ public class AlbumFactoryTest {
 		final Set<Artist> artists = factory.getRandomSetOfArtists();
 		final Album album = guineaPig.createAlbum(artist, title, release, artists);
 		
-		assertEquals("Unexpected album type", artist, album.getAlbumType());
-		assertEquals("Unexpected album title", title, album.getTitle());
-		assertEquals("Unexpected album release type", release, album.getReleaseType());
-		assertEquals("Unexpected album artists", artists, album.getArtists());
+		assertThat(album.getAlbumType()).as("Unexpected album type").isEqualTo(artist);
+		assertThat(album.getTitle()).as("Unexpected album title").isEqualTo(title);
+		assertThat(album.getReleaseType()).as("Unexpected album release type").isEqualTo(release);
+		assertThat(album.getArtists()).as("Unexpected album artists").isEqualTo(artists);
 	}
 	
 	@Test
@@ -121,10 +130,10 @@ public class AlbumFactoryTest {
 		final Set<Artist> artists = factory.getRandomSetOfArtists();
 		final Album album = guineaPig.createAlbum(artist, title, release, artists);
 		
-		assertEquals("Unexpected album type", artist, album.getAlbumType());
-		assertEquals("Unexpected album title", title, album.getTitle());
-		assertEquals("Unexpected album release type", release, album.getReleaseType());
-		assertEquals("Unexpected album artists", Sets.newLinkedHashSet(), album.getArtists());
+		assertThat(album.getAlbumType()).as("Unexpected album type").isEqualTo(artist);
+		assertThat(album.getTitle()).as("Unexpected album title").isEqualTo(title);
+		assertThat(album.getReleaseType()).as("Unexpected album release type").isEqualTo(release);
+		assertThat(album.getArtists()).as("Unexpected album artists").isEqualTo(Sets.newLinkedHashSet());
 	}
 
 	@Test
@@ -133,10 +142,10 @@ public class AlbumFactoryTest {
 		final TypeRelease release = TypeRelease.COVERS;
 		final Album album = guineaPig.createVAAlbum(title, release);
 		
-		assertNotNull(album);
-		assertEquals("Unexpected album title", title, album.getTitle());
-		assertEquals("Unexpeted album type", TypeAlbum.VA, album.getAlbumType());
-		assertEquals("Unexpected album release type", release, album.getReleaseType());
+		assertThat(album).isNotNull();
+		assertThat(album.getTitle()).as("Unexpected album title").isEqualTo(title);
+		assertThat(album.getAlbumType()).as("Unexpeted album type").isEqualTo(TypeAlbum.VA);
+		assertThat(album.getReleaseType()).as("Unexpected album release type").isEqualTo(release);
 	}
 	
 }

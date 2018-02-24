@@ -1,7 +1,8 @@
 package org.rookit.dm.album.similarity;
 
-import static org.junit.Assert.*;
+import static org.assertj.core.api.Assertions.*;
 import static org.hamcrest.Matchers.*;
+import static org.junit.Assume.assumeThat;
 
 import java.util.Set;
 
@@ -36,7 +37,9 @@ public class AlbumSimilarityTest {
 	@Test
 	public final void sameAlbumShouldBe0() {
 		final Album album = dmFactory.getRandomAlbum();
-		assertEquals(0, comparator.similarity(album, album), 0);
+		
+		assertThat(comparator.similarity(album, album))
+		.isEqualTo(0);
 	}
 
 	@Test
@@ -46,10 +49,8 @@ public class AlbumSimilarityTest {
 		final Set<Artist> artists = dmFactory.getRandomSetOfArtists();
 		final Album a1 = factory.createAlbum(TypeAlbum.ARTIST, title, type, artists);
 		final Album a2 = factory.createAlbum(TypeAlbum.VA, title, type, artists);
-		assertNotEquals(a1, a2);
-		assertNotEquals(0, comparator.similarity(a1, a2));
-		assertEquals(0, comparator.similarity(a1, a1), 0);
-		assertEquals(0, comparator.similarity(a2, a2), 0);
+		
+		assertFieldMatters(a1, a2);
 	}
 	
 	@Test
@@ -58,9 +59,18 @@ public class AlbumSimilarityTest {
 		final Set<Artist> artists = dmFactory.getRandomSetOfArtists();
 		final Album a1 = factory.createSingleArtistAlbum("one title", type, artists);
 		final Album a2 = factory.createSingleArtistAlbum("another title", type, artists);
-		assertNotEquals(0, comparator.similarity(a1, a2));
-		assertEquals(0, comparator.similarity(a1, a1), 0);
-		assertEquals(0, comparator.similarity(a2, a2), 0);
+
+		assertFieldMatters(a1, a2);
+	}
+
+	private void assertFieldMatters(final Album a1, final Album a2) {
+		assumeThat(a1, is(not(equalTo(a2))));
+		assumeThat(comparator.similarity(a1, a2), is(not(equalTo(0))));
+		
+		assertThat(comparator.similarity(a1, a1))
+		.isEqualTo(0);
+		assertThat(comparator.similarity(a2, a2))
+		.isEqualTo(0);
 	}
 	
 	@Test
@@ -72,10 +82,8 @@ public class AlbumSimilarityTest {
 		final Album a3 = factory.createSingleArtistAlbum("completely different thing", type, artists);
 		final double a1a2 = Math.abs(comparator.similarity(a1, a2));
 		final double a1a3 = Math.abs(comparator.similarity(a1, a3));
-		assertThat(a1a2, lessThan(a1a3));
-		assertEquals(0, comparator.similarity(a1, a1), 0);
-		assertEquals(0, comparator.similarity(a2, a2), 0);
-		assertEquals(0, comparator.similarity(a3, a3), 0);
+		
+		assertThat(a1a2).isLessThan(a1a3);
 	}
 	
 	

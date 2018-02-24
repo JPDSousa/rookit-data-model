@@ -21,7 +21,7 @@
  ******************************************************************************/
 package org.rookit.dm.track;
 
-import static org.junit.Assert.*;
+import static org.assertj.core.api.Assertions.*;
 
 import java.util.Set;
 
@@ -71,26 +71,26 @@ public class VersionTrackTest {
 		final Track orTrack = factory.getRandomOriginalTrack();
 		final TypeVersion version = TypeVersion.ACOUSTIC;
 		final VersionTrack track = trackFactory.createVersionTrack(version, orTrack);
-		assertEquals(version, track.getVersionType());
+		assertThat(track.getVersionType()).isEqualTo(version);
 	}
 	
 	@Test
 	public final void testVersionArtists() {
 		final Artist artist = factory.getRandomArtist();
-		assertTrue(IterableUtils.isEmpty(guineaPig.getVersionArtists()));
+		assertThat(IterableUtils.isEmpty(guineaPig.getVersionArtists())).isTrue();
 		guineaPig.addVersionArtist(artist);
-		assertTrue(IterableUtils.contains(guineaPig.getVersionArtists(), artist));
-		assertEquals(1, IterableUtils.size(guineaPig.getVersionArtists()));
+		assertThat(IterableUtils.contains(guineaPig.getVersionArtists(), artist)).isTrue();
+		assertThat(IterableUtils.size(guineaPig.getVersionArtists())).isEqualTo(1);
 		guineaPig.addVersionArtist(artist);
-		assertEquals(1, IterableUtils.size(guineaPig.getVersionArtists()));
+		assertThat(IterableUtils.size(guineaPig.getVersionArtists())).isEqualTo(1);
 	}
 	
 	@Test
 	public final void testVersionToken() {
 		final String versionToken = "some random token";
-		assertEquals("", guineaPig.getVersionToken());
+		assertThat(guineaPig.getVersionToken()).isEqualTo("");
 		guineaPig.setVersionToken(versionToken);
-		assertEquals(versionToken, guineaPig.getVersionToken());
+		assertThat(guineaPig.getVersionToken()).isEqualTo(versionToken);
 	}
 	
 	@Test(expected = IllegalArgumentException.class)
@@ -101,62 +101,62 @@ public class VersionTrackTest {
 	@Test
 	public final void testFullTitle() {
 		// TODO requires further testing
-		assertNotNull(guineaPig.getFullTitle());
+		assertThat(guineaPig.getFullTitle()).isNotNull();
 	}
 	
 	@Test
 	public final void testLongFullTitle() {
 		// TODO requires further testing
-		assertNotNull(guineaPig.getLongFullTitle());
+		assertThat(guineaPig.getLongFullTitle()).isNotNull();
 	}
 	
 	@Test
 	public final void testTitle() {
 		final String title = factory.randomString();
-		assertEquals(original.getTitle(), guineaPig.getTitle());
+		assertThat(guineaPig.getTitle()).isEqualTo(original.getTitle());
 		guineaPig.setTitle(title);
-		assertEquals(title, guineaPig.getTitle().toString());
-		assertEquals(original.getTitle(), guineaPig.getTitle());
+		assertThat(guineaPig.getTitle().toString()).isEqualTo(title);
+		assertThat(guineaPig.getTitle()).isEqualTo(original.getTitle());
 		guineaPig.setTitle(new TrackTitle(title));
-		assertEquals(title, guineaPig.getTitle().toString());
-		assertEquals(original.getTitle(), guineaPig.getTitle());
+		assertThat(guineaPig.getTitle().toString()).isEqualTo(title);
+		assertThat(guineaPig.getTitle()).isEqualTo(original.getTitle());
 	}
 	
 	@Test
 	public final void testMainArtists() {
-		assertEquals(original.getMainArtists(), guineaPig.getMainArtists());
+		assertThat(guineaPig.getMainArtists()).isEqualTo(original.getMainArtists());
 		
 		final Set<Artist> artists = factory.getRandomSetOfArtists();
 		guineaPig.setMainArtists(artists);
-		assertEquals(artists, guineaPig.getMainArtists());
-		assertEquals(artists, original.getMainArtists());
+		assertThat(guineaPig.getMainArtists()).isEqualTo(artists);
+		assertThat(original.getMainArtists()).isEqualTo(artists);
 		
 		final Artist artist = factory.getRandomArtist();
 		guineaPig.addMainArtist(artist);
-		assertEquals(original.getMainArtists(), guineaPig.getMainArtists());
-		assertTrue(original.getMainArtists().contains(artist));
+		assertThat(guineaPig.getMainArtists()).isEqualTo(original.getMainArtists());
+		assertThat(original.getMainArtists().contains(artist)).isTrue();
 	}
 	
 	@Test
 	public final void testFeatures() {
 		final Set<Artist> artists = factory.getRandomSetOfArtists();
-		assertEquals(original.getFeatures(), guineaPig.getFeatures());
+		assertThat(guineaPig.getFeatures()).isEqualTo(original.getFeatures());
 		guineaPig.setFeatures(artists);
-		assertEquals(artists, guineaPig.getFeatures());
-		assertEquals(original.getFeatures(), guineaPig.getFeatures());
+		assertThat(guineaPig.getFeatures()).isEqualTo(artists);
+		assertThat(guineaPig.getFeatures()).isEqualTo(original.getFeatures());
 		guineaPig.addFeature(factory.getRandomArtist());
 		// TODO requires further testing
-		assertEquals(original.getFeatures(), guineaPig.getFeatures());
+		assertThat(guineaPig.getFeatures()).isEqualTo(original.getFeatures());
 	}
 
 	@Test
 	public final void testIsVersionTrack() {
-		assertTrue(guineaPig.isVersionTrack());
+		assertThat(guineaPig.isVersionTrack()).isTrue();
 	}
 	
 	@Test
 	public final void testVersionTrack() {
-		assertEquals(guineaPig, guineaPig.getAsVersionTrack());
+		assertThat(guineaPig.getAsVersionTrack()).isEqualTo(guineaPig);
 	}
 	
 	@Test
@@ -179,13 +179,14 @@ public class VersionTrackTest {
 		differentToken.setVersionToken("some different token");
 		differentToken.setId(id);
 		
-		assertEquals(guineaPig, guineaPig);
-		assertNotEquals(guineaPig, factory.getRandomTrack(TypeTrack.ORIGINAL));
-		assertNotEquals(guineaPig, original);
-		assertNotEquals(guineaPig, differentVersion);
-		assertNotEquals(guineaPig, differentArtists);
-		assertNotEquals(guineaPig, differentOriginal);
-		assertNotEquals(guineaPig, differentToken);
+		assertThat(guineaPig)
+		.isEqualTo(guineaPig)
+		.isNotEqualTo(factory.getRandomTrack(TypeTrack.ORIGINAL))
+		.isNotEqualTo(original)
+		.isNotEqualTo(differentVersion)
+		.isNotEqualTo(differentToken)
+		.isNotEqualTo(differentOriginal)
+		.isNotEqualTo(differentArtists);
 	}
 	
 	private final TypeVersion differentFrom(TypeVersion version) {

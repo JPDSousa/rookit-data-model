@@ -21,7 +21,7 @@
  ******************************************************************************/
 package org.rookit.dm.genre;
 
-import static org.junit.Assert.*;
+import static org.assertj.core.api.Assertions.*;
 
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -63,7 +63,7 @@ public class GenreFieldsTest {
 	public void testName() {
 		String name = "theGenre";
 		guineaPig = factories.getGenreFactory().createGenre(name);
-		assertEquals("Name is not being properly assigned!", name, guineaPig.getName());
+		assertThat(guineaPig.getName()).as("Name is not being properly assigned!").isEqualTo(name);
 	}
 	
 	@Test(expected = IllegalArgumentException.class)
@@ -81,14 +81,14 @@ public class GenreFieldsTest {
 		String testDescription = "this is the description";
 		
 		guineaPig.setDescription(testDescription);
-		assertEquals("Description is not being properly assigned!", testDescription, guineaPig.getDescription());
+		assertThat(guineaPig.getDescription()).as("Description is not being properly assigned!").isEqualTo(testDescription);
 	}
 
 	@Test
 	public void testEquals() {
 		final GenreFactory factory = factories.getGenreFactory();
 		final String testName = "genre";
-		assertTrue(factory.createGenre(testName).equals(factory.createGenre(testName)));
+		assertThat(factory.createGenre(testName).equals(factory.createGenre(testName))).isTrue();
 	}
 	
 	@Test
@@ -99,7 +99,7 @@ public class GenreFieldsTest {
 	}
 	
 	private void testCompareTo(Genre genre) {
-		assertEquals(guineaPig.getName().compareTo(genre.getName()), guineaPig.compareTo(genre));
+		assertThat(guineaPig.compareTo(genre)).isEqualTo(guineaPig.getName().compareTo(genre.getName()));
 	}
 
 }

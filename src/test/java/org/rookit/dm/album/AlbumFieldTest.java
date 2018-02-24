@@ -21,7 +21,9 @@
  ******************************************************************************/
 package org.rookit.dm.album;
 
-import static org.junit.Assert.*;
+import static org.assertj.core.api.Assertions.*;
+import static org.junit.Assume.assumeThat;
+import static org.hamcrest.Matchers.*;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -35,6 +37,7 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Random;
 import java.util.Set;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
@@ -53,6 +56,7 @@ import org.rookit.dm.test.DMTestFactory;
 import org.rookit.dm.utils.TestUtils;
 import org.rookit.utils.resource.Resources;
 
+import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Sets;
 import com.google.inject.Injector;
 
@@ -61,9 +65,9 @@ public class AlbumFieldTest {
 
 	private static DMTestFactory factory;
 	private static RookitFactories factories;
-	
+
 	private Album guineaPig;
-	
+
 	@BeforeClass
 	public static final void setUpBeforeClass() {
 		final Injector injector = TestUtils.getInjector();
@@ -78,15 +82,23 @@ public class AlbumFieldTest {
 
 	@Test
 	public final void testFullTitle() {
-		assertNotNull("The full title cannot be null", guineaPig.getFullTitle());
-		assertNotEquals("The full title cannot be empty", "", guineaPig.getFullTitle());
+		assertThat(guineaPig.getFullTitle())
+		.as("The full title cannot be null")
+		.isNotNull();
+
+		assertThat(guineaPig.getFullTitle())
+		.as("The full title cannot be empty")
+		.isNotEmpty();
 	}
 
 	@Test
 	public final void testTitle() {
-		String testName = "album";
+		final String testName = "album";
 		guineaPig.setTitle(testName);
-		assertEquals("Name is not being properly assigned!", testName, guineaPig.getTitle());
+
+		assertThat(guineaPig.getTitle())
+		.as("Name is not being properly assigned!")
+		.isEqualTo(testName);
 	}
 
 	@Test(expected = IllegalArgumentException.class)
@@ -98,7 +110,7 @@ public class AlbumFieldTest {
 	public final void testNullAlbumTitle() {
 		guineaPig.setTitle(null);
 	}
-	
+
 	@Test
 	public final void testPlayable() {
 		TestUtils.testPlayable(guineaPig);
@@ -108,15 +120,25 @@ public class AlbumFieldTest {
 	public final void testArtists() {
 		final Artist artist = factory.getRandomArtist();
 		final Set<Artist> artists = Sets.newLinkedHashSet(guineaPig.getArtists());
-		assertNotNull("The artist set can never be null", guineaPig.getArtists());
+
+		assertThat(guineaPig.getArtists())
+		.as("The artist set can never be null")
+		.isNotNull();
+
 		guineaPig.addArtist(artist);
 		artists.add(artist);
-		assertEquals("Artists are not being properly added!", artists, guineaPig.getArtists());
+
+		assertThat(guineaPig.getArtists())
+		.as("Artists are not being properly added!")
+		.isEqualTo(artists);
 	}
-	
-	@Test(expected = RuntimeException.class)
+
+	@Test
 	public final void testGetArtistsIsImmutable() {
-		guineaPig.getArtists().add(factory.getRandomArtist());
+		final Collection<Artist> artists = guineaPig.getArtists();
+
+		assertThatThrownBy(() -> artists.add(factory.getRandomArtist()))
+		.isInstanceOf(RuntimeException.class);
 	}
 
 	@Test(expected = IllegalArgumentException.class)
@@ -128,7 +150,7 @@ public class AlbumFieldTest {
 	public final void testEmptyArtist() {
 		guineaPig.setArtists(Sets.newLinkedHashSet());
 	}
-	
+
 	@Test(expected = RuntimeException.class)
 	public final void testGetTracksIsIummtable() {
 		guineaPig.getTracks().add(new TrackSlotImpl("disc", 2, factory.getRandomOriginalTrack()));
@@ -146,12 +168,12 @@ public class AlbumFieldTest {
 				.stream()
 				.map(TrackSlot::getTrack)
 				.collect(Collectors.toList());
-		assertEquals("Tracks are not being properly assigned!", tracks, actual);
+		assertThat(actual).as("Tracks are not being properly assigned!").isEqualTo(tracks);
 	}
 
 	@Test
 	public final void testNullTracksNoArguments() {
-		assertNotNull("The track set can never be null", guineaPig.getTracks());
+		assertThat(guineaPig.getTracks()).as("The track set can never be null").isNotNull();
 	}
 
 	@Test
@@ -167,14 +189,14 @@ public class AlbumFieldTest {
 				.stream()
 				.map(TrackSlot::getTrack)
 				.collect(Collectors.toList());
-		assertEquals("Tracks are not benig properly assigned", tracks, actual);
+		assertThat(actual).as("Tracks are not benig properly assigned").isEqualTo(tracks);
 	}
-	
+
 	@Test
 	public final void testNullTracksByDisc() {
 		final String discName = "disc1";
 		guineaPig.addTrackLast(factory.getRandomOriginalTrack(), discName);
-		assertNotNull("The track set can never be null", guineaPig.getTracks(discName));
+		assertThat(guineaPig.getTracks(discName)).as("The track set can never be null").isNotNull();
 	}
 
 	@Test(expected = IllegalArgumentException.class)
@@ -186,7 +208,7 @@ public class AlbumFieldTest {
 	public final void testEmptyDiscTracksByDisc() {
 		guineaPig.getTracks("");
 	}
-	
+
 	@Test(expected = IllegalArgumentException.class)
 	public final void testNoSuchDiscTracks(){
 		guineaPig.getTracks("cd1");
@@ -203,14 +225,14 @@ public class AlbumFieldTest {
 			numbers.add(i+1);
 		}
 		guineaPig.addTrackLast(factory.getRandomOriginalTrack(), "other disc");
-		assertEquals("Tracks are not being properly assigned", numbers, guineaPig.getTrackNumbers(discName));
+		assertThat(guineaPig.getTrackNumbers(discName)).as("Tracks are not being properly assigned").isEqualTo(numbers);
 	}
-	
+
 	@Test
 	public final void testNullTrackNumbers() {
 		final String discName = "discName";
 		guineaPig.addTrackLast(factory.getRandomOriginalTrack(), discName);
-		assertNotNull("The track set can never be null", guineaPig.getTrackNumbers(discName));
+		assertThat(guineaPig.getTrackNumbers(discName)).as("The track set can never be null").isNotNull();
 	}
 
 	@Test(expected = IllegalArgumentException.class)
@@ -222,12 +244,12 @@ public class AlbumFieldTest {
 	public final void testEmptyDiscTrackNumbers() {
 		guineaPig.getTrackNumbers("");
 	}
-	
+
 	@Test(expected = IllegalArgumentException.class)
 	public final void testNoSuchDiscTrackNumbers(){
 		guineaPig.getTrackNumbers("cd1");
 	}
-	
+
 	@Test
 	public final void testGetTrack() {
 		final Track track = factory.getRandomOriginalTrack();
@@ -235,19 +257,22 @@ public class AlbumFieldTest {
 		final Integer number = 8;
 		guineaPig.addTrack(track, number, discName);
 		final TrackSlot expected = new TrackSlotImpl(discName, number, track);
-		assertEquals("Get/add track is not working", expected, guineaPig.getTrack(discName, number));
+
+		assertThat(guineaPig.getTrack(discName, number))
+		.as("Reading a previously added track")
+		.isEqualTo(expected);
 	}
-	
+
 	@Test(expected = IllegalArgumentException.class)
 	public final void testNullTrackAddTrack() {
 		guineaPig.addTrack(null, 2, "disc");
 	}
-	
+
 	@Test(expected = IllegalArgumentException.class)
 	public final void testNullNumberAddTrack() {
 		guineaPig.addTrack(factory.getRandomOriginalTrack(), null, "disc");
 	}
-	
+
 	@Test(expected = IllegalArgumentException.class)
 	public final void testNullDiscAddTrack() {
 		guineaPig.addTrack(factory.getRandomOriginalTrack(), 2, null);
@@ -265,7 +290,7 @@ public class AlbumFieldTest {
 				.stream()
 				.map(TrackSlot::getTrack)
 				.collect(Collectors.toList());
-		assertEquals("Numberless tracks are not being correctly added", tracks, actual);
+		assertThat(actual).as("Numberless tracks are not being correctly added").isEqualTo(tracks);
 	}
 
 	@Test
@@ -280,29 +305,25 @@ public class AlbumFieldTest {
 				.stream()
 				.map(TrackSlot::getTrack)
 				.collect(Collectors.toList());
-		assertEquals("Tracks are not being properly added to last position!", tracks, actual);
+		assertThat(actual).as("Tracks are not being properly added to last position!").isEqualTo(tracks);
 	}
-	
-	@Test(expected = RuntimeException.class)
-	public final void testDiscAmbiguityAddTrackLast() {
-		guineaPig.addTrackLast(factory.getRandomOriginalTrack(), "cd1");
-		guineaPig.addTrackLast(factory.getRandomOriginalTrack(), "cd2");
-		//this should throw an exception, as it is ambiguous to which of
-		//the discs the track is to be added
-		guineaPig.addTrackLast(factory.getRandomOriginalTrack(), "disc");
-	}
-	
+
 	@Test
 	public final void testRelocate() {
 		final Track track = factory.getRandomOriginalTrack();
 		final String previousDiscName = "cd1";
 		final int previousNumber = 1;
-		final int nextNumber = 2;
+		final int nextNumber = previousNumber+1;
 		final String nextDiscName = "cd2";
+		
 		guineaPig.addTrack(track, previousNumber, previousDiscName);
 		guineaPig.relocate(previousDiscName, previousNumber, nextDiscName, nextNumber);
+		
 		final TrackSlot expected = new TrackSlotImpl(nextDiscName, nextNumber, track);
-		assertEquals("Tracks are not being properly relocated", expected, guineaPig.getTrack(nextDiscName, nextNumber));
+		
+		assertThat(guineaPig.getTrack(nextDiscName, nextNumber))
+		.as("Reading a relocated track")
+		.isEqualTo(expected);
 	}
 
 	@Test
@@ -316,11 +337,11 @@ public class AlbumFieldTest {
 		for(Track track : tracksCD2){
 			guineaPig.addTrackLast(track, "cd2");
 		}
-		assertEquals("Track counter should count all the album's tracks!", tracksCD1.size()+tracksCD2.size(), guineaPig.getTracksCount());
+		assertThat(guineaPig.getTracksCount()).as("Track counter should count all the album's tracks!").isEqualTo(tracksCD1.size()+tracksCD2.size());
 	}
-	
+
 	public final void testEmptyTrackCount() {
-		assertEquals("An empty album has always 0 track", 0, guineaPig.getTracksCount());
+		assertThat(guineaPig.getTracksCount()).as("An empty album has always 0 track").isEqualTo(0);
 	}
 
 	@Test
@@ -334,13 +355,13 @@ public class AlbumFieldTest {
 		for(Track track : tracksCD2){
 			guineaPig.addTrackLast(track, "cd2");
 		}
-		assertEquals("Track counter should count all the album's tracks!", tracksCD1.size(), guineaPig.getTracksCount("cd1"));
+		assertThat(guineaPig.getTracksCount("cd1")).as("Track counter should count all the album's tracks!").isEqualTo(tracksCD1.size());
 	}
-	
+
 	@Test(expected = IllegalArgumentException.class)
 	public final void testEmptyTracksCountDisc() {
 		final List<Track> tracks = new ArrayList<>(factory.getRandomSetOfTracks());
-		
+
 		for(Track track : tracks) {
 			guineaPig.addTrackLast(track, "dics1");
 		}
@@ -351,20 +372,22 @@ public class AlbumFieldTest {
 	public final void testReleaseDate() {
 		final LocalDate release = LocalDate.now();
 		guineaPig.setReleaseDate(release);
-		assertEquals("Release date is not being properly assigned!", release, guineaPig.getReleaseDate());
+		assertThat(guineaPig.getReleaseDate()).as("Release date is not being properly assigned!").isEqualTo(release);
 	}
-	
-	
+
+
 	@Test(expected = IllegalArgumentException.class)
 	public final void testNullReleaseDate() {
 		guineaPig.setReleaseDate(null);
 	}
-	
+
 	@Test
 	public final void testDuration() {
 		final Random random = new Random();
 		final Duration totalDuration = Duration.ZERO;
-		assertEquals(Duration.ZERO, guineaPig.getDuration());
+		
+		assumeThat(guineaPig.getDuration(), is(equalTo(Duration.ZERO)));
+		
 		final Set<Track> tracks = factory.getRandomSetOfTracks();
 		for(Track track : tracks) {
 			final Duration randomDuration = Duration.ofMillis(random.nextLong());
@@ -372,47 +395,61 @@ public class AlbumFieldTest {
 			totalDuration.plus(randomDuration);
 			guineaPig.addTrackLast(track, "disc");
 		}
-		assertEquals(totalDuration, guineaPig.getDuration());
+
+		assertThat(guineaPig.getDuration().toJavaUtil())
+		.isNotEmpty()
+		.contains(totalDuration);
 	}
 
 	@Test
 	public final void testAllGenres() {
-		final Set<Genre> genres = Sets.newLinkedHashSet(guineaPig.getGenres());
+		final Collection<Genre> albumGenres = guineaPig.getGenres();
+		final Set<Genre> allTrackGenres = Sets.newLinkedHashSet();
 
 		for(final Track track : factory.getRandomSetOfTracks()){
 			final Set<Genre> trackGenres = factory.getRandomSetOfGenres();
 			track.setGenres(trackGenres);
-			genres.addAll(trackGenres);
+			allTrackGenres.addAll(trackGenres);
 			guineaPig.addTrackLast(track, "disc");
 		}
-		assertEquals("All Genres not properly being extracted!", genres, guineaPig.getAllGenres());
+		
+		final Set<Genre> allGenres = ImmutableSet.<Genre>builder()
+				.addAll(allTrackGenres)
+				.addAll(albumGenres)
+				.build();
+		
+		assertThat(guineaPig.getAllGenres())
+		.as("All Genres should include genres from the album and from tracks")
+		.containsAll(albumGenres)
+		.containsAll(allTrackGenres)
+		.containsExactlyInAnyOrderElementsOf(allGenres);
 	}
 
 	@Test
 	public final void testGenres() {
 		TestUtils.testGenres(factory, guineaPig);
 	}
-	
+
 	@Test
 	public final void testDiscCount() {
 		guineaPig.addTrackLast(factory.getRandomOriginalTrack(), "dics1");
 		guineaPig.addTrackLast(factory.getRandomOriginalTrack(), "dics2");
-		assertEquals("Unexpected number of discs", 2, guineaPig.getDiscCount());
+		assertThat(guineaPig.getDiscCount()).as("Unexpected number of discs").isEqualTo(2);
 	}
-	
+
 	@Test
 	public final void testDiscs() {
 		final Set<String> discs = Sets.newLinkedHashSet(Arrays.asList("disc1", "disc2"));
 		guineaPig.addTrackLast(factory.getRandomOriginalTrack(), "disc1");
 		guineaPig.addTrackLast(factory.getRandomOriginalTrack(), "disc2");
-		assertEquals("Discs do not match", discs, guineaPig.getDiscs());
+		assertThat(guineaPig.getDiscs()).as("Discs do not match").isEqualTo(discs);
 	}
 
 	@Test
 	public final void testType() {
 		guineaPig = factories.getAlbumFactory()
 				.createSingleArtistAlbum("Album", TypeRelease.BESTOF, factory.getRandomSetOfArtists());
-		assertEquals("Type is not being properly assigned!", TypeRelease.BESTOF, guineaPig.getReleaseType());
+		assertThat(guineaPig.getReleaseType()).as("Type is not being properly assigned!").isEqualTo(TypeRelease.BESTOF);
 	}
 
 	@Test
@@ -421,23 +458,40 @@ public class AlbumFieldTest {
 		final String title = "album";
 		final TypeRelease release = TypeRelease.DELUXE;
 		final Set<Artist> artists = factory.getRandomSetOfArtists();
-		assertEquals(albumFactory.createSingleArtistAlbum(title, release, artists),
-				albumFactory.createSingleArtistAlbum(title, release, artists));
-		assertEquals(albumFactory.createSingleArtistAlbum(title, release, artists).hashCode(),
-				albumFactory.createSingleArtistAlbum(title, release, artists).hashCode());
-		assertNotEquals("Artists not matching!", albumFactory.createSingleArtistAlbum(title, release, artists),
-				albumFactory.createSingleArtistAlbum(title, release, factory.getRandomSetOfArtists()));
-		assertNotEquals("Artists not matching!", albumFactory.createSingleArtistAlbum(title, release, artists).hashCode(),
-				albumFactory.createSingleArtistAlbum(title, release, factory.getRandomSetOfArtists()).hashCode());
-		assertNotEquals("Title not matching!", albumFactory.createSingleArtistAlbum(title, release, artists), 
-				albumFactory.createSingleArtistAlbum(StringUtils.reverse(title), release, artists));
-		assertNotEquals("Title not matching!", albumFactory.createSingleArtistAlbum(title, release, artists).hashCode(), 
-				albumFactory.createSingleArtistAlbum(StringUtils.reverse(title), release, artists).hashCode());
-		assertNotEquals("Release not matching!", albumFactory.createSingleArtistAlbum(title, release, artists), 
-				albumFactory.createSingleArtistAlbum(title, TypeRelease.LIMITED, artists));
-		assertNotEquals("Release not matching!", albumFactory.createSingleArtistAlbum(title, release, artists).hashCode(), 
-				albumFactory.createSingleArtistAlbum(title, TypeRelease.LIMITED, artists).hashCode());
+		
+		final Supplier<Album> albumSup = () -> albumFactory
+				.createSingleArtistAlbum(title, release, artists);
+		final Supplier<Album> albumDiffArtistsSup = () -> albumFactory
+				.createSingleArtistAlbum(title, release, factory.getRandomSetOfArtists());
+		final Supplier<Album> albumDiffTitle = () -> albumFactory
+				.createSingleArtistAlbum(StringUtils.reverse(title), release, artists);
+		final Supplier<Album> albumDiffRelease = () -> albumFactory
+				.createSingleArtistAlbum(title, TypeRelease.LIMITED, artists);
+		
+		final Album album = albumSup.get();
+		
+		assertThat(album.hashCode())
+		.isEqualTo(albumSup.get().hashCode());
+		
+		assertThat(album)
+		.isEqualTo(albumSup.get());
+		
+		assertEqualsAndHashCode(albumDiffArtistsSup, album, "artist");
+		assertEqualsAndHashCode(albumDiffTitle, album, "title");
+		assertEqualsAndHashCode(albumDiffRelease, album, "release type");
 	}
+
+	private void assertEqualsAndHashCode(final Supplier<Album> actual, final Album expected,
+			final String fieldName) {
+		
+		assertThat(expected.hashCode())
+		.as("Hash code should take %s into consideration", fieldName)
+		.isNotEqualTo(actual.get().hashCode());
+		
+		assertThat(expected)
+		.as("Equals should take %s into consideration", fieldName)
+		.isNotEqualTo(actual.get());
+	} 
 
 	@Test
 	public final void testCover() throws IOException {
@@ -446,18 +500,18 @@ public class AlbumFieldTest {
 		byte[] actual = new byte[cover.length];
 		guineaPig.setCover(cover);
 		guineaPig.getCover().toInput().read(actual);
-		assertArrayEquals("Cover not being properly set!", cover, actual);
+		assertThat(actual).as("Cover not being properly set!").isEqualTo(cover);
 	}
-	
+
 	@Test
 	public final void testCompareTo() {
 		final AlbumFactory factory = factories.getAlbumFactory();
 		testCompareTo(AlbumFieldTest.factory.getRandomAlbum());
 		testCompareTo(factory.createVAAlbum("someRandomTitle", TypeRelease.BESTOF));
 	}
-	
+
 	private void testCompareTo(Album album) {
-		assertEquals(guineaPig.getTitle().compareTo(album.getTitle()), guineaPig.compareTo(album));
+		assertThat(guineaPig.compareTo(album)).isEqualTo(guineaPig.getTitle().compareTo(album.getTitle()));
 	}
 
 }

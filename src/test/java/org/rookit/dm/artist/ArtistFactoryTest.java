@@ -21,12 +21,13 @@
  ******************************************************************************/
 package org.rookit.dm.artist;
 
-import static org.junit.Assert.*;
+import static org.assertj.core.api.Assertions.*;
 
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.commons.lang3.StringUtils;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.rookit.api.dm.artist.Artist;
@@ -54,37 +55,41 @@ public class ArtistFactoryTest {
 
 	@Test
 	public void testCreateFeatArtists() {
-		Set<Artist> artists = factory.getRandomSetOfArtists();
+		List<Artist> artists = Lists.newArrayList(factory.getRandomSetOfArtists());
 		Set<Artist> feats = new LinkedHashSet<>();
 		Set<Artist> album = new LinkedHashSet<>();
 		
 		for(int i=0; i< artists.size(); i++){
 			if(i < artists.size()/2){
-				feats.add(Lists.newArrayList(artists).get(i));
+				feats.add(artists.get(i));
 			}
 			else{
-				album.add(Lists.newArrayList(artists).get(i));
+				album.add(artists.get(i));
 			}
 		}
 		
-		assertEquals("Feats should be: " + feats.toString(), feats, 
-				guineaPig.createFeatArtists(PrintUtils.getIterableAsString(artists, TypeFormat.TAG), 
-						PrintUtils.getIterableAsString(album, TypeFormat.TAG)));
+		final String artistTag = PrintUtils.getIterableAsString(artists, TypeFormat.TAG);
+		final String albumArtistTag = PrintUtils.getIterableAsString(album, TypeFormat.TAG);
+		assertThat(guineaPig.createFeatArtists(artistTag, albumArtistTag))
+		.isEqualTo(feats);
 	}
 	
 	@Test
 	public void testCreateFeatArtistsNone(){
 		String artistTag = PrintUtils.getIterableAsString(factory.getRandomSetOfArtists(), TypeFormat.TAG);
 		
-		assertTrue("There should be no feat artists", guineaPig.createFeatArtists(artistTag, artistTag).isEmpty());
+		assertThat(guineaPig.createFeatArtists(artistTag, artistTag).isEmpty()).as("There should be no feat artists").isTrue();
 	}
 	
 	@Test
 	public void testCreateFeatArtistsAll(){
 		Set<Artist> artists = factory.getRandomSetOfArtists();
 		
-		assertEquals("All artists should be featuring.", artists,
-				guineaPig.createFeatArtists(PrintUtils.getIterableAsString(artists, TypeFormat.TAG), ""));
+		final String aritstTag = PrintUtils.getIterableAsString(artists, TypeFormat.TAG);
+		final String albumArtistsTag = StringUtils.EMPTY;
+		
+		assertThat(guineaPig.createFeatArtists(aritstTag, albumArtistsTag))
+		.isEqualTo(artists);
 	}
 	
 	@Test
@@ -98,8 +103,8 @@ public class ArtistFactoryTest {
 		}
 		actual = Lists.newArrayList(guineaPig.createArtists(artistNames));
 		
-		assertTrue("Empty array as parameter should return an empty set", guineaPig.createArtists(new String[]{}).isEmpty());
-		assertEquals("Method should be able to reverse engineer the to array method.", artists, actual);
+		assertThat(guineaPig.createArtists(new String[]{}).isEmpty()).as("Empty array as parameter should return an empty set").isTrue();
+		assertThat(actual).as("Method should be able to reverse engineer the to array method.").isEqualTo(artists);
 	}
 	
 	@Test
@@ -107,7 +112,7 @@ public class ArtistFactoryTest {
 		final Set<Artist> expected = factory.getRandomSetOfArtists();
 		final Set<Artist> actual = guineaPig.getArtistsFromFormat(PrintUtils.getIterableAsString(expected, TypeFormat.TITLE));
 		
-		assertEquals(expected, actual);
+		assertThat(actual).isEqualTo(expected);
 	}
 	
 	

@@ -43,6 +43,7 @@ import org.rookit.api.dm.album.TrackSlot;
 import org.rookit.api.dm.album.TypeAlbum;
 import org.rookit.api.dm.album.TypeRelease;
 import org.rookit.api.dm.artist.Artist;
+import org.rookit.api.dm.genre.Genre;
 import org.rookit.api.dm.play.StaticPlaylist;
 import org.rookit.api.dm.track.Track;
 import org.rookit.api.storage.DBManager;
@@ -159,6 +160,11 @@ public abstract class AbstractAlbum extends AbstractGenreable implements Album {
 		VALIDATOR.checkArgumentNonEmptyCollection(artists, "Albums cannot have an empty artist set");
 		this.artists = artists;
 		return VoidUtils.returnVoid();
+	}
+	
+	@Override
+	public Collection<Genre> getAllGenres() {
+		return Album.super.getAllGenres();
 	}
 
 	@Override
