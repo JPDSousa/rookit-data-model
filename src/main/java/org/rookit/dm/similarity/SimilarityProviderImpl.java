@@ -19,14 +19,17 @@ import org.rookit.dm.track.similarity.TrackComparator;
 import org.rookit.dm.utils.DataModelValidator;
 
 import com.google.common.collect.Maps;
+import com.google.inject.Inject;
 
-class SimilarityProviderImpl implements SimilarityProvider {
+@SuppressWarnings("javadoc")
+public class SimilarityProviderImpl implements SimilarityProvider {
 
 	private static final DataModelValidator VALIDATOR = DataModelValidator.getDefault();
 	
 	private Map<Class<?>, Similarity<?>> similarities;
 	
-	SimilarityProviderImpl() {
+	@Inject
+	private SimilarityProviderImpl() {
 		similarities = LazyMap.lazyMap(Maps.newHashMap(), input -> {
 			if(Track.class.isAssignableFrom(input)) {
 				return new TrackComparator();
