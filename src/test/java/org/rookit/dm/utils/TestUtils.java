@@ -40,9 +40,7 @@ import com.google.inject.Injector;
 @SuppressWarnings("javadoc")
 public final class TestUtils {
 	
-	private static final Injector INJECTOR = Guice.createInjector(
-			DMTestFactory.getModule(),
-			new DMFactoriesModule());
+	private static final Injector INJECTOR = Guice.createInjector(new DMFactoriesModule());
 	
 	public static final Injector getInjector() {
 		return INJECTOR;

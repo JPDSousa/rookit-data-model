@@ -34,6 +34,7 @@ import org.rookit.api.dm.artist.Artist;
 import org.rookit.api.dm.artist.factory.ArtistFactory;
 import org.rookit.dm.test.DMTestFactory;
 import org.rookit.dm.utils.TestUtils;
+import org.rookit.test.AbstractTest;
 import org.rookit.utils.print.PrintUtils;
 import org.rookit.utils.print.TypeFormat;
 
@@ -41,16 +42,15 @@ import com.google.common.collect.Lists;
 import com.google.inject.Injector;
 
 @SuppressWarnings("javadoc")
-public class ArtistFactoryTest {
+public class ArtistFactoryTest extends AbstractTest<ArtistFactory> {
 
 	private static DMTestFactory factory;
-	private static ArtistFactory guineaPig;
+	private static Injector injector;
 	
 	@BeforeClass
 	public static void setup() {
-		final Injector injector = TestUtils.getInjector();
+		injector = TestUtils.getInjector();
 		factory = injector.getInstance(DMTestFactory.class);
-		guineaPig = injector.getInstance(ArtistFactory.class);
 	}
 
 	@Test
@@ -113,6 +113,11 @@ public class ArtistFactoryTest {
 		final Set<Artist> actual = guineaPig.getArtistsFromFormat(PrintUtils.getIterableAsString(expected, TypeFormat.TITLE));
 		
 		assertThat(actual).isEqualTo(expected);
+	}
+
+	@Override
+	protected ArtistFactory createGuineaPig() {
+		return injector.getInstance(ArtistFactory.class);
 	}
 	
 	

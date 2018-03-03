@@ -32,16 +32,15 @@ import org.mongodb.morphia.annotations.Property;
 import org.mongodb.morphia.annotations.Reference;
 import org.rookit.api.bistream.BiStream;
 import org.rookit.api.dm.artist.Artist;
-import org.rookit.api.dm.play.StaticPlaylist;
 import org.rookit.api.dm.track.Track;
 import org.rookit.api.dm.track.TrackTitle;
 import org.rookit.api.dm.track.TypeTrack;
 import org.rookit.api.dm.track.TypeVersion;
 import org.rookit.api.dm.track.VersionTrack;
-import org.rookit.api.storage.DBManager;
 import org.rookit.utils.print.PrintUtils;
 import org.rookit.utils.print.TypeFormat;
 
+import com.google.common.base.Optional;
 import com.google.common.collect.Sets;
 
 @Entity("Track")
@@ -125,8 +124,8 @@ public final class VersionTrackImpl extends AbstractTrack implements VersionTrac
 	}
 
 	@Override
-	public VersionTrack getAsVersionTrack() {
-		return this;
+	public Optional<VersionTrack> getAsVersionTrack() {
+		return Optional.of(this);
 	}
 
 	@Override

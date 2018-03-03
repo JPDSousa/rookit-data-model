@@ -12,11 +12,16 @@ import org.rookit.api.storage.DBManager;
 import org.rookit.api.storage.queries.TrackQuery;
 import org.rookit.api.storage.utils.Order;
 import org.rookit.api.storage.utils.Order.TypeOrder;
+import org.rookit.utils.VoidUtils;
+
+import com.google.common.base.Optional;
 
 @SuppressWarnings("javadoc")
 @Entity("Playlist")
 public class DynamicPlaylistImpl extends AbstractPlaylist implements DynamicPlaylist {
 
+	private static final short UNINITIALIZED = -1;
+	
 	private Boolean onlyPlayable;
 	
 	// Audio features
@@ -48,171 +53,163 @@ public class DynamicPlaylistImpl extends AbstractPlaylist implements DynamicPlay
 		this(null, null);
 	}
 
-	public DynamicPlaylistImpl(String name, BiStream picture) {
+	public DynamicPlaylistImpl(final String name, final BiStream picture) {
 		super(TypePlaylist.DYNAMIC, name, picture);
-		bpm = -1;
+		bpm = UNINITIALIZED;
 		bpmGap = 10;
-		danceability = -1;
+		
+		danceability = UNINITIALIZED;
 		danceabilityGap = 0.2f;
-		energy = -1;
-		energyGap = 0.1f;
-		valence = -1;
-		valenceGap = 0.1f;
+		
+		energy = UNINITIALIZED;
+		energyGap = 0.2f;
+		
+		valence = UNINITIALIZED;
+		valenceGap = 0.2f;
 	}
 
 	@Override
-	public short getBPM() {
-		return bpm;
+	public Optional<Short> getBPM() {
+		return bpm != UNINITIALIZED ? Optional.of(bpm) 
+				: Optional.absent();
 	}
 
 	@Override
-	public Void setBPM(short bpm) {
+	public Void setBPM(final short bpm) {
+		VALIDATOR.checkArgumentBetween(bpm, RANGE_BPM, "bpm");
 		this.bpm = bpm;
-		return null;
+		return VoidUtils.returnVoid();
 	}
 
 	@Override
-	public TrackKey getTrackKey() {
-		return trackKey;
+	public Optional<TrackKey> getTrackKey() {
+		return Optional.fromNullable(this.trackKey);
 	}
 
 	@Override
-	public Void setTrackKey(TrackKey trackKey) {
+	public Void setTrackKey(final TrackKey trackKey) {
+		VALIDATOR.checkArgumentNotNull(trackKey, "track key cannot be null");
 		this.trackKey = trackKey;
-		return null;
+		return VoidUtils.returnVoid();
 	}
 
 	@Override
-	public TrackMode getTrackMode() {
-		return trackMode;
+	public Optional<TrackMode> getTrackMode() {
+		return Optional.fromNullable(this.trackMode);
 	}
 
 	@Override
-	public Void setTrackMode(TrackMode trackMode) {
+	public Void setTrackMode(final TrackMode trackMode) {
 		this.trackMode = trackMode;
-		return null;
+		return VoidUtils.returnVoid();
 	}
 
 	@Override
-	public Boolean isInstrumental() {
-		return isInstrumental;
+	public Optional<Boolean> isInstrumental() {
+		return Optional.fromNullable(this.isInstrumental);
 	}
 
 	@Override
-	public Void setInstrumental(Boolean isInstrumental) {
+	public Void setInstrumental(final boolean isInstrumental) {
 		this.isInstrumental = isInstrumental;
-		return null;
+		return VoidUtils.returnVoid();
 	}
 
 	@Override
-	public Boolean isLive() {
-		return isLive;
+	public Optional<Boolean> isLive() {
+		return Optional.fromNullable(this.isLive);
 	}
 
 	@Override
-	public Void setLive(Boolean isLive) {
+	public Void setLive(final boolean isLive) {
 		this.isLive = isLive;
-		return null;
+		return VoidUtils.returnVoid();
 	}
 
 	@Override
-	public Boolean isAcoustic() {
-		return isAcoustic;
+	public Optional<Boolean> isAcoustic() {
+		return Optional.fromNullable(this.isAcoustic);
 	}
 
 	@Override
-	public Void setAcoustic(Boolean isAcoustic) {
+	public Void setAcoustic(final boolean isAcoustic) {
 		this.isAcoustic = isAcoustic;
-		return null;
+		return VoidUtils.returnVoid();
 	}
 
 	@Override
-	public double getDanceability() {
-		return danceability;
+	public Optional<Double> getDanceability() {
+		return this.danceability != UNINITIALIZED ? Optional.of(this.danceability)
+				: Optional.absent();
 	}
 
 	@Override
-	public Void setDanceability(double danceability) {
+	public Void setDanceability(final double danceability) {
 		this.danceability = danceability;
-		return null;
+		return VoidUtils.returnVoid();
 	}
 
 	@Override
-	public double getEnergy() {
-		return energy;
+	public Optional<Double> getEnergy() {
+		return this.energy != UNINITIALIZED ? Optional.of(this.energy)
+				: Optional.absent();
 	}
 
 	@Override
-	public Void setEnergy(double energy) {
+	public Void setEnergy(final double energy) {
 		this.energy = energy;
-		return null;
+		return VoidUtils.returnVoid();
 	}
 
 	@Override
-	public double getValence() {
-		return valence;
+	public Optional<Double> getValence() {
+		return this.valence != UNINITIALIZED ? Optional.of(this.valence)
+				: Optional.absent();
 	}
 
 	@Override
-	public Void setValence(double valence) {
+	public Void setValence(final double valence) {
 		this.valence = valence;
-		return null;
+		return VoidUtils.returnVoid();
 	}
 
-	private void setValence(TrackQuery query) {
-		if(valence > 0) {
-			query.withValence(valence-(valenceGap/2), 
-					valence+(valenceGap/2));
-		}
+	private void setValence(final TrackQuery query) {
+		getValence()
+		.transform(valence -> query.withValence(valence-(valenceGap/2), valence+(valenceGap/2)));
 	}
 
-	private void setDanceability(TrackQuery query) {
-		if(danceability > 0) {
-			query.withDanceability(danceability-(danceabilityGap/2), 
-					danceability+(danceabilityGap/2));
-		}
+	private void setDanceability(final TrackQuery query) {
+		getDanceability()
+		.transform(danceability -> query.withDanceability(danceability-(danceabilityGap/2), danceability+(danceabilityGap/2)));
 	}
 
-	private void setEnergy(TrackQuery query) {
-		if(energy > 0) {
-			query.withEnergy(energy-(energyGap/2), energy+(energyGap/2));
-		}
+	private void setEnergy(final TrackQuery query) {
+		getEnergy()
+		.transform(energy -> query.withEnergy(energy-(energyGap/2), energy+(energyGap/2)));
 	}
 
-	private void setAcoustic(TrackQuery query) {
-		if(isAcoustic != null) {
-			query.withAcoustic(isAcoustic);
-		}
+	private void setAcoustic(final TrackQuery query) {
+		isAcoustic().transform(query::withAcoustic);
 	}
 
-	private void setLive(TrackQuery query) {
-		if(isLive != null) {
-			query.withLive(isLive);
-		}
+	private void setLive(final TrackQuery query) {
+		isLive().transform(query::withLive);
 	}
 
-	private void setInstrumental(TrackQuery query) {
-		if(isInstrumental != null) {
-			query.withInstrumental(isInstrumental);
-		}
+	private void setInstrumental(final TrackQuery query) {
+		isInstrumental().transform(query::withInstrumental);
 	}
 
-	private void setTrackMode(TrackQuery query) {
-		if(trackMode != null) {
-			query.withTrackMode(trackMode);
-		}
+	private void setTrackMode(final TrackQuery query) {
+		getTrackMode().transform(query::withTrackMode);
 	}
 
-	private void setTrackKey(TrackQuery query) {
-		if(trackKey != null) {
-			query.withTrackKey(trackKey);
-		}
+	private void setTrackKey(final TrackQuery query) {
+		getTrackKey().transform(query::withTrackKey);
 	}
 
-	private void setBpm(TrackQuery query) {
-		if(bpm > 0) {
-			query.withBPM((short) (bpm-(bpmGap/2)), (short) (bpm+(bpmGap/2)));
-		}
+	private void setBpm(final TrackQuery query) {
+		getBPM().transform(bpm -> query.withBPM((short) (bpm-(bpmGap/2)), (short) (bpm+(bpmGap/2))));
 	}
 
 	@Override
@@ -249,16 +246,19 @@ public class DynamicPlaylistImpl extends AbstractPlaylist implements DynamicPlay
 		return query.order(order);
 	}
 
-	private void setOnlyPlayable(TrackQuery query) {
-		if (onlyPlayable != null) {
-			query.withPath(onlyPlayable);
-		}
+	private void setOnlyPlayable(final TrackQuery query) {
+		isOnlyPlayable().transform(query::withPath);
 	}
 
 	@Override
-	public Void setOnlyPlayable(Boolean onlyPlayable) {
+	public Void setOnlyPlayable(final boolean onlyPlayable) {
 		this.onlyPlayable = onlyPlayable;
-		return null;
+		return VoidUtils.returnVoid();
+	}
+	
+	@Override
+	public Optional<Boolean> isOnlyPlayable() {
+		return Optional.fromNullable(this.onlyPlayable);
 	}
 
 }

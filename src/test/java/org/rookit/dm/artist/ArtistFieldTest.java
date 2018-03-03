@@ -29,7 +29,6 @@ import java.io.IOException;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.rookit.api.dm.artist.Artist;
@@ -38,28 +37,22 @@ import org.rookit.api.dm.artist.factory.ArtistFactory;
 import org.rookit.api.dm.factory.RookitFactories;
 import org.rookit.dm.test.DMTestFactory;
 import org.rookit.dm.utils.TestUtils;
+import org.rookit.test.AbstractTest;
 
 import com.google.common.collect.Sets;
 import com.google.inject.Injector;
 
 @SuppressWarnings("javadoc")
-public class ArtistFieldTest {
+public class ArtistFieldTest extends AbstractTest<Artist> {
 
 	private static DMTestFactory factory;
 	private static RookitFactories factories;
-	
-	private Artist guineaPig;
 	
 	@BeforeClass
 	public static final void setUpBeforeClass() {
 		final Injector injector = TestUtils.getInjector();
 		factory = injector.getInstance(DMTestFactory.class);
 		factories = injector.getInstance(RookitFactories.class);
-	}
-	
-	@Before
-	public void intializeTest(){
-		guineaPig = factory.getRandomArtist();
 	}
 
 	@Test(expected = IllegalArgumentException.class)
@@ -187,6 +180,11 @@ public class ArtistFieldTest {
 	
 	private void testCompareTo(Artist artist) {
 		assertThat(guineaPig.compareTo(artist)).isEqualTo(guineaPig.getName().compareTo(artist.getName()));
+	}
+
+	@Override
+	protected Artist createGuineaPig() {
+		return factory.getRandomArtist();
 	}
 
 }

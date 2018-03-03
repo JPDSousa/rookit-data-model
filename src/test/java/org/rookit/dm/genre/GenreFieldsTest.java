@@ -23,7 +23,6 @@ package org.rookit.dm.genre;
 
 import static org.assertj.core.api.Assertions.*;
 
-import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.rookit.api.dm.factory.RookitFactories;
@@ -31,27 +30,21 @@ import org.rookit.api.dm.genre.Genre;
 import org.rookit.api.dm.genre.factory.GenreFactory;
 import org.rookit.dm.test.DMTestFactory;
 import org.rookit.dm.utils.TestUtils;
+import org.rookit.test.AbstractTest;
 
 import com.google.inject.Injector;
 
 @SuppressWarnings("javadoc")
-public class GenreFieldsTest {
+public class GenreFieldsTest extends AbstractTest<Genre> {
 	
 	private static DMTestFactory factory;
 	private static RookitFactories factories;
-	
-	private Genre guineaPig;
 	
 	@BeforeClass
 	public static final void setUpBeforeClass() {
 		final Injector injector = TestUtils.getInjector();
 		factory = injector.getInstance(DMTestFactory.class);
 		factories = injector.getInstance(RookitFactories.class);
-	}
-	
-	@Before
-	public void initializeTest(){
-		guineaPig = factory.getRandomGenre();
 	}
 	
 	@Test
@@ -100,6 +93,11 @@ public class GenreFieldsTest {
 	
 	private void testCompareTo(Genre genre) {
 		assertThat(guineaPig.compareTo(genre)).isEqualTo(guineaPig.getName().compareTo(genre.getName()));
+	}
+
+	@Override
+	protected Genre createGuineaPig() {
+		return factory.getRandomGenre();
 	}
 
 }

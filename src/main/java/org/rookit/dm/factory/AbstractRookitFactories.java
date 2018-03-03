@@ -34,8 +34,7 @@ public abstract class AbstractRookitFactories implements RookitFactories {
 			return (RookitFactory<T>) getGenreFactory();
 		}
 		
-		VALIDATOR.invalidOperation("Cannot create a factory for: " + clazz);
-		return null;
+		return VALIDATOR.invalidOperation("Cannot create a factory for: " + clazz);
 	}
 
 }

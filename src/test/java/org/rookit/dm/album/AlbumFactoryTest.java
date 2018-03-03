@@ -34,6 +34,7 @@ import org.rookit.api.dm.album.TypeRelease;
 import org.rookit.api.dm.artist.Artist;
 import org.rookit.dm.test.DMTestFactory;
 import org.rookit.dm.utils.TestUtils;
+import org.rookit.test.AbstractTest;
 import org.rookit.utils.print.PrintUtils;
 import org.rookit.utils.print.TypeFormat;
 
@@ -41,15 +42,14 @@ import com.google.common.collect.Sets;
 import com.google.inject.Injector;
 
 @SuppressWarnings("javadoc")
-public class AlbumFactoryTest {
+public class AlbumFactoryTest extends AbstractTest<AlbumFactory>  {
 
-	private static AlbumFactory guineaPig;
 	private static DMTestFactory factory;
+	private static Injector injector;
 	
 	@BeforeClass
 	public static final void setupBeforeClass() {
-		final Injector injector = TestUtils.getInjector();
-		guineaPig = injector.getInstance(AlbumFactory.class);
+		injector = TestUtils.getInjector();
 		factory = injector.getInstance(DMTestFactory.class);
 	}
 	
@@ -77,7 +77,6 @@ public class AlbumFactoryTest {
 			.isEqualTo(release.getFormattedName(albumTitle));
 		}
 	}
-
 
 	@Test(expected = IllegalArgumentException.class)
 	public void testCreateSingleArtistAlbumEmptyAlbumTitle(){
@@ -146,6 +145,11 @@ public class AlbumFactoryTest {
 		assertThat(album.getTitle()).as("Unexpected album title").isEqualTo(title);
 		assertThat(album.getAlbumType()).as("Unexpeted album type").isEqualTo(TypeAlbum.VA);
 		assertThat(album.getReleaseType()).as("Unexpected album release type").isEqualTo(release);
+	}
+
+	@Override
+	protected AlbumFactory createGuineaPig() {
+		return injector.getInstance(AlbumFactory.class);
 	}
 	
 }

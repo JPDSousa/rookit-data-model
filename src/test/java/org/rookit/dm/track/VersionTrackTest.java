@@ -27,7 +27,6 @@ import java.util.Set;
 
 import org.apache.commons.collections4.IterableUtils;
 import org.bson.types.ObjectId;
-import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.rookit.api.dm.artist.Artist;
@@ -39,16 +38,16 @@ import org.rookit.api.dm.track.VersionTrack;
 import org.rookit.api.dm.track.factory.TrackFactory;
 import org.rookit.dm.test.DMTestFactory;
 import org.rookit.dm.utils.TestUtils;
+import org.rookit.test.AbstractTest;
 
 import com.google.inject.Injector;
 
 @SuppressWarnings("javadoc")
-public class VersionTrackTest {
+public class VersionTrackTest extends AbstractTest<VersionTrack> {
 
 	private static TrackFactory trackFactory;
 	private static DMTestFactory factory;
 	
-	private VersionTrack guineaPig;
 	private Track original;
 	private TypeVersion version;
 	
@@ -57,13 +56,6 @@ public class VersionTrackTest {
 		final Injector injector = TestUtils.getInjector();
 		trackFactory = injector.getInstance(TrackFactory.class);
 		factory = injector.getInstance(DMTestFactory.class);
-	}
-
-	@Before
-	public void createTrack() {
-		version = factory.getRandomVersionType();
-		original = factory.getRandomOriginalTrack();
-		guineaPig = trackFactory.createVersionTrack(version, original);
 	}
 	
 	@Test
@@ -156,7 +148,10 @@ public class VersionTrackTest {
 	
 	@Test
 	public final void testVersionTrack() {
-		assertThat(guineaPig.getAsVersionTrack()).isEqualTo(guineaPig);
+		assertThat(guineaPig.getAsVersionTrack().toJavaUtil())
+		.isNotEmpty()
+		.get()
+		.isEqualTo(guineaPig);
 	}
 	
 	@Test
@@ -196,5 +191,12 @@ public class VersionTrackTest {
 			}
 		}
 		return null;
+	}
+
+	@Override
+	protected VersionTrack createGuineaPig() {
+		version = factory.getRandomVersionType();
+		original = factory.getRandomOriginalTrack();
+		return trackFactory.createVersionTrack(version, original);
 	}
 }

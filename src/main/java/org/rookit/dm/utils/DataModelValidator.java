@@ -24,24 +24,35 @@ package org.rookit.dm.utils;
 import java.util.Collection;
 
 import org.apache.commons.collections4.CollectionUtils;
-import org.apache.logging.log4j.Logger;
 import org.rookit.api.dm.artist.Artist;
+import org.rookit.dm.AbstractRookitModel;
 import org.rookit.dm.album.AbstractAlbum.Disc;
-import org.rookit.utils.log.Errors;
-import org.rookit.utils.log.Logs;
+import org.rookit.utils.log.AbstractLogCategory;
+import org.rookit.utils.log.LogManager;
 import org.rookit.utils.log.Validator;
 
 @SuppressWarnings("javadoc")
 public class DataModelValidator extends Validator {
 	
-	private static final DataModelValidator SINGLETON = new DataModelValidator(Logs.DM.getLogger());
+	private static final DataModelValidator SINGLETON = new DataModelValidator();
 	
 	public static DataModelValidator getDefault() {
 		return SINGLETON;
 	}
 
-	private DataModelValidator(Logger logger) {
-		super(logger);
+	private DataModelValidator() {
+		super(LogManager.create(new AbstractLogCategory() {
+			
+			@Override
+			public Package getPackage() {
+				return AbstractRookitModel.class.getPackage();
+			}
+			
+			@Override
+			public String getName() {
+				return "RookitDataModel";
+			}
+		}));
 	}
 	
 	/**
@@ -56,27 +67,23 @@ public class DataModelValidator extends Validator {
 	 * @param discName disc name that is being accessed
 	 * @param albumTitle album title
 	 */
-	public void checkDiscNotNull(Disc disc, String discName, String albumTitle) {
-		checkArgumentNotNull(disc, "The disc " + discName + " was not found in album " + albumTitle);
+	public <T> T checkDiscNotNull(final Disc disc, final String discName, final String albumTitle) {
+		return checkArgumentNotNull(disc, "The disc " + discName + " was not found in album " + albumTitle);
 	}
 	
-	public void checkNotIntersecting(Iterable<Artist> source, Iterable<Artist> target, String targetName) {
+	public <T> T checkNotIntersecting(final Iterable<Artist> source, final Iterable<Artist> target, final String targetName) {
 		checkArgumentNotNull(source, "The artist set cannot be null");
 		final Collection<Artist> intersection = CollectionUtils.intersection(source, target);
-		checkArgumentEmptyCollection(intersection, "Artists " + intersection.toString() + " are already defined as " + targetName);
-	}
-	
-	public void handleException(RuntimeException e) {
-		Errors.handleException(e, Logs.CORE);
+		
+		return checkArgumentEmptyCollection(intersection, "Artists " + intersection.toString() + " are already defined as " + targetName);
 	}
 
-	public void checkSumIs(Collection<Float> values, int i) {
+	public <T> T checkSumIs(final Collection<Float> values, final int i) {
 		final double sum = values.stream()
 				.mapToDouble(Float::doubleValue)
 				.sum();
-		if(sum != i) {
-			handleException(new IllegalArgumentException("The sum of all values must be " + i));
-		}
+		
+		return checkArgument(sum != i, "The sum of all values must be " + i);
 	}
 
 }

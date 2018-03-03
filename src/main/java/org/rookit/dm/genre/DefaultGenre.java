@@ -69,8 +69,8 @@ class DefaultGenre extends AbstractPlayable implements Genre {
 	}
 
 	@Override
-	public Void setDescription(String description) {
-		VALIDATOR.checkArgumentStringNotEmpty(description, "Description cannot be empty");
+	public Void setDescription(final String description) {
+		VALIDATOR.checkArgumentStringNotEmpty(description, "Description cannot be empty or null");
 		this.description = description;
 		return null;
 	}

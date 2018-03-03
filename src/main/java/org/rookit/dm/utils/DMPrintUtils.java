@@ -77,7 +77,7 @@ public final class DMPrintUtils {
 		builder.tab().append("Type: ").append(track.getType()).breakLine();
 		if(track.isVersionTrack()) {
 			builder.tab().append("Extras: ");
-			for(Artist artist : track.getAsVersionTrack().getVersionArtists()){
+			for(Artist artist : track.getAsVersionTrack().get().getVersionArtists()){
 				builder.tab(2).append(artist.toString()).breakLine();
 			}
 		}
@@ -96,11 +96,11 @@ public final class DMPrintUtils {
 		.appendIf(!Iterables.isEmpty(track.getFeatures()), "Features: " + getIterableAsString(track.getFeatures(), TypeFormat.TAG) + "\n")
 		.appendIf(!Iterables.isEmpty(track.getProducers()), "Producers: " + getIterableAsString(track.getProducers(), TypeFormat.TAG) + "\n")
 		.appendIf(!Iterables.isEmpty(track.getGenres()), "Genres: " + getIterableAsString(track.getGenres(), TypeFormat.TAG) + "\n")
-		.appendIf(!track.getHiddenTrack().isEmpty(), "HiddenTrack: " + track.getHiddenTrack() + "\n")
+		.appendIf(!track.getHiddenTrack().isPresent(), "HiddenTrack: " + track.getHiddenTrack().get() + "\n")
 		.append("Plays: ").append(track.getPlays()).breakLine()
 		.append("Duration: ").append(duration(track.getDuration().or(Duration.ZERO))).breakLine();
 		if(track.isVersionTrack()) {
-			final VersionTrack versionTrack = track.getAsVersionTrack();
+			final VersionTrack versionTrack = track.getAsVersionTrack().get();
 			builder.append("Version Type: ").append(versionTrack.getVersionType()).breakLine()
 			.append("Version Artists: ").append(getIterableAsString(versionTrack.getVersionArtists(), TypeFormat.TAG)).breakLine();
 		}

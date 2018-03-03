@@ -47,7 +47,7 @@ class GroupArtistImpl extends AbstractArtist implements GroupArtist {
 		this(null, null);
 	}
 	
-	GroupArtistImpl(String artistName, BiStream picture) {
+	GroupArtistImpl(final String artistName, final BiStream picture) {
 		super(TypeArtist.GROUP, artistName, picture);
 		groupType = TypeGroup.DEFAULT;
 		members = Sets.newLinkedHashSet();
@@ -59,13 +59,13 @@ class GroupArtistImpl extends AbstractArtist implements GroupArtist {
 	}
 
 	@Override
-	public void setMembers(Iterable<Musician> members) {
+	public void setMembers(final Iterable<Musician> members) {
 		VALIDATOR.checkArgumentNotNull(members, "Cannot set a null set of members");
 		this.members = Sets.newLinkedHashSet(members);
 	}
 
 	@Override
-	public void addMember(Musician member) {
+	public void addMember(final Musician member) {
 		VALIDATOR.checkArgumentNotNull(member, "Cannot add a null member");
 		members.add(member);
 	}
@@ -76,7 +76,7 @@ class GroupArtistImpl extends AbstractArtist implements GroupArtist {
 	}
 
 	@Override
-	public void setGroupType(TypeGroup groupType) {
+	public void setGroupType(final TypeGroup groupType) {
 		VALIDATOR.checkArgumentNotNull(groupType, "Cannot set a null group type");
 		this.groupType = groupType;
 	}

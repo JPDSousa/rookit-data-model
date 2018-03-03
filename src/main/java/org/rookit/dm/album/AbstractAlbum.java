@@ -249,11 +249,7 @@ public abstract class AbstractAlbum extends AbstractGenreable implements Album {
 		VALIDATOR.checkArgumentNotNull(newNumber, "Must specify a non-null track number to relocate");
 		final Disc oldDisc = getDisc(discName, false);
 		final Track track = oldDisc.remove(number);
-		if(track == null) {
-			final String errorMsg = "there is no track in [" + discName 
-					+ "|"+number + "] to relocate";
-			VALIDATOR.handleException(new RuntimeException(errorMsg));
-		}
+		VALIDATOR.checkState(track != null, "there is no track in [" + discName + "|" + number + "] to relocate");
 		final Disc newDisc = getDisc(newDiscName, true);
 		newDisc.add(track, newNumber);
 	}
@@ -410,10 +406,7 @@ public abstract class AbstractAlbum extends AbstractGenreable implements Album {
 		}
 
 		private void add(final Track track, final Integer number) {
-			if(tracks.containsKey(number)) {
-				final String errorMsg = number + " already contains a track";
-				VALIDATOR.handleException(new RuntimeException(errorMsg));
-			}
+			VALIDATOR.checkArgument(!tracks.containsKey(number), number + " already contains a track");
 			tracks.put(number, track);
 		}
 

@@ -37,6 +37,7 @@ import org.rookit.api.dm.track.TrackTitle;
 import org.rookit.api.dm.track.TypeTrack;
 import org.rookit.api.dm.track.VersionTrack;
 
+import com.google.common.base.Optional;
 import com.google.common.collect.Sets;
 import java.util.Objects;
 import javax.annotation.Generated;
@@ -97,9 +98,8 @@ public final class OriginalTrackImpl extends AbstractTrack implements Track {
 	}
 
 	@Override
-	public VersionTrack getAsVersionTrack() {
-		VALIDATOR.invalidOperation(getFullTitle() + " is not a version track");
-		return null;
+	public Optional<VersionTrack> getAsVersionTrack() {
+		return Optional.absent();
 	}
 
 	@Override
@@ -109,7 +109,10 @@ public final class OriginalTrackImpl extends AbstractTrack implements Track {
 	
 	@Override
 	public TrackTitle getTitle() {
-		return new TrackTitle(title).appendHiddenTrack(getHiddenTrack());
+		final TrackTitle titleOnly = new TrackTitle(title);
+		return getHiddenTrack()
+				.transform(titleOnly::appendHiddenTrack)
+				.or(titleOnly);
 	}
 
 	@Override

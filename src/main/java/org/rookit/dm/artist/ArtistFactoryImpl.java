@@ -94,8 +94,7 @@ public class ArtistFactoryImpl extends AbstractRookitFactory<Artist> implements 
 		case MUSICIAN:
 			return new MusicianImpl(artistName, picture);
 		default:
-			VALIDATOR.handleException(new IllegalArgumentException(errMsg));
-			return null;
+			return VALIDATOR.checkArgument(false, errMsg);
 		}
 	}
 	

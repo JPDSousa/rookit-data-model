@@ -21,7 +21,7 @@ public abstract class AbstractSimilarity<T extends MetadataHolder> implements Si
 	protected final DataModelValidator validator;
 	protected final Map<String, Float> percentages;
 	private final LevenshteinDistance distance;
-	protected final int threshold;
+	public final int threshold;
 	
 	protected AbstractSimilarity(Map<String, Float> percentages) {
 		this(DEFAULT_THESHOLD, percentages);

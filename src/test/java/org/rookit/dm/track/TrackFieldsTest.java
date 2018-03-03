@@ -27,7 +27,6 @@ import java.util.Set;
 
 import org.apache.commons.collections4.IterableUtils;
 import org.bson.types.ObjectId;
-import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.rookit.api.dm.artist.Artist;
@@ -39,28 +38,22 @@ import org.rookit.api.dm.track.TypeVersion;
 import org.rookit.api.dm.track.factory.TrackFactory;
 import org.rookit.dm.test.DMTestFactory;
 import org.rookit.dm.utils.TestUtils;
+import org.rookit.test.AbstractTest;
 
 import com.google.common.collect.Sets;
 import com.google.inject.Injector;
 
 @SuppressWarnings("javadoc")
-public class TrackFieldsTest {
+public class TrackFieldsTest extends AbstractTest<Track> {
 
 	private static TrackFactory trackFactory;
 	private static DMTestFactory factory;
-	
-	private Track guineaPig;
 	
 	@BeforeClass
 	public static final void setUpBeforeClass() {
 		final Injector injector = TestUtils.getInjector();
 		trackFactory = injector.getInstance(TrackFactory.class);
 		factory = injector.getInstance(DMTestFactory.class);
-	}
-
-	@Before
-	public final void createTrack() {
-		guineaPig = factory.getRandomOriginalTrack();
 	}
 
 	@Test
@@ -196,21 +189,11 @@ public class TrackFieldsTest {
 		assertThat(guineaPig.isExplicit()).isFalse();
 	}
 	
-	@Test(expected = IllegalArgumentException.class)
-	public final void testExplicitNull() {
-		guineaPig.setExplicit(null);
-	}
-	
 	@Test
 	public final void testTrackType() {
 		for(final TypeTrack type : TypeTrack.values()) {
 			assertThat(factory.getRandomTrack(type).getType()).isEqualTo(type);
 		}
-	}
-	
-	@Test
-	public final void testToString() {
-		assertThat(guineaPig.toString()).isEqualTo(guineaPig.getLongFullTitle().toString());
 	}
 	
 	@Test
@@ -222,7 +205,10 @@ public class TrackFieldsTest {
 	public final void testSetHiddenTrack() {
 		final String hiddenTrack = factory.randomString();
 		guineaPig.setHiddenTrack(hiddenTrack);
-		assertThat(guineaPig.getHiddenTrack()).isEqualTo(hiddenTrack);
+		assertThat(guineaPig.getHiddenTrack().toJavaUtil())
+		.isNotEmpty()
+		.get()
+		.isEqualTo(hiddenTrack);
 	}
 	
 	@Test(expected = IllegalArgumentException.class)
@@ -281,13 +267,14 @@ public class TrackFieldsTest {
 	@Test
 	public final void testGetAsVersionTrack() {
 		final Track track = trackFactory.createVersionTrack(TypeVersion.ALTERNATIVE, guineaPig);
-		assertThat(track.getAsVersionTrack()).isEqualTo(track);
+		assertThat(track.getAsVersionTrack().get()).isEqualTo(track);
 	}
 	
-	@Test(expected = UnsupportedOperationException.class)
 	public final void testOriginalGetAsVersionTrack() {
 		final Track track = trackFactory.createOriginalTrack(factory.randomString());
-		track.getAsVersionTrack();
+		assertThat(track.getAsVersionTrack().toJavaUtil())
+		.as("An original track fetched as version")
+		.isEmpty();
 	}
 	
 	@Test
@@ -306,7 +293,10 @@ public class TrackFieldsTest {
 	public final void testBpm() {
 		final short bpm = 140;
 		guineaPig.setBPM(bpm);
-		assertThat(guineaPig.getBPM()).isEqualTo(bpm);
+		assertThat(guineaPig.getBPM().toJavaUtil())
+		.isNotEmpty()
+		.get()
+		.isEqualTo(bpm);
 	}
 	
 	@Test(expected = IllegalArgumentException.class)
@@ -324,7 +314,10 @@ public class TrackFieldsTest {
 	public final void testLyrics() {
 		final String lyrics = factory.randomString();
 		guineaPig.setLyrics(lyrics);
-		assertThat(guineaPig.getLyrics()).isEqualTo(lyrics);
+		assertThat(guineaPig.getLyrics().toJavaUtil())
+		.isNotEmpty()
+		.get()
+		.isEqualTo(lyrics);
 	}
 	
 	@Test(expected = IllegalArgumentException.class)
@@ -334,7 +327,10 @@ public class TrackFieldsTest {
 	
 	@Test
 	public final void testEmptyLyrics() {
-		guineaPig.setLyrics("");
+		assertThatThrownBy(() -> guineaPig.setLyrics(""))
+		.as("Invalid lyrics")
+		.isInstanceOf(IllegalArgumentException.class)
+		.hasMessageContaining("empty");
 	}
 	
 	@Test
@@ -435,5 +431,10 @@ public class TrackFieldsTest {
 	
 	private void testCompareTo(Track track) {
 		assertThat(guineaPig.compareTo(track)).isEqualTo(guineaPig.getTitle().toString().compareTo(track.getTitle().toString()));
+	}
+
+	@Override
+	protected Track createGuineaPig() {
+		return factory.getRandomOriginalTrack();
 	}
 }

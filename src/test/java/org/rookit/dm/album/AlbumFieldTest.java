@@ -41,7 +41,6 @@ import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
-import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.rookit.api.dm.album.Album;
@@ -54,6 +53,7 @@ import org.rookit.api.dm.genre.Genre;
 import org.rookit.api.dm.track.Track;
 import org.rookit.dm.test.DMTestFactory;
 import org.rookit.dm.utils.TestUtils;
+import org.rookit.test.AbstractTest;
 import org.rookit.utils.resource.Resources;
 
 import com.google.common.collect.ImmutableSet;
@@ -61,23 +61,16 @@ import com.google.common.collect.Sets;
 import com.google.inject.Injector;
 
 @SuppressWarnings("javadoc")
-public class AlbumFieldTest {
+public class AlbumFieldTest extends AbstractTest<Album> {
 
 	private static DMTestFactory factory;
 	private static RookitFactories factories;
-
-	private Album guineaPig;
 
 	@BeforeClass
 	public static final void setUpBeforeClass() {
 		final Injector injector = TestUtils.getInjector();
 		factories = injector.getInstance(RookitFactories.class);
 		factory = injector.getInstance(DMTestFactory.class);
-	}
-
-	@Before
-	public final void initializeTest(){
-		guineaPig = factory.getRandomAlbum();
 	}
 
 	@Test
@@ -512,6 +505,11 @@ public class AlbumFieldTest {
 
 	private void testCompareTo(Album album) {
 		assertThat(guineaPig.compareTo(album)).isEqualTo(guineaPig.getTitle().compareTo(album.getTitle()));
+	}
+
+	@Override
+	protected Album createGuineaPig() {
+		return factory.getRandomAlbum();
 	}
 
 }
