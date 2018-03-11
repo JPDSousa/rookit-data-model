@@ -80,9 +80,16 @@ public class VersionTrackTest extends AbstractTest<VersionTrack> {
 	@Test
 	public final void testVersionToken() {
 		final String versionToken = "some random token";
-		assertThat(guineaPig.getVersionToken()).isEqualTo("");
+		assertThat(guineaPig.getVersionToken())
+		.as("The initial version token")
+		.isEmpty();
+		
 		guineaPig.setVersionToken(versionToken);
-		assertThat(guineaPig.getVersionToken()).isEqualTo(versionToken);
+		assertThat(guineaPig.getVersionToken())
+		.as("The previously set version token")
+		.isNotEmpty()
+		.get()
+		.isEqualTo(versionToken);
 	}
 	
 	@Test(expected = IllegalArgumentException.class)
@@ -132,13 +139,20 @@ public class VersionTrackTest extends AbstractTest<VersionTrack> {
 	@Test
 	public final void testFeatures() {
 		final Set<Artist> artists = factory.getRandomSetOfArtists();
-		assertThat(guineaPig.getFeatures()).isEqualTo(original.getFeatures());
-		guineaPig.setFeatures(artists);
-		assertThat(guineaPig.getFeatures()).isEqualTo(artists);
-		assertThat(guineaPig.getFeatures()).isEqualTo(original.getFeatures());
-		guineaPig.addFeature(factory.getRandomArtist());
+		assertThat(this.guineaPig.getFeatures())
+		.as("The features from the version track")
+		.isEqualTo(this.original.getFeatures());
+		
+		this.guineaPig.setFeatures(artists);
+		assertThat(this.guineaPig.getFeatures())
+		.as("The previously set features")
+		.isEqualTo(artists);
+		
+		final Artist artist = factory.getRandomArtist();
+		this.guineaPig.addFeature(artist);
 		// TODO requires further testing
-		assertThat(guineaPig.getFeatures()).isEqualTo(original.getFeatures());
+		assertThat(guineaPig.getFeatures())
+		.contains(artist);
 	}
 
 	@Test
@@ -148,7 +162,7 @@ public class VersionTrackTest extends AbstractTest<VersionTrack> {
 	
 	@Test
 	public final void testVersionTrack() {
-		assertThat(guineaPig.getAsVersionTrack().toJavaUtil())
+		assertThat(guineaPig.getAsVersionTrack())
 		.isNotEmpty()
 		.get()
 		.isEqualTo(guineaPig);

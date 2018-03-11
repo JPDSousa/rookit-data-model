@@ -27,6 +27,12 @@ import org.rookit.api.dm.artist.Musician;
 import org.rookit.api.dm.artist.TypeArtist;
 import org.rookit.api.dm.artist.TypeGender;
 
+import java.util.Objects;
+import java.util.Optional;
+
+import javax.annotation.Generated;
+import com.google.common.base.MoreObjects;
+
 //TODO is it possible to turn this into Artist.class.getName() somehow??
 @Entity(value="Artist")
 class MusicianImpl extends AbstractArtist implements Musician {
@@ -46,57 +52,50 @@ class MusicianImpl extends AbstractArtist implements Musician {
 	}
 
 	@Override
-	public TypeGender getGender() {
-		return gender;
+	public Optional<TypeGender> getGender() {
+		return Optional.ofNullable(this.gender);
 	}
 
 	@Override
-	public void setGender(TypeGender gender) {
+	public void setGender(final TypeGender gender) {
+		VALIDATOR.checkArgument().isNotNull(gender, "gender");
 		this.gender = gender;
 	}
 
 	@Override
-	public String getFullName() {
-		return fullName;
+	public Optional<String> getFullName() {
+		return Optional.ofNullable(this.fullName);
 	}
 
 	@Override
-	public void setFullName(String fullName) {
+	public void setFullName(final String fullName) {
+		VALIDATOR.checkArgument().isNotEmpty(fullName, "fullName");
 		this.fullName = fullName;
 	}
 
 	@Override
+	@Generated(value = "GuavaEclipsePlugin")
 	public int hashCode() {
-		final int prime = 31;
-		int result = super.hashCode();
-		result = prime * result + ((fullName == null) ? 0 : fullName.hashCode());
-		result = prime * result + ((gender == null) ? 0 : gender.hashCode());
-		return result;
+		return Objects.hash(super.hashCode(), gender, fullName);
 	}
 
 	@Override
-	public boolean equals(Object obj) {
-		if (this == obj) {
-			return true;
-		}
-		if (!super.equals(obj)) {
-			return false;
-		}
-		if (getClass() != obj.getClass()) {
-			return false;
-		}
-		MusicianImpl other = (MusicianImpl) obj;
-		if (fullName == null) {
-			if (other.fullName != null) {
+	@Generated(value = "GuavaEclipsePlugin")
+	public boolean equals(Object object) {
+		if (object instanceof MusicianImpl) {
+			if (!super.equals(object))
 				return false;
-			}
-		} else if (!fullName.equals(other.fullName)) {
-			return false;
+			MusicianImpl that = (MusicianImpl) object;
+			return Objects.equals(this.gender, that.gender) && Objects.equals(this.fullName, that.fullName);
 		}
-		if (gender != other.gender) {
-			return false;
-		}
-		return true;
+		return false;
+	}
+
+	@Override
+	@Generated(value = "GuavaEclipsePlugin")
+	public String toString() {
+		return MoreObjects.toStringHelper(this).add("super", super.toString()).add("gender", gender)
+				.add("fullName", fullName).toString();
 	}
 
 }

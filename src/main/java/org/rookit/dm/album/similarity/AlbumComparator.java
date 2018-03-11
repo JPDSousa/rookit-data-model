@@ -49,7 +49,7 @@ public class AlbumComparator extends AbstractGenreableComparator<Album> {
 		final Map<String, Double> scores = super.createTopMap(element1, element2);
 		scores.put(TITLE, compareStringIgnoreCase(element1.getTitle(), element2.getTitle()));
 		scores.put(TYPE, compareFromEquals(element1.getAlbumType(), element2.getAlbumType()));
-		scores.put(RELEASE_DATE, compareDates(element1.getReleaseDate(), element2.getReleaseDate()));
+		scores.put(RELEASE_DATE, compareOptionals(element1.getReleaseDate(), element2.getReleaseDate(), this::compareDates));
 		scores.put(ARTISTS, reverseIntersect(element1.getArtists(), element2.getArtists()));
 		scores.put(ID, compareFromEquals(element1.getId(), element2.getId()));
 		scores.put(RELEASE_TYPE, compareFromEquals(element1.getReleaseType(), element2.getReleaseType()));

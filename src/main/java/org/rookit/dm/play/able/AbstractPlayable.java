@@ -23,14 +23,13 @@ package org.rookit.dm.play.able;
 
 import java.time.Duration;
 import java.time.LocalDate;
+import java.util.Optional;
 
 import org.rookit.api.dm.play.StaticPlaylist;
 import org.rookit.api.dm.play.able.Playable;
 import org.rookit.api.storage.DBManager;
 import org.rookit.dm.AbstractMetadataHolder;
 import org.rookit.utils.VoidUtils;
-
-import com.google.common.base.Optional;
 
 @SuppressWarnings("javadoc")
 public abstract class AbstractPlayable extends AbstractMetadataHolder implements Playable {
@@ -67,31 +66,31 @@ public abstract class AbstractPlayable extends AbstractMetadataHolder implements
 
 	@Override
 	public Void setPlays(final long plays) {
-		VALIDATOR.checkArgumentPositive(plays, "Plays cannot be negative");
+		VALIDATOR.checkArgument().isPositive(plays, "plays");
 		this.plays = plays;
 		return VoidUtils.returnVoid();
 	}
 	
 	@Override
 	public Void setDuration(final Duration duration) {
-		VALIDATOR.checkArgumentNotNull(duration, "Duration cannot be null");
+		VALIDATOR.checkArgument().isNotNull(duration, "duration");
 		this.duration = duration;
 		return VoidUtils.returnVoid();
 	}
 
 	@Override
 	public Optional<Duration> getDuration() {
-		return Optional.fromNullable(duration);
+		return Optional.ofNullable(this.duration);
 	}
 	
 	@Override
 	public Optional<LocalDate> getLastPlayed() {
-		return Optional.fromNullable(lastPlayed);
+		return Optional.ofNullable(this.lastPlayed);
 	}
 
 	@Override
 	public Void setLastPlayed(final LocalDate lastPlayed) {
-		VALIDATOR.checkArgumentNotNull(lastPlayed, "Last played cannot be null");
+		VALIDATOR.checkArgument().isNotNull(lastPlayed, "lastPlayed");
 		this.lastPlayed = lastPlayed;
 		return VoidUtils.returnVoid();
 	}
@@ -109,25 +108,25 @@ public abstract class AbstractPlayable extends AbstractMetadataHolder implements
 
 	@Override
 	public Void setSkipped(final long skipped) {
-		VALIDATOR.checkArgumentPositive(plays, "Skipped cannot be negative");
+		VALIDATOR.checkArgument().isPositive(plays, "plays");
 		this.skipped = skipped;
 		return VoidUtils.returnVoid();
 	}
 
 	@Override
 	public Optional<LocalDate> getLastSkipped() {
-		return Optional.fromNullable(lastSkipped);
+		return Optional.ofNullable(this.lastSkipped);
 	}
 
 	@Override
 	public Void setLastSkipped(final LocalDate lastSkipped) {
-		VALIDATOR.checkArgumentNotNull(lastSkipped, "Last skipped cannot be null");
+		VALIDATOR.checkArgument().isNotNull(lastSkipped, "lastSkipped");
 		this.lastSkipped = lastSkipped;
 		return VoidUtils.returnVoid();
 	}
 
 	@Override
-	public StaticPlaylist freeze(DBManager db) {
+	public StaticPlaylist freeze(final DBManager db) {
 		return freeze(db, LIMIT);
 	}
 	

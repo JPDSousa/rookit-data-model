@@ -41,15 +41,14 @@ public class GenreFactoryImpl extends AbstractRookitFactory<Genre> implements Ge
 	}
 	
 	@Override
-	public Genre createGenre(String name) {
-		VALIDATOR.checkArgumentStringNotEmpty(name, "A genre must have a non-null non-empty name");
+	public Genre createGenre(final String name) {
+		VALIDATOR.checkArgument().isNotEmpty(name, "name");
 		return new DefaultGenre(name);
 	}
 
 	@Override
 	public Genre createEmpty() {
-		VALIDATOR.invalidOperation("Cannot create an empty genre");
-		return null;
+		return VALIDATOR.invalidOperation("Cannot create an empty genre");
 	}
 
 	@Override
@@ -58,7 +57,6 @@ public class GenreFactoryImpl extends AbstractRookitFactory<Genre> implements Ge
 		if(name != null && name instanceof String) {
 			return createGenre((String) name);
 		}
-		VALIDATOR.runtimeException("Invalid arguments: " + data);
-		return null;
+		return VALIDATOR.runtimeException("Invalid arguments: " + data);
 	}
 }

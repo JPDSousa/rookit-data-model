@@ -21,11 +21,16 @@
  ******************************************************************************/
 package org.rookit.dm.track;
 
-import static org.rookit.api.dm.track.TrackFields.*;
+import static org.rookit.api.dm.track.TrackFields.MAIN_ARTISTS;
+import static org.rookit.api.dm.track.TrackFields.TITLE;
 
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
+
+import javax.annotation.Generated;
 
 import org.mongodb.morphia.annotations.Entity;
 import org.mongodb.morphia.annotations.Property;
@@ -36,11 +41,9 @@ import org.rookit.api.dm.track.Track;
 import org.rookit.api.dm.track.TrackTitle;
 import org.rookit.api.dm.track.TypeTrack;
 import org.rookit.api.dm.track.VersionTrack;
+import org.rookit.utils.VoidUtils;
 
-import com.google.common.base.Optional;
 import com.google.common.collect.Sets;
-import java.util.Objects;
-import javax.annotation.Generated;
 
 @SuppressWarnings("javadoc")
 @Entity("Track")
@@ -60,7 +63,7 @@ public final class OriginalTrackImpl extends AbstractTrack implements Track {
 	
 	OriginalTrackImpl(String title, BiStream biStream) {
 		super(TypeTrack.ORIGINAL, biStream);
-		mainArtists = Sets.newLinkedHashSetWithExpectedSize(3);
+		mainArtists = Collections.synchronizedSet(Sets.newLinkedHashSetWithExpectedSize(3));
 		setTitle(title);
 	}
 
@@ -80,26 +83,26 @@ public final class OriginalTrackImpl extends AbstractTrack implements Track {
 	}
 
 	@Override
-	public Void setMainArtists(Set<Artist> mainArtists) {
-		VALIDATOR.checkArgumentNonEmptyCollection(mainArtists, "The main artists set cannot be neither null or empty");
-		VALIDATOR.checkNotIntersecting(mainArtists, getFeatures(), "features");
-		VALIDATOR.checkNotIntersecting(mainArtists, getProducers(), "producers");
-		this.mainArtists = mainArtists;
-		return null;
+	public Void setMainArtists(final Collection<Artist> mainArtists) {
+		VALIDATOR.checkArgument().isNotEmpty(mainArtists, "mainArtists");
+		VALIDATOR.checkArgument().isNotIntersecting(mainArtists, getFeatures(), "mainArtists", "features");
+		VALIDATOR.checkArgument().isNotIntersecting(mainArtists, getProducers(), "mainArtists", "producers");
+		this.mainArtists = Collections.synchronizedSet(Sets.newLinkedHashSet(mainArtists));
+		return VoidUtils.returnVoid();
 	}
 
 	@Override
-	public Void addMainArtist(Artist artist) {
-		VALIDATOR.checkArgumentNotNull(artist, "Cannot add a null artist");
-		VALIDATOR.checkArgumentNotContains(artist, getProducers(), "Cannot add a producer as main artist");
-		VALIDATOR.checkArgumentNotContains(artist, getFeatures(), "Cannot add a feature as main artist");
-		mainArtists.add(artist);
-		return null;
+	public Void addMainArtist(final Artist artist) {
+		VALIDATOR.checkArgument().isNotNull(artist, "artist");
+		VALIDATOR.checkArgument().isNotContainedIn(artist, getProducers(), "mainArtist");
+		VALIDATOR.checkArgument().isNotContainedIn(artist, getFeatures(), "mainArtist");
+		this.mainArtists.add(artist);
+		return VoidUtils.returnVoid();
 	}
 
 	@Override
 	public Optional<VersionTrack> getAsVersionTrack() {
-		return Optional.absent();
+		return Optional.empty();
 	}
 
 	@Override
@@ -109,27 +112,27 @@ public final class OriginalTrackImpl extends AbstractTrack implements Track {
 	
 	@Override
 	public TrackTitle getTitle() {
-		final TrackTitle titleOnly = new TrackTitle(title);
+		final TrackTitle titleOnly = new TrackTitle(this.title);
 		return getHiddenTrack()
-				.transform(titleOnly::appendHiddenTrack)
-				.or(titleOnly);
+				.map(titleOnly::appendHiddenTrack)
+				.orElse(titleOnly);
 	}
 
 	@Override
-	public Void setTitle(TrackTitle title) {
-		VALIDATOR.checkArgumentNotNull(title, "Title cannot be null");
+	public Void setTitle(final TrackTitle title) {
+		VALIDATOR.checkArgument().isNotNull(title, "title");
 		setTitle(title.getTitle());
 		if(title.getHiddenTrack() != null){
 			setHiddenTrack(title.getHiddenTrack());
 		}
-		return null;
+		return VoidUtils.returnVoid();
 	}
 	
 	@Override
-	public Void setTitle(String title) {
-		VALIDATOR.checkArgumentStringNotEmpty(title, "Title cannot be null");
+	public Void setTitle(final String title) {
+		VALIDATOR.checkArgument().isNotEmpty(title, "title");
 		this.title = title;
-		return null;
+		return VoidUtils.returnVoid();
 	}
 
 	@Override
@@ -154,6 +157,27 @@ public final class OriginalTrackImpl extends AbstractTrack implements Track {
 	@Override
 	public String toString() {
 		return super.toString();
+	}
+
+	@Override
+	public Void addMainArtists(final Collection<Artist> artists) {
+		VALIDATOR.checkArgument().isNotNull(artists, "artists");
+		artists.forEach(this::addMainArtist);
+		return VoidUtils.returnVoid();
+	}
+
+	@Override
+	public Void removeMainArtist(final Artist artist) {
+		VALIDATOR.checkArgument().isNotNull(artist, "artist");
+		this.mainArtists.remove(artist);
+		return VoidUtils.returnVoid();
+	}
+
+	@Override
+	public Void removeMainArtists(final Collection<Artist> artists) {
+		VALIDATOR.checkArgument().isNotNull(artists, "artists");
+		this.mainArtists.removeAll(artists);
+		return VoidUtils.returnVoid();
 	}
 	
 }

@@ -74,7 +74,11 @@ public class GenreFieldsTest extends AbstractTest<Genre> {
 		String testDescription = "this is the description";
 		
 		guineaPig.setDescription(testDescription);
-		assertThat(guineaPig.getDescription()).as("Description is not being properly assigned!").isEqualTo(testDescription);
+		assertThat(guineaPig.getDescription())
+		.as("Description is not being properly assigned!")
+		.isNotEmpty()
+		.get()
+		.isEqualTo(testDescription);
 	}
 
 	@Test

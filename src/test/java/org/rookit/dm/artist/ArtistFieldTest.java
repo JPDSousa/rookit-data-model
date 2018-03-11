@@ -26,7 +26,6 @@ import static org.hamcrest.Matchers.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.io.IOException;
-import java.util.HashSet;
 import java.util.Set;
 
 import org.junit.BeforeClass;
@@ -74,23 +73,34 @@ public class ArtistFieldTest extends AbstractTest<Artist> {
 
 	@Test
 	public void testRelatedArtist() {
-		Set<Artist> related = factory.getRandomSetOfArtists();
-		assertThat(guineaPig.getRelatedArtists()).as("Related artists are not being properly initialized").isEqualTo(new HashSet<>());
-		for(Artist art : related){
+		final Set<Artist> related = factory.getRandomSetOfArtists();
+		assertThat(guineaPig.getRelatedArtists())
+		.as("Initial state")
+		.isEmpty();
+		
+		for(final Artist art : related){
 			guineaPig.addRelatedArtist(art);
 		}
-		assertThat(guineaPig.getRelatedArtists()).as("Related artists are not being properly assigned!").isEqualTo(related);
-		for(Artist art : related){
+		assertThat(guineaPig.getRelatedArtists())
+		.as("Related artists are not being properly assigned!")
+		.containsExactlyInAnyOrderElementsOf(related);
+		
+		for(final Artist art : related){
 			guineaPig.addRelatedArtist(art);
 		}
-		assertThat(guineaPig.getRelatedArtists()).as("Related artists are accepting duplicates!").isEqualTo(related);
+		assertThat(guineaPig.getRelatedArtists()).as("Related artists are accepting duplicates!")
+		.containsExactlyInAnyOrderElementsOf(related);
 	}
 
 	@Test
 	public void testOrigin() {
 		String testOrigin = "Russia";
 		guineaPig.setOrigin(testOrigin);
-		assertThat(guineaPig.getOrigin()).as("Origin is not being properly assigned").isEqualTo(testOrigin);
+		assertThat(guineaPig.getOrigin())
+		.as("Origin is not being properly assigned")
+		.isNotEmpty()
+		.get()
+		.isEqualTo(testOrigin);
 	}
 	
 	@Test
@@ -124,9 +134,13 @@ public class ArtistFieldTest extends AbstractTest<Artist> {
 	public final void testIPI() {
 		final String ipi = factory.randomString();
 		
-		assumeThat(guineaPig.getIPI(), is(not(equalTo(ipi))));
-		guineaPig.setIPI(ipi);
-		assertThat(guineaPig.getIPI()).isEqualTo(ipi);
+		assumeThat(this.guineaPig.getIPI(), is(not(equalTo(ipi))));
+		
+		this.guineaPig.setIPI(ipi);
+		assertThat(guineaPig.getIPI())
+		.isNotEmpty()
+		.get()
+		.isEqualTo(ipi);
 	}
 	
 	@Test
@@ -135,7 +149,11 @@ public class ArtistFieldTest extends AbstractTest<Artist> {
 		
 		assumeThat(guineaPig.getISNI(), is(not(equalTo(isni))));
 		guineaPig.setISNI(isni);
-		assertThat(guineaPig.getISNI()).isEqualTo(isni);
+		
+		assertThat(guineaPig.getISNI())
+		.isNotEmpty()
+		.get()
+		.isEqualTo(isni);
 	}
 	
 	@Test
@@ -157,18 +175,23 @@ public class ArtistFieldTest extends AbstractTest<Artist> {
 	
 	@Test
 	public final void testGetAllGenres() {
-		assertThat(guineaPig.getAllGenres()).isEqualTo(guineaPig.getGenres());
+		assertThat(guineaPig.getAllGenres())
+		.containsExactlyInAnyOrderElementsOf(guineaPig.getGenres());
 	}
 	
 	@Test
 	public final void testAliases() {
 		final String alias = factory.randomString();
+		
 		guineaPig.addAlias(alias);
-		assertThat(guineaPig.getAliases().contains(alias)).isTrue();
+		assertThat(guineaPig.getAliases())
+		.contains(alias);
+		
 		final Set<String> aliases = Sets.newLinkedHashSetWithExpectedSize(1);
 		aliases.add(alias);
 		guineaPig.setAliases(aliases);
-		assertThat(guineaPig.getAliases()).isEqualTo(aliases);
+		assertThat(guineaPig.getAliases())
+		.containsExactlyInAnyOrderElementsOf(aliases);
 	}
 	
 	@Test

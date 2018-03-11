@@ -21,12 +21,20 @@
  ******************************************************************************/
 package org.rookit.dm.track;
 
-import static org.rookit.api.dm.track.TrackFields.*;
+import static org.rookit.api.dm.track.TrackFields.ORIGINAL;
+import static org.rookit.api.dm.track.TrackFields.VERSION_ARTISTS;
+import static org.rookit.api.dm.track.TrackFields.VERSION_TOKEN;
+import static org.rookit.api.dm.track.TrackFields.VERSION_TYPE;
 
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
 
+import javax.annotation.Generated;
+
+import org.apache.commons.lang3.StringUtils;
 import org.mongodb.morphia.annotations.Entity;
 import org.mongodb.morphia.annotations.Property;
 import org.mongodb.morphia.annotations.Reference;
@@ -37,16 +45,19 @@ import org.rookit.api.dm.track.TrackTitle;
 import org.rookit.api.dm.track.TypeTrack;
 import org.rookit.api.dm.track.TypeVersion;
 import org.rookit.api.dm.track.VersionTrack;
+import org.rookit.utils.VoidUtils;
 import org.rookit.utils.print.PrintUtils;
 import org.rookit.utils.print.TypeFormat;
 
-import com.google.common.base.Optional;
+import com.google.common.base.MoreObjects;
 import com.google.common.collect.Sets;
 
 @Entity("Track")
 @SuppressWarnings("javadoc")
 public final class VersionTrackImpl extends AbstractTrack implements VersionTrack {
 
+	private static final String NO_VERSION_TOKEN = StringUtils.EMPTY;
+	
 	@Reference(value = VERSION_ARTISTS, idOnly = true)
 	private final Set<Artist> versionArtists;
 
@@ -65,60 +76,67 @@ public final class VersionTrackImpl extends AbstractTrack implements VersionTrac
 		this(null, null, null);
 	}
 	
-	VersionTrackImpl(Track original, TypeVersion versionType, BiStream path) {
+	VersionTrackImpl(final Track original, final TypeVersion versionType, final BiStream path) {
 		super(TypeTrack.VERSION, path);
-		versionArtists = Sets.newLinkedHashSet();
+		this.versionArtists = Collections.synchronizedSet(Sets.newLinkedHashSet());
 		this.original = original;
 		this.versionType = versionType;
-		setVersionToken("");
+		resetVersionToken();
 	}
 	
 	@Override
 	public Track getOriginal() {
-		return original;
+		return this.original;
 	}
 
 	@Override
 	public TypeVersion getVersionType() {
-		return versionType;
+		return this.versionType;
 	}
 
 	@Override
 	public Collection<Artist> getVersionArtists() {
-		return Collections.unmodifiableCollection(versionArtists);
+		return Collections.unmodifiableCollection(this.versionArtists);
 	}
 
 	@Override
-	public void addVersionArtist(Artist extraArtist){
-		VALIDATOR.checkArgumentNotNull(extraArtist, "Cannot add a null artist");
-		versionArtists.add(extraArtist);
+	public Void addVersionArtist(final Artist extraArtist){
+		VALIDATOR.checkArgument().isNotNull(extraArtist, "versionArtist");
+		this.versionArtists.add(extraArtist);
+		return VoidUtils.returnVoid();
 	}
 
 	@Override
-	public void setVersionArtists(Set<Artist> artists) {
-		VALIDATOR.checkArgumentNotNull(artists, "Artist set cannot be null");
-		versionArtists.clear();
-		versionArtists.addAll(artists);
+	public Void setVersionArtists(final Set<Artist> artists) {
+		VALIDATOR.checkArgument().isNotNull(artists, "versionArtists");
+		this.versionArtists.clear();
+		this.versionArtists.addAll(artists);
+		return VoidUtils.returnVoid();
 	}
 
 	@Override
-	public void setVersionToken(String versionToken){
-		VALIDATOR.checkArgumentNotNull(versionToken, "The version token cannot be null");
+	public Void setVersionToken(final String versionToken){
+		VALIDATOR.checkArgument().isNotNull(versionToken, "versionToken");
 		this.versionToken = versionToken;
+		return VoidUtils.returnVoid();
 	}
 
 	@Override
-	public String getVersionToken(){
-		return versionToken;
+	public Optional<String> getVersionToken(){
+		return Optional.ofNullable(this.versionToken)
+				.filter(token -> token != NO_VERSION_TOKEN);
 	}
 
 	@Override
 	public TrackTitle getFullTitle() {
-		return original.getFullTitle().appendExtras(getExtras());
+		return this.original.getFullTitle().appendExtras(getExtras());
 	}
 
 	private String getExtras() {
-		final StringBuilder builder = new StringBuilder(PrintUtils.getIterableAsString(versionArtists, TypeFormat.TITLE, Artist.UNKNOWN_ARTISTS));
+		final StringBuilder builder = new StringBuilder(PrintUtils.getIterableAsString(
+				this.versionArtists, 
+				TypeFormat.TITLE, 
+				Artist.UNKNOWN_ARTISTS));
 		builder.append(" ").append(getVersionType().getName());
 		return builder.toString();
 	}
@@ -135,90 +153,115 @@ public final class VersionTrackImpl extends AbstractTrack implements VersionTrac
 
 	@Override
 	public TrackTitle getLongFullTitle() {
-		return original.getLongFullTitle().appendExtras(getExtras());
+		return this.original.getLongFullTitle().appendExtras(getExtras());
 	}
 
 	@Override
 	public TrackTitle getTitle() {
-		return original.getTitle();
+		return this.original.getTitle();
 	}
 
 	@Override
 	public Collection<Artist> getMainArtists() {
-		return original.getMainArtists();
+		return this.original.getMainArtists();
 	}
 
 	@Override
-	public Void setMainArtists(Set<Artist> artists) {
-		return original.setMainArtists(artists);
+	public Void setMainArtists(final Collection<Artist> artists) {
+		return this.original.setMainArtists(artists);
 	}
 
 	@Override
-	public Void addMainArtist(Artist artist) {
-		return original.addMainArtist(artist);
+	public Void addMainArtist(final Artist artist) {
+		return this.original.addMainArtist(artist);
 	}
 
 	@Override
-	public Collection<Artist> getFeatures() {
-		return original.getFeatures();
+	public Void setTitle(final String title) {
+		return this.original.setTitle(title);
 	}
 
 	@Override
-	public Void setFeatures(Set<Artist> features) {
-		return original.setFeatures(features);
+	public Void setTitle(final TrackTitle title) {
+		return this.original.setTitle(title);
 	}
 
 	@Override
-	public Void addFeature(Artist artist) {
-		return original.addFeature(artist);
-	}
-
-	@Override
-	public Void setTitle(String title) {
-		return original.setTitle(title);
-	}
-
-	@Override
-	public Void setTitle(TrackTitle title) {
-		return original.setTitle(title);
-	}
-
-	@Override
+	@Generated(value = "GuavaEclipsePlugin")
 	public int hashCode() {
-		final int prime = 31;
-		int result = super.hashCode();
-		result = prime * result + versionArtists.hashCode();
-		result = prime * result + original.hashCode();
-		result = prime * result + versionToken.hashCode();
-		result = prime * result + versionType.hashCode();
-		return result;
+		return Objects.hash(super.hashCode(), versionArtists, versionToken, original, versionType);
 	}
 
 	@Override
-	public boolean equals(Object obj) {
-		if (this == obj) {
-			return true;
+	@Generated(value = "GuavaEclipsePlugin")
+	public boolean equals(Object object) {
+		if (object instanceof VersionTrackImpl) {
+			if (!super.equals(object))
+				return false;
+			VersionTrackImpl that = (VersionTrackImpl) object;
+			return Objects.equals(this.versionArtists, that.versionArtists)
+					&& Objects.equals(this.versionToken, that.versionToken)
+					&& Objects.equals(this.original, that.original)
+					&& Objects.equals(this.versionType, that.versionType);
 		}
-		if (!super.equals(obj)) {
-			return false;
-		}
-		if (getClass() != obj.getClass()) {
-			return false;
-		}
-		VersionTrackImpl other = (VersionTrackImpl) obj;
-		if (!versionArtists.equals(other.versionArtists)) {
-			return false;
-		}
-		if (!original.equals(other.original)) {
-			return false;
-		}
-		if (!versionToken.equals(other.versionToken)) {
-			return false;
-		}
-		if (versionType != other.versionType) {
-			return false;
-		}
-		return true;
+		return false;
 	}
+
+	@Override
+	@Generated(value = "GuavaEclipsePlugin")
+	public String toString() {
+		return MoreObjects.toStringHelper(this).add("super", super.toString()).add("versionArtists", versionArtists)
+				.add("versionToken", versionToken).add("original", original).add("versionType", versionType).toString();
+	}
+
+	@Override
+	public Void addMainArtists(final Collection<Artist> artists) {
+		return this.original.addMainArtists(artists);
+	}
+
+	@Override
+	public Void removeMainArtist(final Artist artist) {
+		return this.original.removeMainArtist(artist);
+	}
+
+	@Override
+	public Void removeMainArtists(final Collection<Artist> artists) {
+		return this.original.removeMainArtists(artists);
+	}
+
+	@Override
+	public Void addVersionArtists(final Collection<Artist> extraArtists) {
+		VALIDATOR.checkArgument().isNotNull(extraArtists, "extraArtists");
+		this.versionArtists.addAll(extraArtists);
+		return VoidUtils.returnVoid();
+	}
+
+	@Override
+	public Void removeVersionArtist(final Artist artist) {
+		VALIDATOR.checkArgument().isNotNull(artist, "artist");
+		this.versionArtists.remove(artist);
+		return VoidUtils.returnVoid();
+	}
+
+	@Override
+	public Void removeVersionArtists(final Collection<Artist> artists) {
+		VALIDATOR.checkArgument().isNotNull(artists, "artists");
+		this.versionArtists.removeAll(artists);
+		return VoidUtils.returnVoid();
+	}
+
+	@Override
+	public Void clearVersionArtists() {
+		this.versionArtists.clear();
+		return VoidUtils.returnVoid();
+	}
+
+	@Override
+	public Void resetVersionToken() {
+		this.versionToken = NO_VERSION_TOKEN;
+		return VoidUtils.returnVoid();
+	}
+
+	
 
 }

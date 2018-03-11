@@ -1,5 +1,7 @@
 package org.rookit.dm.play;
 
+import java.util.Optional;
+
 import org.mongodb.morphia.annotations.Entity;
 import org.rookit.api.bistream.BiStream;
 import org.rookit.api.dm.play.DynamicPlaylist;
@@ -13,8 +15,6 @@ import org.rookit.api.storage.queries.TrackQuery;
 import org.rookit.api.storage.utils.Order;
 import org.rookit.api.storage.utils.Order.TypeOrder;
 import org.rookit.utils.VoidUtils;
-
-import com.google.common.base.Optional;
 
 @SuppressWarnings("javadoc")
 @Entity("Playlist")
@@ -70,32 +70,32 @@ public class DynamicPlaylistImpl extends AbstractPlaylist implements DynamicPlay
 
 	@Override
 	public Optional<Short> getBPM() {
-		return bpm != UNINITIALIZED ? Optional.of(bpm) 
-				: Optional.absent();
+		return Optional.of(this.bpm)
+				.filter(bpm -> bpm != UNINITIALIZED);
 	}
 
 	@Override
 	public Void setBPM(final short bpm) {
-		VALIDATOR.checkArgumentBetween(bpm, RANGE_BPM, "bpm");
+		VALIDATOR.checkArgument().isBetween(bpm, RANGE_BPM, "bpm");
 		this.bpm = bpm;
 		return VoidUtils.returnVoid();
 	}
 
 	@Override
 	public Optional<TrackKey> getTrackKey() {
-		return Optional.fromNullable(this.trackKey);
+		return Optional.ofNullable(this.trackKey);
 	}
 
 	@Override
 	public Void setTrackKey(final TrackKey trackKey) {
-		VALIDATOR.checkArgumentNotNull(trackKey, "track key cannot be null");
+		VALIDATOR.checkArgument().isNotNull(trackKey, "trackKey");
 		this.trackKey = trackKey;
 		return VoidUtils.returnVoid();
 	}
 
 	@Override
 	public Optional<TrackMode> getTrackMode() {
-		return Optional.fromNullable(this.trackMode);
+		return Optional.ofNullable(this.trackMode);
 	}
 
 	@Override
@@ -106,7 +106,7 @@ public class DynamicPlaylistImpl extends AbstractPlaylist implements DynamicPlay
 
 	@Override
 	public Optional<Boolean> isInstrumental() {
-		return Optional.fromNullable(this.isInstrumental);
+		return Optional.ofNullable(this.isInstrumental);
 	}
 
 	@Override
@@ -117,7 +117,7 @@ public class DynamicPlaylistImpl extends AbstractPlaylist implements DynamicPlay
 
 	@Override
 	public Optional<Boolean> isLive() {
-		return Optional.fromNullable(this.isLive);
+		return Optional.ofNullable(this.isLive);
 	}
 
 	@Override
@@ -128,7 +128,7 @@ public class DynamicPlaylistImpl extends AbstractPlaylist implements DynamicPlay
 
 	@Override
 	public Optional<Boolean> isAcoustic() {
-		return Optional.fromNullable(this.isAcoustic);
+		return Optional.ofNullable(this.isAcoustic);
 	}
 
 	@Override
@@ -139,8 +139,8 @@ public class DynamicPlaylistImpl extends AbstractPlaylist implements DynamicPlay
 
 	@Override
 	public Optional<Double> getDanceability() {
-		return this.danceability != UNINITIALIZED ? Optional.of(this.danceability)
-				: Optional.absent();
+		return Optional.of(this.danceability)
+				.filter(danceability -> danceability != UNINITIALIZED);
 	}
 
 	@Override
@@ -151,8 +151,8 @@ public class DynamicPlaylistImpl extends AbstractPlaylist implements DynamicPlay
 
 	@Override
 	public Optional<Double> getEnergy() {
-		return this.energy != UNINITIALIZED ? Optional.of(this.energy)
-				: Optional.absent();
+		return Optional.of(this.energy)
+				.filter(energy -> energy != UNINITIALIZED);
 	}
 
 	@Override
@@ -163,8 +163,8 @@ public class DynamicPlaylistImpl extends AbstractPlaylist implements DynamicPlay
 
 	@Override
 	public Optional<Double> getValence() {
-		return this.valence != UNINITIALIZED ? Optional.of(this.valence)
-				: Optional.absent();
+		return Optional.of(this.valence)
+				.filter(valence -> valence != UNINITIALIZED);
 	}
 
 	@Override
@@ -175,41 +175,41 @@ public class DynamicPlaylistImpl extends AbstractPlaylist implements DynamicPlay
 
 	private void setValence(final TrackQuery query) {
 		getValence()
-		.transform(valence -> query.withValence(valence-(valenceGap/2), valence+(valenceGap/2)));
+		.map(valence -> query.withValence(valence-(valenceGap/2), valence+(valenceGap/2)));
 	}
 
 	private void setDanceability(final TrackQuery query) {
 		getDanceability()
-		.transform(danceability -> query.withDanceability(danceability-(danceabilityGap/2), danceability+(danceabilityGap/2)));
+		.map(danceability -> query.withDanceability(danceability-(danceabilityGap/2), danceability+(danceabilityGap/2)));
 	}
 
 	private void setEnergy(final TrackQuery query) {
 		getEnergy()
-		.transform(energy -> query.withEnergy(energy-(energyGap/2), energy+(energyGap/2)));
+		.map(energy -> query.withEnergy(energy-(energyGap/2), energy+(energyGap/2)));
 	}
 
 	private void setAcoustic(final TrackQuery query) {
-		isAcoustic().transform(query::withAcoustic);
+		isAcoustic().map(query::withAcoustic);
 	}
 
 	private void setLive(final TrackQuery query) {
-		isLive().transform(query::withLive);
+		isLive().map(query::withLive);
 	}
 
 	private void setInstrumental(final TrackQuery query) {
-		isInstrumental().transform(query::withInstrumental);
+		isInstrumental().map(query::withInstrumental);
 	}
 
 	private void setTrackMode(final TrackQuery query) {
-		getTrackMode().transform(query::withTrackMode);
+		getTrackMode().map(query::withTrackMode);
 	}
 
 	private void setTrackKey(final TrackQuery query) {
-		getTrackKey().transform(query::withTrackKey);
+		getTrackKey().map(query::withTrackKey);
 	}
 
 	private void setBpm(final TrackQuery query) {
-		getBPM().transform(bpm -> query.withBPM((short) (bpm-(bpmGap/2)), (short) (bpm+(bpmGap/2))));
+		getBPM().map(bpm -> query.withBPM((short) (bpm-(bpmGap/2)), (short) (bpm+(bpmGap/2))));
 	}
 
 	@Override
@@ -222,7 +222,7 @@ public class DynamicPlaylistImpl extends AbstractPlaylist implements DynamicPlay
 				frozenName.toString());
 		applyQuery(db.getTracks()).stream()
 		.limit(limit)
-		.forEach(frozenPlaylist::add);
+		.forEach(frozenPlaylist::addTrack);
 		return frozenPlaylist;
 	}
 
@@ -247,7 +247,7 @@ public class DynamicPlaylistImpl extends AbstractPlaylist implements DynamicPlay
 	}
 
 	private void setOnlyPlayable(final TrackQuery query) {
-		isOnlyPlayable().transform(query::withPath);
+		isOnlyPlayable().map(query::withPath);
 	}
 
 	@Override
@@ -258,7 +258,7 @@ public class DynamicPlaylistImpl extends AbstractPlaylist implements DynamicPlay
 	
 	@Override
 	public Optional<Boolean> isOnlyPlayable() {
-		return Optional.fromNullable(this.onlyPlayable);
+		return Optional.ofNullable(this.onlyPlayable);
 	}
 
 }

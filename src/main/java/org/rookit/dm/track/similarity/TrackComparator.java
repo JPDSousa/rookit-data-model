@@ -47,7 +47,7 @@ public class TrackComparator extends AbstractGenreableComparator<Track> {
 			final VersionTrack version1 = element1.getAsVersionTrack().get();
 			final VersionTrack version2 = element2.getAsVersionTrack().get();
 			scores.put(VERSION_ARTISTS, reverseIntersect(version1.getVersionArtists(), version2.getVersionArtists()));
-			scores.put(VERSION_TOKEN, compareStringIgnoreCase(version1.getVersionToken(), version2.getVersionToken()));
+			scores.put(VERSION_TOKEN, compareOptionals(version1.getVersionToken(), version2.getVersionToken(), this::compareStringIgnoreCase));
 			scores.put(VERSION_TYPE, compareFromEquals(version1.getVersionType(), version2.getVersionType()));
 			version1.getVersionType();
 		}

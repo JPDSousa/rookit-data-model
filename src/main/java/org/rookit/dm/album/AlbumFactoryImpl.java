@@ -30,9 +30,9 @@ import java.util.Set;
 import org.apache.commons.lang3.tuple.Pair;
 import org.rookit.api.bistream.BiStream;
 import org.rookit.api.dm.album.Album;
-import org.rookit.api.dm.album.AlbumFactory;
 import org.rookit.api.dm.album.TypeAlbum;
 import org.rookit.api.dm.album.TypeRelease;
+import org.rookit.api.dm.album.factory.AlbumFactory;
 import org.rookit.api.dm.artist.Artist;
 import org.rookit.api.dm.artist.factory.ArtistFactory;
 import org.rookit.api.dm.factory.RookitFactory;
@@ -64,9 +64,9 @@ public class AlbumFactoryImpl extends AbstractRookitFactory<Album> implements Al
 
 	@Override
 	public Album createSingleArtistAlbum(String title, TypeRelease type, Set<Artist> artists) {
-		VALIDATOR.checkArgumentStringNotEmpty(title, "A title must be specified");
-		VALIDATOR.checkArgumentNotNull(type, "The type release cannot be null");
-		VALIDATOR.checkArgumentNonEmptyCollection(artists, "The album must specify a non-empty set of values");
+		VALIDATOR.checkArgument().isNotEmpty(title, "title");
+		VALIDATOR.checkArgument().isNotNull(type, "type release");
+		VALIDATOR.checkArgument().isNotEmpty(artists, "artists");
 		final BiStream biStream = createEmptyBiStream();
 		return new SingleArtistAlbum(title, type, artists, biStream);
 	}
@@ -102,8 +102,8 @@ public class AlbumFactoryImpl extends AbstractRookitFactory<Album> implements Al
 
 	@Override
 	public Album createVAAlbum(String title, TypeRelease type) {
-		VALIDATOR.checkArgumentStringNotEmpty(title, "A title must be specified");
-		VALIDATOR.checkArgumentNotNull(type, "The type release cannot be null");
+		VALIDATOR.checkArgument().isNotEmpty(title, "title");
+		VALIDATOR.checkArgument().isNotNull(type, "type release");
 		final BiStream biStream = createEmptyBiStream();
 		return new VariousArtistAlbum(title, type, biStream);
 	}

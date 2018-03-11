@@ -31,7 +31,7 @@ public abstract class AbstractRookitModel implements RookitModel {
 
 	@Override
 	public void setId(final ObjectId id) {
-		VALIDATOR.checkArgumentNotNull(id, "The id cannot be null");
+		VALIDATOR.checkArgument().isNotNull(id, "id");
 		this._id = id;
 	}
 

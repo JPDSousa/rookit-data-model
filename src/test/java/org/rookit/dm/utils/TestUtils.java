@@ -71,14 +71,14 @@ public final class TestUtils {
 		
 		assertThat(initialSkips)
 		.isGreaterThanOrEqualTo(0);
-		assertThat(p.getLastSkipped().toJavaUtil())
+		assertThat(p.getLastSkipped())
 		.contains(lastSkipped);
 		
 		for(int i = 0; i < testSkips; i++) {
 			p.skip();
 		}
 		
-		assertThat(p.getLastSkipped().toJavaUtil())
+		assertThat(p.getLastSkipped())
 		.isNotEmpty()
 		.get()
 		.isNotEqualTo(lastSkipped);
@@ -100,14 +100,14 @@ public final class TestUtils {
 		
 		assertThat(initialPlays)
 		.isGreaterThanOrEqualTo(0);
-		assertThat(p.getLastPlayed().toJavaUtil())
+		assertThat(p.getLastPlayed())
 		.contains(lastPlayed);
 		
 		for(int i = 0; i < testPlays; i++) {
 			p.play();
 		}
 		
-		assertThat(p.getLastPlayed().toJavaUtil())
+		assertThat(p.getLastPlayed())
 		.isNotEmpty()
 		.get()
 		.isNotEqualTo(lastPlayed);

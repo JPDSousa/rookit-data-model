@@ -84,9 +84,8 @@ public class ArtistFactoryImpl extends AbstractRookitFactory<Artist> implements 
 	
 	@Override
 	public Artist createArtist(TypeArtist type, String artistName) {
-		final String errMsg = String.valueOf(type) + " is not a valid artist type";
-		VALIDATOR.checkArgumentStringNotEmpty(artistName, "Must specify an artist name");
-		VALIDATOR.checkArgumentNotNull(type, errMsg);
+		VALIDATOR.checkArgument().isNotEmpty(artistName, "artist name");
+		VALIDATOR.checkArgument().isNotNull(type, "artist type");
 		final BiStream picture = createEmptyBiStream();
 		switch(type) {
 		case GROUP:
@@ -94,7 +93,7 @@ public class ArtistFactoryImpl extends AbstractRookitFactory<Artist> implements 
 		case MUSICIAN:
 			return new MusicianImpl(artistName, picture);
 		default:
-			return VALIDATOR.checkArgument(false, errMsg);
+			return VALIDATOR.checkState().is(false, "%s is not a valid artist type", type);
 		}
 	}
 	

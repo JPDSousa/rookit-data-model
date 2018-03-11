@@ -205,7 +205,7 @@ public class TrackFieldsTest extends AbstractTest<Track> {
 	public final void testSetHiddenTrack() {
 		final String hiddenTrack = factory.randomString();
 		guineaPig.setHiddenTrack(hiddenTrack);
-		assertThat(guineaPig.getHiddenTrack().toJavaUtil())
+		assertThat(guineaPig.getHiddenTrack())
 		.isNotEmpty()
 		.get()
 		.isEqualTo(hiddenTrack);
@@ -217,8 +217,10 @@ public class TrackFieldsTest extends AbstractTest<Track> {
 	}
 	
 	@Test
-	public final void testSetEmptyHiddenTrack() {
-		guineaPig.setHiddenTrack("");
+	public final void testSetEmptyHiddenTrackFails() {
+		assertThatThrownBy(() -> guineaPig.setHiddenTrack(""))
+		.as("Setting an empty hidden track")
+		.isInstanceOf(IllegalArgumentException.class);
 	}
 	
 	@Test
@@ -272,7 +274,7 @@ public class TrackFieldsTest extends AbstractTest<Track> {
 	
 	public final void testOriginalGetAsVersionTrack() {
 		final Track track = trackFactory.createOriginalTrack(factory.randomString());
-		assertThat(track.getAsVersionTrack().toJavaUtil())
+		assertThat(track.getAsVersionTrack())
 		.as("An original track fetched as version")
 		.isEmpty();
 	}
@@ -293,7 +295,7 @@ public class TrackFieldsTest extends AbstractTest<Track> {
 	public final void testBpm() {
 		final short bpm = 140;
 		guineaPig.setBPM(bpm);
-		assertThat(guineaPig.getBPM().toJavaUtil())
+		assertThat(guineaPig.getBPM())
 		.isNotEmpty()
 		.get()
 		.isEqualTo(bpm);
@@ -314,7 +316,7 @@ public class TrackFieldsTest extends AbstractTest<Track> {
 	public final void testLyrics() {
 		final String lyrics = factory.randomString();
 		guineaPig.setLyrics(lyrics);
-		assertThat(guineaPig.getLyrics().toJavaUtil())
+		assertThat(guineaPig.getLyrics())
 		.isNotEmpty()
 		.get()
 		.isEqualTo(lyrics);
@@ -342,7 +344,8 @@ public class TrackFieldsTest extends AbstractTest<Track> {
 	public final void testAllGenres() {
 		final Set<Genre> genres = factory.getRandomSetOfGenres();
 		guineaPig.setGenres(genres);
-		assertThat(guineaPig.getAllGenres()).isEqualTo(genres);
+		assertThat(guineaPig.getAllGenres())
+		.containsExactlyInAnyOrderElementsOf(genres);
 	}
 	
 	@Test

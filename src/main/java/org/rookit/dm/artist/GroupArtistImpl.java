@@ -21,6 +21,8 @@
  ******************************************************************************/
 package org.rookit.dm.artist;
 
+import java.util.Collection;
+import java.util.Collections;
 import java.util.Set;
 
 import org.mongodb.morphia.annotations.Entity;
@@ -30,6 +32,7 @@ import org.rookit.api.dm.artist.GroupArtist;
 import org.rookit.api.dm.artist.Musician;
 import org.rookit.api.dm.artist.TypeArtist;
 import org.rookit.api.dm.artist.TypeGroup;
+import org.rookit.utils.VoidUtils;
 
 import com.google.common.collect.Sets;
 
@@ -49,25 +52,27 @@ class GroupArtistImpl extends AbstractArtist implements GroupArtist {
 	
 	GroupArtistImpl(final String artistName, final BiStream picture) {
 		super(TypeArtist.GROUP, artistName, picture);
-		groupType = TypeGroup.DEFAULT;
-		members = Sets.newLinkedHashSet();
+		this.groupType = TypeGroup.DEFAULT;
+		this.members = Collections.synchronizedSet(Sets.newLinkedHashSet());
 	}
 
 	@Override
-	public Iterable<Musician> getMembers() {
-		return members;
+	public Collection<Musician> getMembers() {
+		return Collections.unmodifiableCollection(this.members);
 	}
 
 	@Override
-	public void setMembers(final Iterable<Musician> members) {
-		VALIDATOR.checkArgumentNotNull(members, "Cannot set a null set of members");
+	public Void setMembers(final Collection<Musician> members) {
+		VALIDATOR.checkArgument().isNotNull(members, "members");
 		this.members = Sets.newLinkedHashSet(members);
+		return VoidUtils.returnVoid();
 	}
 
 	@Override
-	public void addMember(final Musician member) {
-		VALIDATOR.checkArgumentNotNull(member, "Cannot add a null member");
-		members.add(member);
+	public Void addMember(final Musician member) {
+		VALIDATOR.checkArgument().isNotNull(member, "member");
+		this.members.add(member);
+		return VoidUtils.returnVoid();
 	}
 
 	@Override
@@ -76,9 +81,10 @@ class GroupArtistImpl extends AbstractArtist implements GroupArtist {
 	}
 
 	@Override
-	public void setGroupType(final TypeGroup groupType) {
-		VALIDATOR.checkArgumentNotNull(groupType, "Cannot set a null group type");
+	public Void setGroupType(final TypeGroup groupType) {
+		VALIDATOR.checkArgument().isNotNull(groupType, "group type");
 		this.groupType = groupType;
+		return VoidUtils.returnVoid();
 	}
 
 	@Override
@@ -106,9 +112,32 @@ class GroupArtistImpl extends AbstractArtist implements GroupArtist {
 		}
 		return true;
 	}
-	
-	
 
-	
+	@Override
+	public Void addMembers(final Collection<Musician> members) {
+		VALIDATOR.checkArgument().isNotNull(members, "members");
+		this.members.addAll(members);
+		return VoidUtils.returnVoid();
+	}
 
+	@Override
+	public Void removeMember(final Musician member) {
+		VALIDATOR.checkArgument().isNotNull(member, "member");
+		this.members.remove(member);
+		return VoidUtils.returnVoid();
+	}
+
+	@Override
+	public Void removeMembers(final Collection<Musician> members) {
+		VALIDATOR.checkArgument().isNotNull(members, "members");
+		this.members.removeAll(members);
+		return VoidUtils.returnVoid();
+	}
+
+	@Override
+	public Void clearMembers() {
+		this.members.clear();
+		return VoidUtils.returnVoid();
+	}
+	
 }

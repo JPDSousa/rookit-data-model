@@ -21,9 +21,11 @@
  ******************************************************************************/
 package org.rookit.dm.utils;
 
-import static org.rookit.utils.print.PrintUtils.*;
+import static org.rookit.utils.print.PrintUtils.duration;
+import static org.rookit.utils.print.PrintUtils.getIterableAsString;
 
 import java.time.Duration;
+import java.util.Optional;
 
 import org.extendedStringBuilder.ExtStringBuilder;
 import org.rookit.api.bistream.BiStream;
@@ -61,24 +63,27 @@ public final class DMPrintUtils {
 
 	private static void printAlbumTrack(ExtStringBuilder builder, Album album, String discName, Integer number) {
 		final TrackSlot trackSlot = album.getTrack(discName, number);
-		final Track track = trackSlot.getTrack();
-		builder.append(number).tab()
-		.append(track.getTitle()).breakLine()
-		.tab().append("Disc: ").append(trackSlot.getDisc()).breakLine()
-		.tab().append("Number: ").append(trackSlot.getNumber()).breakLine()
-		.tab().append("Main Artists: ").breakLine();
-		for(Artist artist : track.getMainArtists()){
-			builder.tab(2).append(artist.toString()).breakLine();
-		}
-		builder.tab().append("Features: ").breakLine();
-		for(Artist artist : track.getFeatures()){
-			builder.tab(2).append(artist.toString()).breakLine();
-		}
-		builder.tab().append("Type: ").append(track.getType()).breakLine();
-		if(track.isVersionTrack()) {
-			builder.tab().append("Extras: ");
-			for(Artist artist : track.getAsVersionTrack().get().getVersionArtists()){
+		final Optional<Track> trackOrNone = trackSlot.getTrack();
+		if (trackOrNone.isPresent()) {
+			final Track track = trackOrNone.get();
+			builder.append(number).tab()
+			.append(track.getTitle()).breakLine()
+			.tab().append("Disc: ").append(trackSlot.getDisc()).breakLine()
+			.tab().append("Number: ").append(trackSlot.getNumber()).breakLine()
+			.tab().append("Main Artists: ").breakLine();
+			for(Artist artist : track.getMainArtists()){
 				builder.tab(2).append(artist.toString()).breakLine();
+			}
+			builder.tab().append("Features: ").breakLine();
+			for(Artist artist : track.getFeatures()){
+				builder.tab(2).append(artist.toString()).breakLine();
+			}
+			builder.tab().append("Type: ").append(track.getType()).breakLine();
+			if(track.isVersionTrack()) {
+				builder.tab().append("Extras: ");
+				for(Artist artist : track.getAsVersionTrack().get().getVersionArtists()){
+					builder.tab(2).append(artist.toString()).breakLine();
+				}
 			}
 		}
 	}
@@ -98,7 +103,7 @@ public final class DMPrintUtils {
 		.appendIf(!Iterables.isEmpty(track.getGenres()), "Genres: " + getIterableAsString(track.getGenres(), TypeFormat.TAG) + "\n")
 		.appendIf(!track.getHiddenTrack().isPresent(), "HiddenTrack: " + track.getHiddenTrack().get() + "\n")
 		.append("Plays: ").append(track.getPlays()).breakLine()
-		.append("Duration: ").append(duration(track.getDuration().or(Duration.ZERO))).breakLine();
+		.append("Duration: ").append(duration(track.getDuration().orElse(Duration.ZERO))).breakLine();
 		if(track.isVersionTrack()) {
 			final VersionTrack versionTrack = track.getAsVersionTrack().get();
 			builder.append("Version Type: ").append(versionTrack.getVersionType()).breakLine()

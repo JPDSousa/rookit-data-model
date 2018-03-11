@@ -24,6 +24,7 @@ package org.rookit.dm.artist;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Set;
 
 import org.mongodb.morphia.annotations.Embedded;
@@ -31,14 +32,18 @@ import org.mongodb.morphia.annotations.Reference;
 import org.rookit.api.bistream.BiStream;
 import org.rookit.api.dm.artist.Artist;
 import org.rookit.api.dm.artist.TypeArtist;
-import org.rookit.api.dm.genre.Genre;
 import org.rookit.api.dm.play.StaticPlaylist;
 import org.rookit.api.storage.DBManager;
 import org.rookit.api.storage.queries.TrackQuery;
 import org.rookit.dm.genre.AbstractGenreable;
 import org.rookit.dm.utils.DataModelValidator;
+import org.rookit.utils.VoidUtils;
 
 import com.google.common.collect.Sets;
+import java.util.Objects;
+import java.util.Optional;
+
+import javax.annotation.Generated;
 
 /**
  * Abstract implementation of the {@link Artist} interface. Extend this class
@@ -65,7 +70,7 @@ public abstract class AbstractArtist extends AbstractGenreable implements Artist
 	private String origin;
 	
 	@Embedded
-	private Set<String> aliases;
+	private final Set<String> aliases;
 	
 	private LocalDate beginDate;
 	
@@ -86,88 +91,65 @@ public abstract class AbstractArtist extends AbstractGenreable implements Artist
 	 * 
 	 * @param artistName artist name
 	 */
-	protected AbstractArtist(TypeArtist type, String artistName, BiStream picture) {
+	protected AbstractArtist(final TypeArtist type, final String artistName, final BiStream picture) {
 		this.name = artistName;
-		this.related = Sets.newLinkedHashSet();
-		this.origin = "";
-		this.aliases = Sets.newLinkedHashSetWithExpectedSize(5);
+		this.related = Collections.synchronizedSet(Sets.newLinkedHashSet());
+		this.aliases = Collections.synchronizedSet(Sets.newLinkedHashSetWithExpectedSize(5));
 		this.type = type;
-		this.isni = "";
-		this.ipi = "";
 		this.picture = picture;
 	}
 
 	@Override
 	public final TypeArtist getType() {
-		return type;
+		return this.type;
 	}
 	
 	@Override
 	public final String getName() {
-		return name;
+		return this.name;
 	}
 
 	@Override
-	public Iterable<Artist> getRelatedArtists() {
-		return related;
+	public Collection<Artist> getRelatedArtists() {
+		return Collections.unmodifiableCollection(this.related);
 	}
 
 	@Override
-	public Void addRelatedArtist(Artist artist) {
-		VALIDATOR.checkArgumentNotNull(artist, "The related artist cannot be null");
-		related.add(artist);
-		return null;
+	public Void addRelatedArtist(final Artist artist) {
+		VALIDATOR.checkArgument().isNotNull(artist, "related artist");
+		this.related.add(artist);
+		return VoidUtils.returnVoid();
 	}
 
 	@Override
-	public String getOrigin() {
-		return origin;
+	public Optional<String> getOrigin() {
+		return Optional.ofNullable(this.origin);
 	}
 
 	@Override
-	public Void setOrigin(String origin) {
-		VALIDATOR.checkArgumentStringNotEmpty(origin, "Must specify an origin");
+	public Void setOrigin(final String origin) {
+		VALIDATOR.checkArgument().isNotEmpty(origin, "origin");
 		this.origin = origin;
-		return null;
+		return VoidUtils.returnVoid();
 	}
 
 	@Override
+	@Generated(value = "GuavaEclipsePlugin")
 	public int hashCode() {
-		final int prime = 31;
-		int result = super.hashCode();
-		result = prime * result + name.hashCode();
-		result = prime * result + isni.hashCode();
-		result = prime * result + type.hashCode();
-		return result;
+		return Objects.hash(super.hashCode(), name, isni, type);
 	}
 
 	@Override
-	public boolean equals(Object obj) {
-		if (this == obj) {
-			return true;
+	@Generated(value = "GuavaEclipsePlugin")
+	public boolean equals(Object object) {
+		if (object instanceof AbstractArtist) {
+			if (!super.equals(object))
+				return false;
+			AbstractArtist that = (AbstractArtist) object;
+			return Objects.equals(this.name, that.name) && Objects.equals(this.isni, that.isni)
+					&& Objects.equals(this.type, that.type);
 		}
-		if (!super.equals(obj)) {
-			return false;
-		}
-		if (getClass() != obj.getClass()) {
-			return false;
-		}
-		AbstractArtist other = (AbstractArtist) obj;
-		if (!name.equalsIgnoreCase(other.name)) {
-			return false;
-		}
-		if (!isni.equals(other.isni)) {
-			return false;
-		}
-		if (type != other.type) {
-			return false;
-		}
-		return true;
-	}
-
-	@Override
-	public Collection<Genre> getAllGenres() {
-		return getGenres();
+		return false;
 	}
 
 	@Override
@@ -177,67 +159,70 @@ public abstract class AbstractArtist extends AbstractGenreable implements Artist
 
 	@Override
 	public Collection<String> getAliases() {
-		return aliases;
+		return Collections.unmodifiableCollection(this.aliases);
 	}
 
 	@Override
 	public Void addAlias(String alias) {
-		VALIDATOR.checkArgumentStringNotEmpty(alias, "Must specify an alias");
+		VALIDATOR.checkArgument().isNotEmpty(alias, "alias");
 		this.aliases.add(alias);
-		return null;
+		return VoidUtils.returnVoid();
 	}
 
 	@Override
-	public Void setAliases(Set<String> aliases) {
-		VALIDATOR.checkArgumentNotNull(aliases, "Cannot set a null set of aliases.");
-		this.aliases = aliases;
-		return null;
+	public Void setAliases(final Collection<String> aliases) {
+		VALIDATOR.checkArgument().isNotNull(aliases, "aliases");
+		clearAliases();
+		addAliases(aliases);
+		return VoidUtils.returnVoid();
 	}
 
 	@Override
-	public LocalDate getBeginDate() {
-		return beginDate;
+	public Optional<LocalDate> getBeginDate() {
+		return Optional.ofNullable(beginDate);
 	}
 
 	@Override
-	public Void setBeginDate(LocalDate beginDate) {
+	public Void setBeginDate(final LocalDate beginDate) {
+		VALIDATOR.checkArgument().isNotNull(beginDate, "beginDate");
 		this.beginDate = beginDate;
-		return null;
+		return VoidUtils.returnVoid();
 	}
 
 	@Override
-	public LocalDate getEndDate() {
-		return endDate;
+	public Optional<LocalDate> getEndDate() {
+		return Optional.ofNullable(this.endDate);
 	}
 
 	@Override
-	public Void setEndDate(LocalDate endDate) {
+	public Void setEndDate(final LocalDate endDate) {
+		VALIDATOR.checkArgument().isNotNull(endDate, "endDate");
 		this.endDate = endDate;
-		return null;
+		return VoidUtils.returnVoid();
 	}
 
 	@Override
-	public String getIPI() {
-		return ipi;
+	public Optional<String> getIPI() {
+		return Optional.ofNullable(this.ipi);
 	}
 
 	@Override
-	public Void setIPI(String ipi) {
-		VALIDATOR.checkArgumentNotNull(ipi, "IPI cannot be null");
+	public Void setIPI(final String ipi) {
+		VALIDATOR.checkArgument().isNotNull(ipi, "ipi");
 		this.ipi = ipi;
-		return null;
+		return VoidUtils.returnVoid();
 	}
 
 	@Override
-	public String getISNI() {
-		return isni;
+	public Optional<String> getISNI() {
+		return Optional.ofNullable(this.isni);
 	}
 
 	@Override
-	public Void setISNI(String isni) {
-		VALIDATOR.checkArgumentNotNull(isni, "ISNI cannot be null");
+	public Void setISNI(final String isni) {
+		VALIDATOR.checkArgument().isNotNull(isni, "isni");
 		this.isni = isni;
-		return null;
+		return VoidUtils.returnVoid();
 	}
 
 	@Override
@@ -252,13 +237,13 @@ public abstract class AbstractArtist extends AbstractGenreable implements Artist
 	}
 
 	@Override
-	public Void setPicture(byte[] picture) {
+	public Void setPicture(final byte[] picture) {
 		try {
 			this.picture.toOutput().write(picture);
+			return VoidUtils.returnVoid();
 		} catch (IOException e) {
-			VALIDATOR.handleIOException(e);
+			return VALIDATOR.handleIOException(e);
 		}
-		return null;
 	}
 
 	@Override
@@ -272,8 +257,35 @@ public abstract class AbstractArtist extends AbstractGenreable implements Artist
 		// TODO search for tracks with this artist as feature, producer, etc..
 		// TODO order by mainArtist > feature > producer > (etc..)
 		
-		query.stream().limit(limit).forEach(playlist::add);
+		query.stream().limit(limit).forEach(playlist::addTrack);
 		return playlist;
+	}
+
+	@Override
+	public Void addAliases(final Collection<String> aliases) {
+		VALIDATOR.checkArgument().isNotNull(aliases, "aliases");
+		this.aliases.addAll(aliases);
+		return VoidUtils.returnVoid();
+	}
+
+	@Override
+	public Void removeAlias(final String alias) {
+		VALIDATOR.checkArgument().isNotEmpty(alias, "alias");
+		this.aliases.remove(alias);
+		return VoidUtils.returnVoid();
+	}
+
+	@Override
+	public Void removeAliases(final Collection<String> aliases) {
+		VALIDATOR.checkArgument().isNotNull(aliases, "aliases");
+		this.aliases.removeAll(aliases);
+		return VoidUtils.returnVoid();
+	}
+
+	@Override
+	public Void clearAliases() {
+		this.aliases.clear();
+		return VoidUtils.returnVoid();
 	}
 	
 }

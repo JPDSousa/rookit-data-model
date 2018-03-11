@@ -21,12 +21,7 @@
  ******************************************************************************/
 package org.rookit.dm.utils;
 
-import java.util.Collection;
-
-import org.apache.commons.collections4.CollectionUtils;
-import org.rookit.api.dm.artist.Artist;
 import org.rookit.dm.AbstractRookitModel;
-import org.rookit.dm.album.AbstractAlbum.Disc;
 import org.rookit.utils.log.AbstractLogCategory;
 import org.rookit.utils.log.LogManager;
 import org.rookit.utils.log.Validator;
@@ -53,37 +48,6 @@ public class DataModelValidator extends Validator {
 				return "RookitDataModel";
 			}
 		}));
-	}
-	
-	/**
-	 * Validates a disc. This method must be used before accessing a disc.
-	 * 
-	 * This method will throw an exception ({@link NoSuchDiscException} wrapped in a {@link MlmException}) if:
-	 * <ul>
-	 * <li>The disc is null
-	 * </ul>
-	 * 
-	 * @param disc disc instance
-	 * @param discName disc name that is being accessed
-	 * @param albumTitle album title
-	 */
-	public <T> T checkDiscNotNull(final Disc disc, final String discName, final String albumTitle) {
-		return checkArgumentNotNull(disc, "The disc " + discName + " was not found in album " + albumTitle);
-	}
-	
-	public <T> T checkNotIntersecting(final Iterable<Artist> source, final Iterable<Artist> target, final String targetName) {
-		checkArgumentNotNull(source, "The artist set cannot be null");
-		final Collection<Artist> intersection = CollectionUtils.intersection(source, target);
-		
-		return checkArgumentEmptyCollection(intersection, "Artists " + intersection.toString() + " are already defined as " + targetName);
-	}
-
-	public <T> T checkSumIs(final Collection<Float> values, final int i) {
-		final double sum = values.stream()
-				.mapToDouble(Float::doubleValue)
-				.sum();
-		
-		return checkArgument(sum != i, "The sum of all values must be " + i);
 	}
 
 }

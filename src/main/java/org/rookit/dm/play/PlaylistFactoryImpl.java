@@ -48,8 +48,7 @@ public class PlaylistFactoryImpl extends AbstractRookitFactory<Playlist> impleme
 
 	@Override
 	public Playlist createEmpty() {
-		VALIDATOR.invalidOperation("Cannot create an empty playlist");
-		return null;
+		return VALIDATOR.invalidOperation("Cannot create an empty playlist");
 	}
 
 	@Override
@@ -67,62 +66,19 @@ public class PlaylistFactoryImpl extends AbstractRookitFactory<Playlist> impleme
 				break;
 			}
 		}
-		VALIDATOR.runtimeException("Invalid arguments: " + data);
-		return null;
+		return VALIDATOR.runtimeException("Invalid arguments: " + data);
 	}
 
 	@Override
 	public StaticPlaylist createStaticPlaylist(String name) {
-		VALIDATOR.checkArgumentStringNotEmpty(name, "A playlist must have a non-null non-empty name");
+		VALIDATOR.checkArgument().isNotEmpty(name, "name");
 		final BiStream image = createEmptyBiStream();
 		return new StaticPlaylistImpl(name, image);
 	}
 
 	@Override
 	public DynamicPlaylist createDynamicPlaylist(String name) {
-		VALIDATOR.invalidOperation("This factory implementation does not support dynamic playlists");
-		return null;
+		return VALIDATOR.invalidOperation("This factory implementation does not support dynamic playlists");
 	}
 
-//	@Override
-//	public StaticPlaylist intersect(final Playlist one, final Playlist another) {
-//		return merge(one, another, CollectionUtils::intersection);
-//	}
-//
-//	@Override
-//	public StaticPlaylist union(final Playlist one, final Playlist another) {
-//		return merge(one, another, CollectionUtils::union);
-//	}
-//	
-//	private StaticPlaylist merge(final Playlist one, final Playlist another, 
-//			final BiFunction<Collection<Track>, Collection<Track>, Collection<Track>> mergeFunction) {
-//		final StaticPlaylist thisAsStatic = freezeIfNecessary(one);
-//		final StaticPlaylist otherAsStatic = freezeIfNecessary(another);
-//		final String name = jointName(one, another);
-//		final Collection<Track> intersection = mergeFunction.apply(thisAsStatic.getTracks(), otherAsStatic.getTracks());
-//		final StaticPlaylist intersectStaticPlaylist = createStaticPlaylist(name);
-//		intersectStaticPlaylist.addAll(intersection);
-//		
-//		return intersectStaticPlaylist;
-//	}
-//	
-//	private StaticPlaylist freezeIfNecessary(Playlist playlist) {
-//		if(playlist instanceof StaticPlaylist) {
-//			return (StaticPlaylist) playlist;
-//		}
-//		else if(playlist instanceof DynamicPlaylist) {
-//			return ((DynamicPlaylist) playlist).freeze(DEFAULT_FREEZE_LIMIT);
-//		}
-//		else {
-//			VALIDATOR.runtimeException("Illegal playlist type: " + playlist.getClass());
-//			return null;
-//		}
-//	}
-//	
-//	private String jointName(final Playlist one, final Playlist other) {
-//		return new StringJoiner("_")
-//				.add(one.getName())
-//				.add(other.getName())
-//				.toString();
-//	}
 }

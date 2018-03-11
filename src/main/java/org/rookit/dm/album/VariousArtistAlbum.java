@@ -30,6 +30,7 @@ import org.rookit.api.dm.album.TrackSlot;
 import org.rookit.api.dm.album.TypeAlbum;
 import org.rookit.api.dm.album.TypeRelease;
 import org.rookit.api.dm.artist.Artist;
+import org.rookit.api.dm.track.Track;
 
 import com.google.common.collect.Sets;
 
@@ -52,7 +53,9 @@ class VariousArtistAlbum extends AbstractAlbum {
 		final Set<Artist> artists = Sets.newHashSet();
 		
 		for(final TrackSlot track : getTracks()){
-			track.getTrack().getMainArtists().forEach(a -> artists.add(a));
+			track.getTrack()
+			.map(Track::getMainArtists)
+			.ifPresent(artists::addAll);
 		}
 		
 		return Collections.unmodifiableSet(artists);

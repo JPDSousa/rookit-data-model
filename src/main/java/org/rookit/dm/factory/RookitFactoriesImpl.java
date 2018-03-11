@@ -1,6 +1,6 @@
 package org.rookit.dm.factory;
 
-import org.rookit.api.dm.album.AlbumFactory;
+import org.rookit.api.dm.album.factory.AlbumFactory;
 import org.rookit.api.dm.artist.factory.ArtistFactory;
 import org.rookit.api.dm.genre.factory.GenreFactory;
 import org.rookit.api.dm.play.factory.PlaylistFactory;

@@ -76,22 +76,22 @@ class StaticPlaylistImpl extends AbstractPlaylist implements StaticPlaylist {
 	}
 
 	@Override
-	public boolean add(Track e) {
+	public boolean addTrack(Track e) {
 		return tracks.add(e);
 	}
 
 	@Override
-	public boolean remove(Track o) {
+	public boolean removeTrack(Track o) {
 		return tracks.remove(o);
 	}
 
 	@Override
-	public boolean addAll(Collection<? extends Track> c) {
+	public boolean addTracks(Collection<? extends Track> c) {
 		return tracks.addAll(c);
 	}
 
 	@Override
-	public boolean removeAll(Collection<? extends Track> c) {
+	public boolean removeTracks(Collection<? extends Track> c) {
 		return tracks.removeAll(c);
 	}
 
@@ -120,7 +120,7 @@ class StaticPlaylistImpl extends AbstractPlaylist implements StaticPlaylist {
 		final StaticPlaylist playlist = db.getFactories()
 				.getPlaylistFactory()
 				.createStaticPlaylist(getName());
-		streamTracks().limit(limit).forEach(playlist::add);
+		streamTracks().limit(limit).forEach(playlist::addTrack);
 		return playlist;
 	}
 	

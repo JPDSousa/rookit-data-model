@@ -4,6 +4,8 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
+import java.util.function.BiFunction;
 
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.text.similarity.LevenshteinDistance;
@@ -33,7 +35,7 @@ public abstract class AbstractSimilarity<T extends MetadataHolder> implements Si
 		distance = LevenshteinDistance.getDefaultInstance();
 		final Map<String, Float> percentagesImmutable = Collections.unmodifiableMap(percentages);
 		if(!percentagesImmutable.isEmpty()) {
-			validator.checkSumIs(percentagesImmutable.values(), 1);
+			validator.checkState().isSum(percentagesImmutable.values(), 1f);
 		}
 		this.threshold = threshold;
 		this.percentages = percentagesImmutable;
@@ -91,6 +93,16 @@ public abstract class AbstractSimilarity<T extends MetadataHolder> implements Si
 			return 0;
 		}
 		return applyPercentages(createTopMap(o1, o2));
+	}
+
+	protected <E> double compareOptionals(final Optional<E> opt1, final Optional<E> opt2, final BiFunction<E, E, Double> comparator) {
+		if (opt1.isPresent() && opt2.isPresent()) {
+			return comparator.apply(opt1.get(), opt2.get());
+		} else if (opt1.isPresent() ^ opt2.isPresent()) {
+			return this.threshold / 2;
+		} else {
+			return 0;
+		}
 	}
 
 }

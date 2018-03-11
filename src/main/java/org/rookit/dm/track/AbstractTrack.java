@@ -21,11 +21,30 @@
  ******************************************************************************/
 package org.rookit.dm.track;
 
-import static org.rookit.api.dm.track.TrackFields.*;
+import static org.rookit.api.dm.track.TrackFields.ACOUSTIC;
+import static org.rookit.api.dm.track.TrackFields.BPM;
+import static org.rookit.api.dm.track.TrackFields.DANCEABILITY;
+import static org.rookit.api.dm.track.TrackFields.ENERGY;
+import static org.rookit.api.dm.track.TrackFields.EXPLICIT;
+import static org.rookit.api.dm.track.TrackFields.FEATURES;
+import static org.rookit.api.dm.track.TrackFields.HIDDEN_TRACK;
+import static org.rookit.api.dm.track.TrackFields.INSTRUMENTAL;
+import static org.rookit.api.dm.track.TrackFields.KEY;
+import static org.rookit.api.dm.track.TrackFields.LIVE;
+import static org.rookit.api.dm.track.TrackFields.LYRICS;
+import static org.rookit.api.dm.track.TrackFields.MODE;
+import static org.rookit.api.dm.track.TrackFields.PATH;
+import static org.rookit.api.dm.track.TrackFields.PRODUCERS;
+import static org.rookit.api.dm.track.TrackFields.TYPE;
+import static org.rookit.api.dm.track.TrackFields.VALENCE;
 
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
+
+import javax.annotation.Generated;
 
 import org.mongodb.morphia.annotations.Embedded;
 import org.mongodb.morphia.annotations.Property;
@@ -41,11 +60,8 @@ import org.rookit.api.storage.DBManager;
 import org.rookit.dm.genre.AbstractGenreable;
 import org.rookit.utils.VoidUtils;
 
-import com.google.common.base.Optional;
-import com.google.common.collect.Sets;
-import java.util.Objects;
-import javax.annotation.Generated;
 import com.google.common.base.MoreObjects;
+import com.google.common.collect.Sets;
 
 abstract class AbstractTrack extends AbstractGenreable implements Track {
 	
@@ -122,80 +138,80 @@ abstract class AbstractTrack extends AbstractGenreable implements Track {
 
 	@Override
 	public Void setHiddenTrack(final String hiddenTrack) {
-		VALIDATOR.checkArgumentNotNull(hiddenTrack, "The title \"" + hiddenTrack + "\" is not valid for a track");
+		VALIDATOR.checkArgument().isNotEmpty(hiddenTrack, "hiddenTrack");
 		this.hiddenTrack = hiddenTrack;
-		return null;
+		return VoidUtils.returnVoid();
 	}
 
 	@Override
 	public Optional<String> getHiddenTrack() {
-		return Optional.fromNullable(this.hiddenTrack);
+		return Optional.ofNullable(this.hiddenTrack);
 	}
 	
 	@Override
 	public Collection<Artist> getFeatures() {
-		return Collections.unmodifiableSet(features);
+		return Collections.unmodifiableSet(this.features);
 	}
 
 	@Override
-	public Void setFeatures(final Set<Artist> features) {
-		VALIDATOR.checkNotIntersecting(features, getMainArtists(), "main artists");
-		VALIDATOR.checkNotIntersecting(features, getProducers(), "producers");
-		this.features = features;
+	public Void setFeatures(final Collection<Artist> features) {
+		VALIDATOR.checkArgument().isNotIntersecting(features, getMainArtists(), "features", "mainArtists");
+		VALIDATOR.checkArgument().isNotIntersecting(features, getProducers(), "features", "producers");
+		this.features = Collections.synchronizedSet(Sets.newHashSet(features));
 		return VoidUtils.returnVoid();
 	}
 	
 	@Override
 	public Void addFeature(final Artist artist) {
-		VALIDATOR.checkArgumentNotNull(artist, "Cannot add a null feature");
-		VALIDATOR.checkArgumentNotContains(artist, getMainArtists(), "Cannot add a main artist as feature");
-		VALIDATOR.checkArgumentNotContains(artist, getProducers(), "Cannot add a producer as feature");
-		features.add(artist);
+		VALIDATOR.checkArgument().isNotContainedIn(artist, getMainArtists(), "feature");
+		VALIDATOR.checkArgument().isNotContainedIn(artist, getProducers(), "feature");
+		this.features.add(artist);
 		return VoidUtils.returnVoid();
 	}
 
 	@Override
-	public Void setProducers(final Set<Artist> producers) {
-		VALIDATOR.checkNotIntersecting(producers, getMainArtists(), "main artists");
-		VALIDATOR.checkNotIntersecting(producers, getFeatures(), "features");
-		this.producers = producers;
+	public Void setProducers(final Collection<Artist> producers) {
+		VALIDATOR.checkArgument().isNotIntersecting(producers, getMainArtists(), "producers", "main artists");
+		VALIDATOR.checkArgument().isNotIntersecting(producers, getFeatures(), "producers", "features");
+		this.producers = Collections.synchronizedSet(Sets.newHashSet(producers));
 		return VoidUtils.returnVoid();
 	}
 
 	@Override
 	public Collection<Artist> getProducers() {
-		return Collections.unmodifiableSet(producers);
+		return Collections.unmodifiableSet(this.producers);
 	}
 
 	@Override
 	public Void addProducer(final Artist producer) {
-		VALIDATOR.checkArgumentNotNull(producer, "Cannot add a null producer");
-		VALIDATOR.checkArgumentNotContains(producer, getMainArtists(), "Cannot add a main artist as producer");
-		VALIDATOR.checkArgumentNotContains(producer, getFeatures(), "Cannot add a feature as producer");
-		producers.add(producer);
+		VALIDATOR.checkArgument().isNotNull(producer, "producer");
+		VALIDATOR.checkArgument().isNotContainedIn(producer, getMainArtists(), "producer");
+		VALIDATOR.checkArgument().isNotContainedIn(producer, getFeatures(), "producer");
+		this.producers.add(producer);
 		return VoidUtils.returnVoid();
 	}
 
 	@Override
 	public Void setBPM(final short bpm) {
-		VALIDATOR.checkArgumentBetween(bpm, RANGE_BPM, "bpm");
+		VALIDATOR.checkArgument().isBetween(bpm, RANGE_BPM, "bpm");
 		this.bpm = bpm;
 		return VoidUtils.returnVoid();
 	}
 
 	@Override
 	public Optional<Short> getBPM() {
-		return bpm != UNINITIALIZED ? Optional.of(this.bpm) : Optional.absent();
+		return Optional.of(this.bpm)
+				.filter(bpm -> bpm != UNINITIALIZED);
 	}
 
 	@Override
 	public Optional<String> getLyrics() {
-		return Optional.fromNullable(this.lyrics);
+		return Optional.ofNullable(this.lyrics);
 	}
 
 	@Override
 	public Void setLyrics(final String lyrics) {
-		VALIDATOR.checkArgumentStringNotEmpty(lyrics, "The lyrics string cannot be null or empty");
+		VALIDATOR.checkArgument().isNotEmpty(lyrics, "lyrics");
 		this.lyrics = lyrics;
 		return VoidUtils.returnVoid();
 	}
@@ -219,7 +235,7 @@ abstract class AbstractTrack extends AbstractGenreable implements Track {
 
 	@Override
 	public Boolean isExplicit() {
-		return explicit;
+		return this.explicit;
 	}
 
 	@Override
@@ -242,7 +258,7 @@ abstract class AbstractTrack extends AbstractGenreable implements Track {
 
 	@Override
 	public BiStream getPath() {
-		return path;
+		return this.path;
 	}
 
 	@Override
@@ -253,14 +269,14 @@ abstract class AbstractTrack extends AbstractGenreable implements Track {
 
 	@Override
 	public Void setTrackKey(final TrackKey trackKey) {
-		VALIDATOR.checkArgumentNotNull(trackKey, "Track key cannot be null");
+		VALIDATOR.checkArgument().isNotNull(trackKey, "trackKey");
 		this.trackKey = trackKey;
 		return VoidUtils.returnVoid();
 	}
 
 	@Override
 	public Void setTrackMode(final TrackMode trackMode) {
-		VALIDATOR.checkArgumentNotNull(trackMode, "Track mode cannot be null");
+		VALIDATOR.checkArgument().isNotNull(trackMode, "trackMode");
 		this.trackMode = trackMode;
 		return VoidUtils.returnVoid();
 	}
@@ -285,74 +301,130 @@ abstract class AbstractTrack extends AbstractGenreable implements Track {
 
 	@Override
 	public Void setDanceability(final double danceability) {
-		VALIDATOR.checkArgumentBetween(danceability, RANGE_DANCEABILITY, "danceability");
+		VALIDATOR.checkArgument().isBetween(danceability, RANGE_DANCEABILITY, "danceability");
 		this.danceability = danceability;
 		return VoidUtils.returnVoid();
 	}
 
 	@Override
 	public Void setEnergy(final double energy) {
-		VALIDATOR.checkArgumentBetween(energy, RANGE_ENERGY, "energy");
+		VALIDATOR.checkArgument().isBetween(energy, RANGE_ENERGY, "energy");
 		this.energy = energy;
 		return VoidUtils.returnVoid();
 	}
 
 	@Override
 	public Void setValence(final double valence) {
-		VALIDATOR.checkArgumentBetween(valence, RANGE_VALENCE, "valence");
+		VALIDATOR.checkArgument().isBetween(valence, RANGE_VALENCE, "valence");
 		this.valence = valence;
 		return VoidUtils.returnVoid();
 	}
 
 	@Override
 	public Optional<TrackKey> getTrackKey() {
-		return Optional.fromNullable(this.trackKey);
+		return Optional.ofNullable(this.trackKey);
 	}
 
 	@Override
 	public Optional<TrackMode> getTrackMode() {
-		return Optional.fromNullable(this.trackMode);
+		return Optional.ofNullable(this.trackMode);
 	}
 
 	@Override
 	public Optional<Boolean> isInstrumental() {
-		return Optional.fromNullable(this.isInstrumental);
+		return Optional.ofNullable(this.isInstrumental);
 	}
 
 	@Override
 	public Optional<Boolean> isLive() {
-		return Optional.fromNullable(this.isLive);
+		return Optional.ofNullable(this.isLive);
 	}
 
 	@Override
 	public Optional<Boolean> isAcoustic() {
-		return Optional.fromNullable(this.isAcoustic);
+		return Optional.ofNullable(this.isAcoustic);
 	}
 
 	@Override
 	public Optional<Double> getDanceability() {
-		return danceability != UNINITIALIZED ? Optional.of(this.danceability) 
-				: Optional.absent();
+		return Optional.of(this.danceability)
+				.filter(danceability -> danceability != UNINITIALIZED);
 	}
 
 	@Override
 	public Optional<Double> getEnergy() {
-		return energy != UNINITIALIZED ? Optional.of(this.energy)
-				: Optional.absent();
+		return Optional.of(this.energy)
+				.filter(energy -> energy != UNINITIALIZED);
 	}
 
 	@Override
 	public Optional<Double> getValence() {
-		return valence != UNINITIALIZED ? Optional.of(this.valence)
-				: Optional.absent();
+		return Optional.of(this.valence)
+				.filter(valence -> valence != UNINITIALIZED);
 	}
 
 	@Override
 	public StaticPlaylist freeze(final DBManager db, final int limit) {
 		final StaticPlaylist playlist = db.getFactories().getPlaylistFactory()
 				.createStaticPlaylist(getLongFullTitle().toString());
-		playlist.add(this);
+		playlist.addTrack(this);
 		return playlist;
+	}
+
+	@Override
+	public Void clearProducers() {
+		this.producers.clear();
+		return VoidUtils.returnVoid();
+	}
+
+	@Override
+	public Void removeProducers(final Collection<Artist> producers) {
+		VALIDATOR.checkArgument().isNotNull(producers, "producers");
+		this.producers.removeAll(producers);
+		return VoidUtils.returnVoid();
+	}
+
+	@Override
+	public Void removeProducer(final Artist producer) {
+		VALIDATOR.checkArgument().isNotNull(producer, "producer");
+		this.producers.remove(producer);
+		return VoidUtils.returnVoid();
+	}
+
+	@Override
+	public Void addProducers(final Collection<Artist> producers) {
+		VALIDATOR.checkArgument().isNotNull(producers, "producers");
+		producers.forEach(this::addProducer);
+		return VoidUtils.returnVoid();
+	}
+
+	@Override
+	public Void resetHiddenTrack() {
+		return null;
+	}
+
+	@Override
+	public Void clearFeatures() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Void removeFeatures(Collection<Artist> features) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Void removeFeature(final Artist artist) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Void addFeatures(final Collection<Artist> features) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 	
 }

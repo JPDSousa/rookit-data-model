@@ -21,6 +21,7 @@
  ******************************************************************************/
 package org.rookit.dm.genre;
 
+import org.apache.commons.lang3.StringUtils;
 import org.mongodb.morphia.annotations.Entity;
 import org.mongodb.morphia.annotations.IndexOptions;
 import org.mongodb.morphia.annotations.Indexed;
@@ -32,12 +33,18 @@ import org.rookit.api.storage.utils.Order;
 import org.rookit.api.storage.utils.Order.TypeOrder;
 import org.rookit.dm.play.able.AbstractPlayable;
 import org.rookit.dm.utils.DataModelValidator;
+import org.rookit.utils.VoidUtils;
+
 import java.util.Objects;
+import java.util.Optional;
+
 import javax.annotation.Generated;
 import com.google.common.base.MoreObjects;
 
 @Entity("Genre")
 class DefaultGenre extends AbstractPlayable implements Genre {
+
+	private static final String NO_DESCRIPTION = StringUtils.EMPTY;
 
 	private static final DataModelValidator VALIDATOR = DataModelValidator.getDefault();
 	
@@ -49,13 +56,12 @@ class DefaultGenre extends AbstractPlayable implements Genre {
 	@SuppressWarnings("unused")
 	@Deprecated
 	private DefaultGenre() {
-		super();
-		this.name = null;
+		this(NO_DESCRIPTION);
 	}
 
-	DefaultGenre(String name) {
+	DefaultGenre(final String name) {
 		this.name = name;
-		this.description = "";
+		resetDescription();
 	}
 
 	@Override
@@ -64,17 +70,24 @@ class DefaultGenre extends AbstractPlayable implements Genre {
 	}
 
 	@Override
-	public String getDescription() {
-		return description;
+	public Optional<String> getDescription() {
+		return Optional.ofNullable(this.description)
+				.filter(description -> description != NO_DESCRIPTION);
 	}
 
 	@Override
 	public Void setDescription(final String description) {
-		VALIDATOR.checkArgumentStringNotEmpty(description, "Description cannot be empty or null");
+		VALIDATOR.checkArgument().isNotEmpty(description, "description");
 		this.description = description;
-		return null;
+		return VoidUtils.returnVoid();
 	}
 	
+	@Override
+	public Void resetDescription() {
+		this.description = NO_DESCRIPTION;
+		return VoidUtils.returnVoid();
+	}
+
 	@Override
 	@Generated(value = "GuavaEclipsePlugin")
 	public String toString() {
@@ -101,7 +114,7 @@ class DefaultGenre extends AbstractPlayable implements Genre {
 	}
 
 	@Override
-	public StaticPlaylist freeze(DBManager db, int limit) {
+	public StaticPlaylist freeze(final DBManager db, final int limit) {
 		final StaticPlaylist playlist = db.getFactories()
 				.getPlaylistFactory()
 				.createStaticPlaylist(getName());
@@ -110,7 +123,7 @@ class DefaultGenre extends AbstractPlayable implements Genre {
 		final TrackQuery query = db.getTracks()
 				.withGenre(this)
 				.order(order);
-		query.stream().limit(limit).forEach(playlist::add);
+		query.stream().limit(limit).forEach(playlist::addTrack);
 		return playlist;
 	}
 	

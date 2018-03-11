@@ -1,7 +1,7 @@
 package org.rookit.dm.inject;
 
 import org.rookit.api.bistream.BiStream;
-import org.rookit.api.dm.album.AlbumFactory;
+import org.rookit.api.dm.album.factory.AlbumFactory;
 import org.rookit.api.dm.artist.factory.ArtistFactory;
 import org.rookit.api.dm.factory.RookitFactories;
 import org.rookit.api.dm.factory.RookitFactory;
