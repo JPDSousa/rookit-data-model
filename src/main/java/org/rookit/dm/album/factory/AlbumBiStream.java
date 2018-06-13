@@ -1,17 +1,20 @@
+
 package org.rookit.dm.album.factory;
 
-import static java.lang.annotation.ElementType.FIELD;
-import static java.lang.annotation.ElementType.METHOD;
-import static java.lang.annotation.ElementType.PARAMETER;
-import static java.lang.annotation.RetentionPolicy.RUNTIME;
+import com.google.inject.BindingAnnotation;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
-import com.google.inject.BindingAnnotation;
+import static java.lang.annotation.ElementType.*;
+import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 @SuppressWarnings("javadoc")
 @Retention(RUNTIME)
 @BindingAnnotation
-@Target({ FIELD, METHOD, PARAMETER })
-public @interface AlbumBiStream {}
+@Target({FIELD, METHOD, PARAMETER})
+public @interface AlbumBiStream {
+
+    // Intentionally empty
+
+}

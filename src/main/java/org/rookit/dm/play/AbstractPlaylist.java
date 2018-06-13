@@ -1,80 +1,56 @@
+
 package org.rookit.dm.play;
 
-import static org.rookit.api.dm.play.PlaylistFields.*;
-
-import java.io.IOException;
-
-import org.mongodb.morphia.annotations.Embedded;
-import org.mongodb.morphia.annotations.Entity;
-import org.mongodb.morphia.annotations.Property;
+import com.google.common.base.MoreObjects;
 import org.rookit.api.bistream.BiStream;
 import org.rookit.api.dm.play.Playlist;
-import org.rookit.api.dm.play.TypePlaylist;
-import org.rookit.dm.play.able.AbstractPlayable;
-import java.util.Objects;
-import javax.annotation.Generated;
+import org.rookit.dm.genre.AbstractGenreable;
+import org.rookit.dm.play.able.event.MutableEventStatsFactory;
+import org.rookit.utils.VoidUtils;
 
-@Entity("Playlist")
-abstract class AbstractPlaylist extends AbstractPlayable implements Playlist {
+import java.io.IOException;
+import java.io.OutputStream;
 
-	@Property(NAME)
-	private final String name;
-	
-	@Property(TYPE)
-	private final TypePlaylist type;
-	
-	@Embedded(IMAGE)
-	private final BiStream image;
-	
-	protected AbstractPlaylist(TypePlaylist type, String name, BiStream image) {
-		this.type = type;
-		this.name = name;
-		this.image = image;
-	}
-	
-	@Override
-	public TypePlaylist getType() {
-		return type;
-	}
+abstract class AbstractPlaylist extends AbstractGenreable implements Playlist {
 
-	@Override
-	public String getName() {
-		return name;
-	}
+    private final String name;
 
-	@Override
-	public BiStream getImage() {
-		return image;
-	}
+    private final BiStream image;
 
-	@Override
-	public Void setImage(byte[] image) {
-		try {
-			this.image.toOutput().write(image);
-		} catch (IOException e) {
-			VALIDATOR.handleIOException(e);
-		}
-		return null;
-	}
+    AbstractPlaylist(final String name,
+                     final BiStream image,
+                     final MutableEventStatsFactory eventStatsFactory) {
+        super(eventStatsFactory);
+        this.name = name;
+        this.image = image;
+    }
 
-	@Override
-	@Generated(value = "GuavaEclipsePlugin")
-	public int hashCode() {
-		return Objects.hash(super.hashCode(), name, type);
-	}
+    @Override
+    public BiStream image() {
+        return this.image;
+    }
 
-	@Override
-	@Generated(value = "GuavaEclipsePlugin")
-	public boolean equals(Object object) {
-		if (object instanceof AbstractPlaylist) {
-			if (!super.equals(object))
-				return false;
-			AbstractPlaylist that = (AbstractPlaylist) object;
-			return Objects.equals(this.name, that.name) && Objects.equals(this.type, that.type);
-		}
-		return false;
-	}
-	
-	
-	
+    @Override
+    public String name() {
+        return this.name;
+    }
+
+    @Override
+    public Void setImage(final byte[] image) {
+        VALIDATOR.checkArgument().isNotNull(image, "image");
+        try (final OutputStream output = this.image.writeTo()) {
+            output.write(image);
+            return VoidUtils.returnVoid();
+        } catch (final IOException e) {
+            return VALIDATOR.handleException().inputOutputException(e);
+        }
+    }
+
+    @Override
+    public String toString() {
+        return MoreObjects.toStringHelper(this)
+                .add("official", this.name)
+                .add("image", this.image)
+                .toString();
+    }
 }

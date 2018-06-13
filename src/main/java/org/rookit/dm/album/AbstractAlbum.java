@@ -1,16 +1,16 @@
 /*******************************************************************************
  * Copyright (C) 2017 Joao Sousa
- * 
+ *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
  * in the Software without restriction, including without limitation the rights
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
- * 
+ *
  * The above copyright notice and this permission notice shall be included in
  * all copies or substantial portions of the Software.
- * 
+ *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -19,477 +19,181 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  ******************************************************************************/
+
 package org.rookit.dm.album;
 
-import static java.util.Collections.synchronizedMap;
-import static org.rookit.api.dm.album.AlbumFields.*;
+import com.google.common.base.MoreObjects;
+import org.rookit.api.bistream.BiStream;
+import org.rookit.api.dm.album.Album;
+import org.rookit.api.dm.album.release.Release;
+import org.rookit.api.dm.album.slot.TrackSlot;
+import org.rookit.api.dm.album.tracks.AlbumTracks;
+import org.rookit.api.dm.genre.Genre;
+import org.rookit.api.dm.track.Track;
+import org.rookit.dm.album.release.MutableRelease;
+import org.rookit.dm.album.tracks.MutableAlbumTracks;
+import org.rookit.dm.genre.AbstractGenreable;
+import org.rookit.dm.play.able.event.MutableEventStatsFactory;
+import org.rookit.dm.utils.DataModelValidator;
+import org.rookit.utils.VoidUtils;
+import org.rookit.utils.log.validator.Validator;
 
 import java.io.IOException;
+import java.io.OutputStream;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
-
-import org.mongodb.morphia.annotations.Embedded;
-import org.mongodb.morphia.annotations.Property;
-import org.mongodb.morphia.annotations.Reference;
-import org.rookit.api.bistream.BiStream;
-import org.rookit.api.dm.album.Album;
-import org.rookit.api.dm.album.TrackSlot;
-import org.rookit.api.dm.album.TypeAlbum;
-import org.rookit.api.dm.album.TypeRelease;
-import org.rookit.api.dm.artist.Artist;
-import org.rookit.api.dm.genre.Genre;
-import org.rookit.api.dm.play.StaticPlaylist;
-import org.rookit.api.dm.track.Track;
-import org.rookit.api.storage.DBManager;
-import org.rookit.dm.genre.AbstractGenreable;
-import org.rookit.dm.utils.DataModelValidator;
-import org.rookit.utils.DurationUtils;
-import org.rookit.utils.SupplierUtils;
-import org.rookit.utils.VoidUtils;
-
-import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
-import java.util.Objects;
 import java.util.Optional;
 
-import javax.annotation.Generated;
 
 /**
  * Abstract implementation of the {@link Album} interface. Extend this class in
- * order to create a custom album type. 
+ * order to create a custom album release.
  */
 public abstract class AbstractAlbum extends AbstractGenreable implements Album {
 
-	private static final DataModelValidator VALIDATOR = DataModelValidator.getDefault();
+    private static final Validator VALIDATOR = DataModelValidator.getDefault();
 
-	/** 
-	 * Title of the album
-	 */
-	@Property(TITLE)
-	private String title;
+    /**
+     * Title of the album
+     */
+    private final String title;
 
-	@Property(TYPE)
-	private final TypeAlbum type;
+    private final MutableRelease release;
 
-	/** Set of authors of the album */
-	@Reference(value = ARTISTS, idOnly = true)
-	private Set<Artist> artists;
+    /**
+     * Smof GridFS Reference containing the image of the album
+     */
+    private final BiStream cover;
 
-	/** 
-	 * Map of discs, containing the discs of the album
-	 * Key ({@link String}) - name of the disc
-	 * Value ({@link Disc}}Disc) - disc object
-	 */
-	@Embedded(value = DISCS)
-	private Map<String, Disc> discs;
+    private final MutableAlbumTracks tracks;
 
-	@Property(TRACKS)
-	private int tracks;
+    /**
+     * Default constructor for the object. All subclasses should use this
+     * constructor in order to create a fully functional album.
+     *
+     * @param name title of the album
+     * @param release release information about the album
+     */
+    protected AbstractAlbum(final String name,
+                            final MutableRelease release,
+                            final BiStream cover,
+                            final MutableAlbumTracks tracks,
+                            final MutableEventStatsFactory eventStatsFactory) {
+        super(eventStatsFactory);
+        this.title = name;
+        this.release = release;
+        this.cover = cover;
+        this.tracks = tracks;
+    }
 
-	/**
-	 * Release of the album
-	 */
-	@Property(RELEASE_DATE)
-	private LocalDate releaseDate;
+    @Override
+    public Void addTrack(final Track track, final int number, final String discName) {
+        this.tracks.addTrack(track, number, discName);
+        return VoidUtils.returnVoid();
+    }
 
-	/**
-	 * Type of release
-	 */
-	@Property(RELEASE_TYPE)
-	private final TypeRelease releaseType;
+    @Override
+    public final Void addTrackLast(final Track track, final String discName) {
+        this.tracks.addTrackLast(track, discName);
+        return VoidUtils.returnVoid();
+    }
 
-	/**
-	 * Smof GridFS Reference containing the image of the album
-	 */
-	@Embedded(COVER)
-	private final BiStream cover;
+    @Override
+    public Void addTrack(final TrackSlot slot) {
+        slot.track().ifPresent(track -> addTrack(track, slot.number(), slot.discName()));
+        return VoidUtils.returnVoid();
+    }
 
-	/**
-	 * Default constructor for the object. All subclasses should use this constructor in order to create a
-	 * fully functional album.
-	 * 
-	 * @param name title of the album
-	 * @param type type of release
-	 * @param artists artists responsible for album release. Can be an empty set which will be filled later, although cannot be null
-	 */
-	protected AbstractAlbum(
-			final TypeAlbum type, String name, 
-			final TypeRelease releaseType, 
-			final Set<Artist> artists,
-			final BiStream cover){
-		this.title = name;
-		this.releaseType = releaseType;
-		this.type = type;
-		this.artists = artists;
-		this.tracks = 0;
-		this.discs = synchronizedMap(Maps.newLinkedHashMap());
-		this.cover = cover;
-	}
+    @Override
+    public Void clearTracks() {
+        this.tracks.clearTracks();
+        return VoidUtils.returnVoid();
+    }
 
-	@Override
-	public String getTitle() {
-		return this.title;
-	}
+    @SuppressWarnings("RedundantMethodOverride")
+    @Override
+    public Collection<Genre> allGenres() {
+        return Album.super.allGenres();
+    }
 
-	@Override
-	public Void setTitle(final String title) {
-		VALIDATOR.checkArgument().isNotEmpty(title, "title");
-		this.title = title;
-		return VoidUtils.returnVoid();
-	}
+    @Override
+    public BiStream cover() {
+        return this.cover;
+    }
 
-	@Override
-	public Collection<Artist> getArtists() {
-		return Collections.unmodifiableSet(this.artists);
-	}
+    @SuppressWarnings("RedundantMethodOverride")
+    @Override
+    public Optional<Duration> duration() {
+        return Album.super.duration();
+    }
 
-	@Override
-	public Void addArtist(final Artist artist) {
-		VALIDATOR.checkArgument().isNotNull(artist, "artist");
-		this.artists.add(artist);
-		return VoidUtils.returnVoid();
-	}
-	
-	@Override
-	public Collection<Genre> getAllGenres() {
-		return Album.super.getAllGenres();
-	}
+    @Override
+    public final Release release() {
+        return this.release;
+    }
 
-	@Override
-	public final List<TrackSlot> getTracks() {
-		final List<TrackSlot> tracks = Lists.newArrayListWithCapacity(getTracksCount());
-		for(final String disc : getDiscs()) {
-			tracks.addAll(this.discs.get(disc).getTracksWithSlots(disc));
-		}
-		return Collections.unmodifiableList(tracks);
-	}
+    @Override
+    public String title() {
+        return this.title;
+    }
 
-	@Override
-	public final Collection<TrackSlot> getTracks(final String discName){
-		final Disc disc = getDisc(discName, false);
-		return Collections.unmodifiableCollection(disc.getTracksWithSlots(discName));
-	}
+    @Override
+    public final Void relocate(final String discName,
+            final int number,
+            final String newDiscName,
+            final int newNumber) {
+        this.tracks.relocate(discName, number, newDiscName, newNumber);
+        return VoidUtils.returnVoid();
+    }
 
-	@Override
-	public Collection<Integer> getTrackNumbers(final String discName) {
-		final Disc disc = getDisc(discName, false);
-		return Collections.unmodifiableSet(disc.tracks.keySet());
-	}
+    @Override
+    public Void removeTrack(final int number, final String disc) {
+        this.tracks.removeTrack(number, disc);
+        return VoidUtils.returnVoid();
+    }
 
-	@Override
-	public final TrackSlot getTrack(final String discName, final Integer number) {
-		final Disc disc = getDisc(discName, false);
-		return new TrackSlotImpl(discName, number, disc.getTrack(number));
-	}
+    @Override
+    public Void removeTrack(final Track track) {
+        this.tracks.removeTrack(track);
+        return VoidUtils.returnVoid();
+    }
 
-	private Disc getDisc(final String discName, final boolean create) {
-		VALIDATOR.checkArgument().isNotEmpty(discName, "disc name");
-		
-		Disc disc = this.discs.get(discName);
-		if(!create) {
-			VALIDATOR.checkState()
-			.is(Objects.nonNull(disc), "The disc %s was not found in album %s", 
-					discName, getTitle());
-		} else if(Objects.isNull(disc)) {
-			disc = new Disc();
-			this.discs.put(discName, disc);
-		}
-		return disc;
-	}
+    @Override
+    public final Void setCover(final byte[] bytes) {
+        VALIDATOR.checkArgument().isNotNull(bytes, "bytes");
+        try (final OutputStream output = this.cover.writeTo()) {
+            output.write(bytes);
+            return VoidUtils.returnVoid();
+        } catch (final IOException e) {
+            return VALIDATOR.handleException().inputOutputException(e);
+        }
+    }
 
-	@Override
-	public Void addTrack(final Track track, final int number, final String discName) {
-		final Disc disc = getDisc(discName, true);
-		addTrack(track, number, disc);
-		return VoidUtils.returnVoid();
-	}
+    @Override
+    public final Void setDuration(final Duration duration) {
+        return VALIDATOR.handleException().unsupportedOperation("Cannot set duration for albums");
+    }
 
-	private synchronized void addTrack(final Track track, final Integer number, final Disc disc) {
-		VALIDATOR.checkArgument().isNotNull(number, "track number");
-		if(number.equals(NUMBERLESS)) {
-			addTrackLast(track, disc);
-		}
-		else {
-			VALIDATOR.checkArgument().isNotNull(track, "track");
-			disc.add(track, number);
-		}
-		this.tracks++;
-	}
+    @Override
+    public final Void setReleaseDate(final LocalDate date) {
+        VALIDATOR.checkArgument().isNotNull(date, "year");
+        this.release.setReleaseDate(date);
+        return VoidUtils.returnVoid();
+    }
 
-	@Override
-	public final Void addTrackLast(final Track track, final String discName) {
-		final Disc disc = getDisc(discName, true);
-		addTrackLast(track, disc);
-		return VoidUtils.returnVoid();
-	}
+    @Override
+    public AlbumTracks tracks() {
+        return this.tracks;
+    }
 
-	private void addTrackLast(final Track track, final Disc disc) {
-		synchronized(disc) {
-			final Integer number = disc.getNextEmpty();
-			addTrack(track, number, disc);
-		}
-	}
-
-	@Override
-	public final void relocate(final String discName, final Integer number, final String newDiscName, final Integer newNumber) {
-		//discName and newDiscName are validated by getDisc()
-		VALIDATOR.checkArgument().isNotNull(number, "old track number");
-		VALIDATOR.checkArgument().isNotNull(newNumber, "new track number");
-		
-		final Disc oldDisc = getDisc(discName, false);
-		final Track track = oldDisc.remove(number);
-		VALIDATOR.checkState().isNotNull(track, "there is no track in [%s|%s] to relocate");
-		
-		final Disc newDisc = getDisc(newDiscName, true);
-		newDisc.add(track, newNumber);
-	}
-
-	@Override
-	public final int getTracksCount() {
-		return this.tracks;
-	}
-
-	@Override
-	public final int getTracksCount(final String discName) {
-		final Disc disc = getDisc(discName, false);
-		return disc.getTrackCount();
-	}
-
-	@Override
-	public final Optional<LocalDate> getReleaseDate() {
-		return Optional.ofNullable(this.releaseDate);
-	}
-
-	@Override
-	public final Void setReleaseDate(final LocalDate year) {
-		VALIDATOR.checkArgument().isNotNull(year, "year");
-		this.releaseDate = year;
-		return VoidUtils.returnVoid();
-	}
-
-	@Override
-	public final Void setDuration(final Duration duration) {
-		return VALIDATOR.invalidOperation("Cannot set duration for albums");
-	}
-	
-	@Override
-	public Optional<Duration> getDuration() {
-		return Album.super.getDuration();
-	}
-
-	@Override
-	public final Duration getDuration(final String discName){
-		return getDisc(discName, false).getTracks().stream()
-				.map(Track::getDuration)
-				.filter(Optional::isPresent)
-				.map(Optional::get)
-				.reduce(Duration.ZERO, DurationUtils::plus);
-	}
-
-	@Override
-	public final Set<String> getDiscs() {
-		return Collections.unmodifiableSet(this.discs.keySet());
-	}
-
-	@Override
-	public final TypeRelease getReleaseType(){
-		return this.releaseType;
-	}
-
-	@Override
-	public final Void setCover(byte[] image) {
-		VALIDATOR.checkArgument().isNotNull(image, "image");
-
-		try {
-			this.cover.toOutput().write(image);
-			return VoidUtils.returnVoid();
-		} catch (IOException e) {
-			return VALIDATOR.handleIOException(e);
-		}
-	}
-
-	@Override
-	public BiStream getCover() {
-		return this.cover;
-	}
-
-	@Override
-	@Generated(value = "GuavaEclipsePlugin")
-	public int hashCode() {
-		return Objects.hash(super.hashCode(), title, type, artists, releaseType);
-	}
-
-	@Override
-	@Generated(value = "GuavaEclipsePlugin")
-	public boolean equals(Object object) {
-		if (object instanceof AbstractAlbum) {
-			if (!super.equals(object))
-				return false;
-			AbstractAlbum that = (AbstractAlbum) object;
-			return Objects.equals(this.title, that.title) 
-					&& Objects.equals(this.type, that.type)
-					&& Objects.equals(this.artists, that.artists) 
-					&& Objects.equals(this.releaseType, that.releaseType);
-		}
-		return false;
-	}
-
-	@Override
-	public boolean contains(final String disc, final Integer track) {
-		VALIDATOR.checkArgument().isNotEmpty(disc, "disc name");
-		VALIDATOR.checkArgument().isNotNull(track, "track number");
-
-		return this.discs.containsKey(disc) 
-				&& this.discs.get(disc).tracks.containsKey(track);
-	}
-
-	@Override
-	public final TypeAlbum getAlbumType() {
-		return type;
-	}
-
-	@Override
-	public StaticPlaylist freeze(final DBManager db, final int limit) {
-		final StaticPlaylist playlist = db.getFactories()
-				.getPlaylistFactory()
-				.createStaticPlaylist(getFullTitle());
-		getTracks().stream()
-		.map(TrackSlot::getTrack)
-		.filter(Optional::isPresent)
-		.map(Optional::get)
-		.forEach(playlist::addTrack);
-
-		return playlist;
-	}
-	
-	@Override
-	public Void addArtists(final Collection<Artist> artists) {
-		VALIDATOR.checkArgument().isNotNull(artists, "artists");
-		this.artists.addAll(artists);
-		return VoidUtils.returnVoid();
-	}
-
-	@Override
-	public Void removeArtist(final Artist artist) {
-		VALIDATOR.checkArgument().isNotAllThereIs(Collections.singleton(artist), getArtists(), "artists");
-		this.artists.remove(artist);
-		return VoidUtils.returnVoid();
-	}
-
-	@Override
-	public Void removeArtists(final Collection<Artist> artists) {
-		VALIDATOR.checkArgument().isNotAllThereIs(artists, getArtists(), "artists");
-		this.artists.removeAll(artists);
-		return VoidUtils.returnVoid();
-	}
-
-	@Override
-	public Void removeTrack(final Track track) {
-		VALIDATOR.checkArgument().isNotNull(track, "track");
-		final int removedTracks = this.discs.values().stream()
-				.mapToInt(disc -> disc.removeTrack(track))
-				.sum();
-		this.tracks -= removedTracks;
-		return VoidUtils.returnVoid();
-	}
-
-	@Override
-	public Void removeTrack(final int number, final String disc) {
-		VALIDATOR.checkArgument().isPositive(number, "number");
-		VALIDATOR.checkArgument().isNotEmpty(disc, "disc");
-		
-		final Track removedTrack = getDisc(disc, false).remove(number);
-		if (Objects.nonNull(removedTrack)) {
-			this.tracks--;
-		}
-		return VoidUtils.returnVoid();
-	}
-
-	@Override
-	public Void removeAllTracks() {
-		this.discs.values().forEach(Disc::removeAllTracks);
-		this.tracks = 0;
-		return VoidUtils.returnVoid();
-	}
-
-	/**
-	 * <h1>Disc class.</h1> This class is private and its only use is to
-	 * create an abstraction level that eases the process of manage discs
-	 * inside albums.
-	 * 
-	 * @author Joao Sousa (jpd.sousa@campus.fct.unl.pt)
-	 */
-	@Embedded
-	public static class Disc {
-
-		/**
-		 * Map that contains the tracks.
-		 * <p>Key - track number
-		 * <p>Value - track object
-		 */
-		@Reference(idOnly = true)
-		private final Map<Integer, Track> tracks;
-
-		private Disc(){
-			this.tracks = Collections.synchronizedMap(Maps.newLinkedHashMap());
-		}
-
-		private Collection<TrackSlot> getTracksWithSlots(final String thisDiscName) {
-			return this.tracks.keySet().stream()
-					.map(number -> new TrackSlotImpl(thisDiscName, number, this.tracks.get(number)))
-					.collect(Collectors.toList());
-		}
-
-		private Track getTrack(final Integer number) {
-			return this.tracks.get(number);
-		}
-
-		private Track remove(final Integer trackNumber) {
-			return this.tracks.remove(trackNumber);
-		}
-		
-		private int removeTrack(final Track track) {
-			final Set<Integer> numbersToRemove = this.tracks.keySet().stream()
-					.filter(number -> this.tracks.get(number).equals(track))
-					.collect(Collectors.toSet());
-			return numbersToRemove.stream()
-					.map(this.tracks::remove)
-					.filter(removedTrack -> removedTrack != null)
-					.mapToInt(removedTrack -> 1)
-					.sum();
-		}
-		
-		private void removeAllTracks() {
-			this.tracks.clear();
-		}
-
-		private void add(final Track track, final Integer number) {
-			VALIDATOR.checkArgument().isNotContainedIn(number, this.tracks, "track number", "tracks");
-			this.tracks.put(number, track);
-		}
-
-		private Integer getNextEmpty() {
-			return IntStream.generate(SupplierUtils.incrementalSupplier(1))
-					.filter(index -> !tracks.containsKey(index))
-					.boxed()
-					.findFirst()
-					.orElseThrow(() -> new RuntimeException("Cannot find an empty slot"));
-		}
-
-		private Collection<Track> getTracks(){
-			return Collections.unmodifiableCollection(this.tracks.values());
-		}
-
-		private int getTrackCount(){
-			return this.tracks.size();
-		}
-	}
-
+    @Override
+    public String toString() {
+        return MoreObjects.toStringHelper(this)
+                .add("title", this.title)
+                .add("release", this.release)
+                .add("cover", this.cover)
+                .add("tracks", this.tracks)
+                .toString();
+    }
 }

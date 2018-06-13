@@ -1,16 +1,16 @@
 /*******************************************************************************
  * Copyright (C) 2017 Joao Sousa
- * 
+ *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
  * in the Software without restriction, including without limitation the rights
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
- * 
+ *
  * The above copyright notice and this permission notice shall be included in
  * all copies or substantial portions of the Software.
- * 
+ *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -19,118 +19,86 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  ******************************************************************************/
+
 package org.rookit.dm.album;
 
-import static org.rookit.api.dm.album.AlbumFields.*;
-
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
-
-import org.apache.commons.lang3.tuple.Pair;
-import org.rookit.api.bistream.BiStream;
+import com.google.common.base.MoreObjects;
+import com.google.inject.Inject;
+import org.rookit.api.bistream.BiStreamFactory;
 import org.rookit.api.dm.album.Album;
 import org.rookit.api.dm.album.TypeAlbum;
-import org.rookit.api.dm.album.TypeRelease;
 import org.rookit.api.dm.album.factory.AlbumFactory;
-import org.rookit.api.dm.artist.Artist;
-import org.rookit.api.dm.artist.factory.ArtistFactory;
-import org.rookit.api.dm.factory.RookitFactory;
+import org.rookit.api.dm.album.key.AlbumKey;
+import org.rookit.api.dm.key.Key;
+import org.rookit.dm.album.config.AlbumConfig;
 import org.rookit.dm.album.factory.AlbumBiStream;
-import org.rookit.dm.factory.AbstractRookitFactory;
-
-import com.google.inject.Inject;
+import org.rookit.dm.album.release.MutableReleaseFactory;
+import org.rookit.dm.album.tracks.MutableAlbumTracksFactory;
+import org.rookit.dm.play.able.event.MutableEventStatsFactory;
+import org.rookit.dm.utils.DataModelValidator;
+import org.rookit.utils.log.validator.Validator;
 
 /**
- * Class that provides methods for creating {@link Album} objects. This class implements
- * the factory pattern.
- *  
+ * Class that provides methods for creating {@link Album} objects. This class
+ * implements the factory pattern.
+ *
  * @author Joao Sousa (jpd.sousa@campus.fct.unl.pt)
  *
  */
-public class AlbumFactoryImpl extends AbstractRookitFactory<Album> implements AlbumFactory {
+final class AlbumFactoryImpl implements AlbumFactory {
 
-	private final ArtistFactory artistFactory; 
-	private TypeRelease defaultTypeRelease;
+    private static final Validator VALIDATOR = DataModelValidator.getDefault();
 
-	@Inject
-	AlbumFactoryImpl(
-			@AlbumBiStream final RookitFactory<BiStream> biStreamFactory, 
-			final ArtistFactory artistFactory){
-		super(Optional.ofNullable(biStreamFactory));
-		this.artistFactory = artistFactory;
-		defaultTypeRelease = TypeRelease.STUDIO;
-	}
+    private final AlbumConfig config;
+    private final AlbumFactory singleArtistAlbumFactory;
+    private final AlbumFactory variousArtistsAlbumFactory;
 
-	@Override
-	public Album createSingleArtistAlbum(String title, TypeRelease type, Set<Artist> artists) {
-		VALIDATOR.checkArgument().isNotEmpty(title, "title");
-		VALIDATOR.checkArgument().isNotNull(type, "type release");
-		VALIDATOR.checkArgument().isNotEmpty(artists, "artists");
-		final BiStream biStream = createEmptyBiStream();
-		return new SingleArtistAlbum(title, type, artists, biStream);
-	}
+    @Inject
+    AlbumFactoryImpl(@AlbumBiStream final BiStreamFactory<Key> biStreamFactory,
+                     final MutableAlbumTracksFactory albumTracksFactory,
+                     final MutableReleaseFactory releaseFactory,
+                     final AlbumConfig config,
+                     final MutableEventStatsFactory eventStatsFactory) {
+        this.config = config;
+        this.singleArtistAlbumFactory = new SingleArtistAlbumFactoryImpl(config,
+                releaseFactory,
+                biStreamFactory,
+                albumTracksFactory,
+                eventStatsFactory);
+        this.variousArtistsAlbumFactory = new VariousArtistsAlbumFactoryImpl(config,
+                releaseFactory,
+                biStreamFactory,
+                albumTracksFactory,
+                eventStatsFactory);
+    }
 
-	@Override
-	public Album createSingleArtistAlbum(String albumTag, String albumArtistsTag) {
-		Album album = null;
-		album = createSingleArtistAlbum(albumTag, artistFactory.getArtistsFromTag(albumArtistsTag));
-		return album;
-	}
+    @Override
+    public Album create(final AlbumKey albumKey) {
+        VALIDATOR.checkArgument().isNotNull(albumKey, "albumKey");
+        
+        final TypeAlbum albumType = albumKey.type();
+        switch (albumType) {
+            case ARTIST :
+                return this.singleArtistAlbumFactory.create(albumKey);
+            case VA :
+                return this.variousArtistsAlbumFactory.create(albumKey);
+        }
+        return VALIDATOR.handleException()
+                .unsupportedOperation("Unrecognized album release: " + albumType);
+    }
 
-	@Override
-	public Album createSingleArtistAlbum(String albumTitle, Set<Artist> artists) {
-		final Pair<TypeRelease, String> release = TypeRelease.parseAlbumName(albumTitle, defaultTypeRelease);
-		return createSingleArtistAlbum(release.getRight(), release.getLeft(), artists);
-	}
+    @Override
+    public Album createEmpty() {
+        return VALIDATOR.handleException()
+                .unsupportedOperation("Cannot create an empty album");
+    }
 
-	@Override
-	public Album createAlbum(TypeAlbum albumType, String title, TypeRelease type, Set<Artist> artists) {
-		Album album = null;
-
-		switch(albumType){
-		case ARTIST:
-			album = createSingleArtistAlbum(title, type, artists);
-			break;
-		case VA:
-			album = createVAAlbum(title,type);
-			break;
-		}
-
-		return album;
-	}
-
-	@Override
-	public Album createVAAlbum(String title, TypeRelease type) {
-		VALIDATOR.checkArgument().isNotEmpty(title, "title");
-		VALIDATOR.checkArgument().isNotNull(type, "type release");
-		final BiStream biStream = createEmptyBiStream();
-		return new VariousArtistAlbum(title, type, biStream);
-	}
-
-	@Override
-	public Album createEmpty() {
-		VALIDATOR.invalidOperation("Cannot create an empty album");
-		return null;
-	}
-
-	@SuppressWarnings("unchecked")
-	@Override
-	public Album create(Map<String, Object> data) {
-		final Object albumType = data.get(TYPE);
-		final Object title = data.get(TITLE);
-		final Object type = data.get(RELEASE_TYPE);
-		final Object artists = data.get(ARTISTS);
-
-		if(albumType != null && albumType instanceof TypeAlbum
-				&& title != null && title instanceof String
-				&& type != null && type instanceof TypeRelease
-				&& artists != null && artists instanceof Set) {
-			return createAlbum((TypeAlbum) albumType, (String) title, 
-					(TypeRelease) type, (Set<Artist>) artists);
-		}
-		VALIDATOR.runtimeException("Invalid arguments: " + data);
-		return null;
-	}
-
+    @Override
+    public String toString() {
+        return MoreObjects.toStringHelper(this)
+                .add("config", this.config)
+                .add("singleArtistAlbumFactory", this.singleArtistAlbumFactory)
+                .add("variousArtistsAlbumFactory", this.variousArtistsAlbumFactory)
+                .toString();
+    }
 }

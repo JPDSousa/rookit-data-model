@@ -1,16 +1,16 @@
 /*******************************************************************************
  * Copyright (C) 2017 Joao Sousa
- * 
+ *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
  * in the Software without restriction, including without limitation the rights
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
- * 
+ *
  * The above copyright notice and this permission notice shall be included in
  * all copies or substantial portions of the Software.
- * 
+ *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -19,83 +19,96 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  ******************************************************************************/
+
 package org.rookit.dm.track;
 
-import static org.rookit.api.dm.track.TrackFields.*;
-
-import java.util.Map;
-import java.util.Optional;
-
-import org.rookit.api.bistream.BiStream;
-import org.rookit.api.dm.factory.RookitFactory;
+import com.google.common.base.MoreObjects;
+import com.google.inject.Inject;
+import org.rookit.api.dm.artist.Artist;
 import org.rookit.api.dm.track.Track;
 import org.rookit.api.dm.track.TypeTrack;
-import org.rookit.api.dm.track.TypeVersion;
+import org.rookit.api.dm.track.audio.AudioContent;
+import org.rookit.api.dm.track.audio.AudioContentFactory;
 import org.rookit.api.dm.track.factory.TrackFactory;
-import org.rookit.dm.factory.AbstractRookitFactory;
-import org.rookit.dm.track.factory.TrackBiStream;
-
-import com.google.inject.Inject;
+import org.rookit.api.dm.track.factory.VersionTrackFactory;
+import org.rookit.api.dm.track.key.TrackKey;
+import org.rookit.api.dm.track.title.TrackTitle;
+import org.rookit.api.dm.track.title.TrackTitleFactory;
+import org.rookit.dm.play.able.event.MutableEventStatsFactory;
+import org.rookit.dm.track.artists.MutableTrackArtists;
+import org.rookit.dm.track.artists.MutableTrackArtistsFactory;
+import org.rookit.dm.track.lyrics.MutableLyrics;
+import org.rookit.dm.track.lyrics.MutableLyricsFactory;
+import org.rookit.dm.utils.DataModelValidator;
+import org.rookit.utils.log.validator.Validator;
 
 @SuppressWarnings("javadoc")
-public class TrackFactoryImpl extends AbstractRookitFactory<Track> implements TrackFactory {
+// TODO to reduce over coupulation, create an OriginalTrackFactory, that couples all the required dependencies
+// TODO to create an original track
+final class TrackFactoryImpl implements TrackFactory {
 
-	@Inject
-	private TrackFactoryImpl(@TrackBiStream final RookitFactory<BiStream> biStreamFactory){
-		super(Optional.of(biStreamFactory));
-	}
+    private static final Validator VALIDATOR = DataModelValidator.getDefault();
 
-	@Override
-	public final OriginalTrackImpl createOriginalTrack(String title) {
-		final BiStream path = createEmptyBiStream();
-		return new OriginalTrackImpl(title, path);
-	}
+    private final MutableTrackArtistsFactory artistsFactory;
+    private final TrackTitleFactory titleFactory;
+    private final AudioContentFactory audioContentFactory;
+    private final MutableLyricsFactory lyricsFactory;
+    private final MutableEventStatsFactory eventStatsFactory;
+    private final VersionTrackFactory versionTrackFactory;
+    
+    @Inject
+    private TrackFactoryImpl(final MutableTrackArtistsFactory artistsFactory,
+                             final TrackTitleFactory titleFactory,
+                             final AudioContentFactory audioContentFactory,
+                             final MutableLyricsFactory lyricsFactory,
+                             final MutableEventStatsFactory eventStatsFactory,
+                             final VersionTrackFactory versionTrackFactory) {
+        this.artistsFactory = artistsFactory;
+        this.titleFactory = titleFactory;
+        this.audioContentFactory = audioContentFactory;
+        this.lyricsFactory = lyricsFactory;
+        this.eventStatsFactory = eventStatsFactory;
+        this.versionTrackFactory = versionTrackFactory;
+    }
 
-	@Override
-	public final VersionTrackImpl createVersionTrack(TypeVersion versionType, Track original) {
-		final BiStream path = createEmptyBiStream();
-		return new VersionTrackImpl(original, versionType, path);
-	}
+    @Override
+    public Track create(final TrackKey key) {
+        VALIDATOR.checkArgument().isNotNull(key, "key");
 
-	@Override
-	public final Track createTrack(TypeTrack type, String title, Track original, TypeVersion versionType) {
-		final BiStream path = createEmptyBiStream();
-		if(type == TypeTrack.VERSION) {
-			return new VersionTrackImpl(original, versionType, path);
-		}
-		return new OriginalTrackImpl(title, path);
-	}
+        final TypeTrack trackType = key.type();
+        switch (trackType) {
+            case ORIGINAL :
+                return create(key.title(), key.mainArtists());
+            case VERSION :
+                return this.versionTrackFactory.create(key);
+        }
+        return VALIDATOR.handleException().runtimeException("Invalid track release: " + trackType);
+    }
 
-	@Override
-	public Track createEmpty() {
-		VALIDATOR.invalidOperation("Cannot create an empty track");
-		return null;
-	}
+    @Override
+    public Track createEmpty() {
+        return VALIDATOR.handleException()
+                .unsupportedOperation("Cannot create an empty track");
+    }
 
-	@Override
-	public Track create(Map<String, Object> data) {
-		final Object type = data.get(TYPE);
-		if(type != null && type instanceof TypeTrack) {
-			switch((TypeTrack) type) {
-			case ORIGINAL:
-				final Object title = data.get(TITLE);
-				if(title != null && title instanceof String) {
-					return createOriginalTrack((String) title);
-				}
-				break;
-			case VERSION:
-				final Object original = data.get(ORIGINAL);
-				final Object versionType = data.get(VERSION_TYPE);
-				if(original != null && original instanceof Track
-						&& versionType != null && versionType instanceof TypeVersion) {
-					return createVersionTrack((TypeVersion) versionType, (Track) original);
-				}
-				break;
-			default:
-				break;
-			}
-		}
-		VALIDATOR.runtimeException("Invalid arguments: " + data);
-		return null;
-	}
+    private Track create(final String title, final Iterable<Artist> mainArtists) {
+        final MutableTrackArtists artists = this.artistsFactory.create(mainArtists);
+        final TrackTitle trackTitle = this.titleFactory.create(title, artists);
+        final AudioContent audioContent = this.audioContentFactory.createEmpty();
+        final MutableLyrics lyrics = this.lyricsFactory.createEmpty();
+
+        return new OriginalTrackImpl(trackTitle, audioContent, lyrics, artists, this.eventStatsFactory);
+    }
+
+    @Override
+    public String toString() {
+        return MoreObjects.toStringHelper(this)
+                .add("artistsFactory", this.artistsFactory)
+                .add("titleFactory", this.titleFactory)
+                .add("audioContentFactory", this.audioContentFactory)
+                .add("lyricsFactory", this.lyricsFactory)
+                .add("eventStatsFactory", this.eventStatsFactory)
+                .add("versionTrackFactory", this.versionTrackFactory)
+                .toString();
+    }
 }
